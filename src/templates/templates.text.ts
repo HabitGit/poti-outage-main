@@ -1,7 +1,11 @@
-export function WelcomeMessage(userName: string): string {
-    return `Добро пожаловать ${userName}! Если ты хочешь, что бы тебе начали приходить уведомления об отключениях, то просто зарегистрируйся :)`
-}
+export class TemplatesText {
+    constructor() {}
 
-export function WelcomeBackMessage(userName: string): string {
-    return `С возвращением, ${userName}! Продолжим?`
+    welcomeMessage(userName: string): string {
+        return `Добро пожаловать ${userName}! Если ты хочешь, что бы тебе начали приходить уведомления об отключениях, то просто зарегистрируйся :)`
+    }
+
+    welcomeBackMessage(userName: string): string {
+        return `С возвращением, ${userName}! Продолжим?`
+    }
 }
