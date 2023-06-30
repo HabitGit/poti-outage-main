@@ -6,14 +6,14 @@ export class Users {
     id: number
 
     @Column({
-        type: "int",
+        type: "numeric",
         unique: true,
         nullable: false,
     })
     chatId: number
 
     @Column({
-        type: "int",
+        type: "numeric",
         unique: true,
         nullable: false,
     })
