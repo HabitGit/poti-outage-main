@@ -1,6 +1,6 @@
 import puppeteer, {Browser, Page} from "puppeteer";
 import jsdom from "jsdom";
-import {deflateRaw} from "zlib";
+import {IFinishParserInfo} from "../templates/interfaces";
 
 const LINK = process.env.ELECTRICITY_LINK;
 const POTI = 'ფოთი';
@@ -12,7 +12,7 @@ const { JSDOM } = jsdom;
 export class ElectricityParser {
     constructor() {}
 
-    async getElectricityInfo(): Promise<object> {
+    async getElectricityInfo(): Promise<Array<IFinishParserInfo>> {
         if ( !LINK ) throw new Error('Нету ссылки на сайт');
 
         // Получение страницы
@@ -43,7 +43,7 @@ export class ElectricityParser {
         })
 
         // get text
-        let resultText: Array<object> = []
+        let resultText: Array<IFinishParserInfo> = []
         infoInMyCountry.forEach(item => {
             if ( item != null ) {
                 const itemText: string | null = item.textContent;
@@ -55,10 +55,11 @@ export class ElectricityParser {
                     .split(' ')
                 console.log(resultTextStageOne)
                 resultText.push({
-                    dateStart: resultTextStageOne[3],
-                    timeStart: resultTextStageOne[6],
-                    dateEnd: resultTextStageOne[11],
-                    timeEnd: resultTextStageOne[14],
+                    name: 'электричества',
+                    startDate: resultTextStageOne[3],
+                    startTime: resultTextStageOne[6],
+                    endDate: resultTextStageOne[11],
+                    endTime: resultTextStageOne[14],
                 })
             }
         })

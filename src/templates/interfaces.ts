@@ -11,6 +11,8 @@ export interface IGetUserPoints {
 
 export interface IFinishParserInfo {
 
+    name: string
+
     startDate: string
 
     startTime: string

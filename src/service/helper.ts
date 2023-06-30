@@ -2,10 +2,10 @@ import TelegramBot from "node-telegram-bot-api";
 import {IFinishParserInfo, IGetUserPoints} from "../templates/interfaces";
 
 export class Helper {
-    waterOutputRefactoring(infoArray: Array<IFinishParserInfo>): string {
+    infoOutputRefactoring(infoArray: Array<IFinishParserInfo>): string {
         let result: string = '';
         infoArray.forEach(item => {
-            result += `Найдено следующее отключение воды: \n    с ${item.startDate} - ${item.startTime} \n   по ${item.endDate} - ${item.endTime}`
+            result += `Найдены следующие отключения ${item.name}: \n    с ${item.startDate} - ${item.startTime} \n   по ${item.endDate} - ${item.endTime}`
         });
         return result;
     }

@@ -61,6 +61,7 @@ export class WaterParser {
                 const start: string = startQueryText.split(': ')[1]
                 const end: string = endQueryText.split(': ')[1]
                 resultText.push({
+                    name: 'воды',
                     startDate: start.split(' ')[0],
                     startTime: start.split(' ')[1],
                     endDate: end.split(' ')[0],
