@@ -33,10 +33,15 @@ export class StartService {
             where: { userId: userId }
         });
         if ( isUser ) return bot.sendMessage(chatId, 'Вы уже зарегистрированы')
-        const user = await usersRepository.save({
+        await usersRepository.save({
             userId: userId,
             chatId: chatId,
         })
-        return bot.sendMessage(chatId, 'Регистрация прошла успешно')
+        return bot.sendMessage(chatId, 'Регистрация прошла успешно', {
+            reply_markup: {
+                keyboard: keyboard.home,
+                resize_keyboard: true,
+            }
+        })
     }
 }

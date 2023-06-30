@@ -36,6 +36,6 @@ export class Start {
 
     private job = new CronJob({cronTime: '0,0 */2 * * *',onTick: async () => {
             await this.waterService.cronGetWaterInfo(bot);
-            console.log('Working', new Date())
+            console.log('From CRON, check water: ', new Date())
         }, timeZone: 'Asia/Tbilisi'})
 }
