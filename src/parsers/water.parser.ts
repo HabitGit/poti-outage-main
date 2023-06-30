@@ -33,7 +33,7 @@ export class WaterParser {
         const items: NodeListOf<Element> = document.querySelectorAll('[class="panel panel-default"]')
 
         //Search info about country
-        const infoInMyCountry: Array<Element | null> = []
+        const infoInMyCountry: Array<Element | null> = [];
         items.forEach(item => {
             const query: Element | null = item.querySelector(('[data-toggle="collapse"]'))
             if ( query === null ) throw new Error('Item is null')
@@ -41,7 +41,7 @@ export class WaterParser {
             const isTextQuery: string | null = query.textContent
             if ( isTextQuery === null ) throw new Error('Нету текста у объекта')
 
-            const isCityName = isTextQuery.indexOf(POTI)
+            const isCityName: number = isTextQuery.indexOf(POTI)
             if ( isCityName >= 0 ) infoInMyCountry.push(item.querySelector('[class="col-sm-12"]'))
         })
 
@@ -65,7 +65,7 @@ export class WaterParser {
                 });
             }
         })
-        return resultText
+        return resultText;
     }
 
 }

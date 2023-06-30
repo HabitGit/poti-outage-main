@@ -5,6 +5,7 @@ import {AppDataSource} from "./db/data-source";
 import {commands} from "./commands/commands";
 import {CronJob} from "cron";
 import {WaterService} from "./service/water.service";
+import {ElectricityParser} from "./parsers/electricity.parser";
 
 const TOKEN: string | undefined = process.env.TOKEN;
 if ( !TOKEN ) throw new Error('Нету токена');
@@ -14,6 +15,7 @@ export class Start {
     constructor(
         private mainController: MainController,
         private waterService: WaterService,
+        private electricityParser: ElectricityParser,
     ) {}
 
     async botOn() {
