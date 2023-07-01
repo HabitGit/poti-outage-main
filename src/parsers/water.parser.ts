@@ -48,7 +48,7 @@ export class WaterParser {
 
         //get text
         let resultText: Array<IFinishParserInfo> = []
-        infoInMyCountry.forEach((item, i) => {
+        infoInMyCountry.forEach((item) => {
             if (item != null) {
                 const startQuery: Element | null = item.querySelector(QUERY_START)
                 if ( startQuery === null ) throw new Error('Нету селектора старта')
