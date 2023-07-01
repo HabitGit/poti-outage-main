@@ -9,8 +9,15 @@ export interface IGetUserPoints {
     message: string | undefined
 }
 
-export interface IGetWaterInfo {
-    start: string
+export interface IFinishParserInfo {
 
-    end: string
+    name: string
+
+    startDate: string
+
+    startTime: string
+
+    endDate: string
+
+    endTime: string
 }

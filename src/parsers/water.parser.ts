@@ -1,5 +1,6 @@
 import axios, {AxiosResponse} from "axios";
 import jsdom from "jsdom";
+import {IFinishParserInfo} from "../templates/interfaces";
 
 const LINK = process.env.WATER_LINK;
 const POTI = 'ფოთის ';
@@ -11,7 +12,7 @@ const { JSDOM } = jsdom;
 export class WaterParser {
     constructor() {}
 
-    async getWaterInfo(): Promise<Array<{start: string, end: string}>> {
+    async getWaterInfo(): Promise<Array<IFinishParserInfo>> {
         if ( !LINK ) throw new Error('Нету ссылки на сайт')
 
         //Axios request
@@ -33,7 +34,7 @@ export class WaterParser {
         const items: NodeListOf<Element> = document.querySelectorAll('[class="panel panel-default"]')
 
         //Search info about country
-        const infoInMyCountry: Array<Element | null> = []
+        const infoInMyCountry: Array<Element | null> = [];
         items.forEach(item => {
             const query: Element | null = item.querySelector(('[data-toggle="collapse"]'))
             if ( query === null ) throw new Error('Item is null')
@@ -41,13 +42,13 @@ export class WaterParser {
             const isTextQuery: string | null = query.textContent
             if ( isTextQuery === null ) throw new Error('Нету текста у объекта')
 
-            const isCityName = isTextQuery.indexOf(POTI)
+            const isCityName: number = isTextQuery.indexOf(POTI)
             if ( isCityName >= 0 ) infoInMyCountry.push(item.querySelector('[class="col-sm-12"]'))
         })
 
         //get text
-        let resultText: Array<{start: string, end: string}> = []
-        infoInMyCountry.forEach((item, i) => {
+        let resultText: Array<IFinishParserInfo> = []
+        infoInMyCountry.forEach((item) => {
             if (item != null) {
                 const startQuery: Element | null = item.querySelector(QUERY_START)
                 if ( startQuery === null ) throw new Error('Нету селектора старта')
@@ -60,12 +61,15 @@ export class WaterParser {
                 const start: string = startQueryText.split(': ')[1]
                 const end: string = endQueryText.split(': ')[1]
                 resultText.push({
-                    start: start,
-                    end: end,
+                    name: 'воды',
+                    startDate: start.split(' ')[0],
+                    startTime: start.split(' ')[1],
+                    endDate: end.split(' ')[0],
+                    endTime: end.split(' ')[1],
                 });
             }
         })
-        return resultText
+        return resultText;
     }
 
 }

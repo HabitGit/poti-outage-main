@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
-    "start": "node ./dist/main.js",
+    "start": "ts-node src/main.ts",
     "start:dev": "nodemon src/main.ts",
     "typeorm": "npx typeorm-ts-node-commonjs --dataSource src/db/data-source.ts",
     "migration:create": "npm run build && npm run typeorm migration:create src/db/migrations/Migration",
@@ -36,6 +36,7 @@
     "node-telegram-bot-api": "^0.61.0",
     "nodemon": "^2.0.22",
     "pg": "^8.11.0",
+    "puppeteer": "^20.7.4",
     "redis": "^4.6.7",
     "reflect-metadata": "^0.1.13",
     "typeorm": "^0.3.17"

@@ -5,6 +5,7 @@ import {AppDataSource} from "./db/data-source";
 import {commands} from "./commands/commands";
 import {CronJob} from "cron";
 import {WaterService} from "./service/water.service";
+import {ElectricityService} from "./service/electricity.service";
 
 const TOKEN: string | undefined = process.env.TOKEN;
 if ( !TOKEN ) throw new Error('Нету токена');
@@ -14,6 +15,7 @@ export class Start {
     constructor(
         private mainController: MainController,
         private waterService: WaterService,
+        private electricityService: ElectricityService,
     ) {}
 
     async botOn() {
@@ -25,7 +27,7 @@ export class Start {
         // Установка комманд
         await bot.setMyCommands(commands);
 
-        //Запрос на информацию об отключении воды
+        //Запрос на информацию об отключениях
         this.job.start();
 
         //Обработка запросов
@@ -36,6 +38,7 @@ export class Start {
 
     private job = new CronJob({cronTime: '0,0 */2 * * *',onTick: async () => {
             await this.waterService.cronGetWaterInfo(bot);
+            await this.electricityService.cronGetElectricityInfo(bot);
             console.log('From CRON, check water: ', new Date())
         }, timeZone: 'Asia/Tbilisi'})
 }

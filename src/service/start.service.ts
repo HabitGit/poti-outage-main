@@ -44,4 +44,13 @@ export class StartService {
             }
         })
     }
+
+    async sendMessageFromAdmin(bot: TelegramBot, message: string) {
+        const userIds: Users[] = await usersRepository.find({
+            select: { chatId: true },
+        });
+        for ( const chatId of userIds ) {
+            await bot.sendMessage(chatId.chatId, message)
+        }
+    }
 }

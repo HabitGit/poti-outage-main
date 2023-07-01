@@ -25,10 +25,18 @@ export class MainController {
                 break;
 
             case 'Показать имеющиеся отключения':
-                const cache: string | null = await cacheClient.get('waterInfo');
-                await bot.sendMessage(chatId, cache || 'Отсутствует какая либо информация, сообщите о сбое кэша');
+                const cacheWater: string | null = await cacheClient.get('waterInfo');
+                const cacheElectricity: string | null = await cacheClient.get('electricityInfo');
+                const result = {
+                    water: cacheWater || 'Не получена информация об отключении воды.',
+                    electricity: cacheElectricity || 'Не получена информация об отключении электричесва.',
+                }
+                await bot.sendMessage(chatId, result.water + '\n' + result.electricity);
                 break;
 
+            case '/sendMessageFromAdmin':
+                const message: string = 'Бот будет перезагружен для внесения следующих изменений: теперь он может находить информацию по электричеству. Первые актуальные оповещения поступят после 2х часов ночи, по времени Грузии.'
+                await this.startService.sendMessageFromAdmin(bot, message);
         }
     }
 }

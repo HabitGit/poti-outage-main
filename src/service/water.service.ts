@@ -3,9 +3,9 @@ import {Users} from "../db/entitys/users.entity";
 import {AppDataSource} from "../db/data-source";
 import {createClient} from "redis";
 import TelegramBot from "node-telegram-bot-api";
-import {IGetWaterInfo} from "../templates/interfaces";
 import {WaterParser} from "../parsers/water.parser";
 import {Helper} from "./helper";
+import {IFinishParserInfo} from "../templates/interfaces";
 
 //Юзер репозиторий
 const usersRepository: Repository<Users> = AppDataSource.getRepository(Users);
@@ -22,12 +22,12 @@ export class WaterService {
     ) {}
 
     async cronGetWaterInfo(bot: TelegramBot): Promise<string> {
-        const info: Array<IGetWaterInfo> = await this.waterParser.getWaterInfo()
+        const info: Array<IFinishParserInfo> = await this.waterParser.getWaterInfo()
         const infoForOutput: string = this.waterOutputInfo(info);
-        let cache: string | null = await cacheClient.get('waterInfo')
+        let cache: string | null = await cacheClient.get('waterInfo');
         await cacheClient.set('waterInfo', infoForOutput, {EX: 7800});
         if ( cache ) return cache;
-        if ( infoForOutput === 'Инфо об отключениях нет' ) return infoForOutput;
+        if ( infoForOutput === 'Инфо об отключении воды нет.' ) return infoForOutput;
         const chatIds: Users[] = await usersRepository.find({
             select: {
                 chatId: true,
@@ -39,8 +39,8 @@ export class WaterService {
         return infoForOutput;
     }
 
-    private waterOutputInfo(info: Array<IGetWaterInfo>): string {
-        if ( info.length === 0 ) return 'Инфо об отключениях нет';
-        return this.helper.waterOutputRefactoring(info);
+    private waterOutputInfo(info: Array<IFinishParserInfo>): string {
+        if ( info.length === 0 ) return 'Инфо об отключении воды нет.';
+        return this.helper.infoOutputRefactoring(info);
     }
 }
