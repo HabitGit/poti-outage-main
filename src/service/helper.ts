@@ -5,7 +5,7 @@ export class Helper {
     infoOutputRefactoring(infoArray: Array<IFinishParserInfo>): string {
         let result: string = '';
         infoArray.forEach(item => {
-            result += `Найдены следующие отключения ${item.name}: \n    с ${item.startDate} - ${item.startTime} \n   по ${item.endDate} - ${item.endTime}`
+            result += `Найдены следующие отключения ${item.name}: \n    с ${item.startDate} - ${item.startTime} \n   по ${item.endDate} - ${item.endTime}\n`
         });
         return result;
     }

@@ -34,6 +34,9 @@ export class MainController {
                 await bot.sendMessage(chatId, result.water + '\n' + result.electricity);
                 break;
 
+            case '/sendMessageFromAdmin':
+                const message: string = 'Бот будет перезагружен для внесения следующих изменений: теперь он может находить информацию по электричеству. Первые актуальные оповещения поступят после 2х часов ночи, по времени Грузии.'
+                await this.startService.sendMessageFromAdmin(bot, message);
         }
     }
 }
