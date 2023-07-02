@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+
+  main:
+    container_name: main
+    build:
+      dockerfile: ./Dockerfile
+    env_file:
+      - .env
+    depends_on:
+      - redis
+      - postgres
+
+  redis:
+    container_name: redis
+    image: redis
+    ports:
+      - ${REDIS_PORT_OUTSIDE}:${REDIS_PORT_INSIDE}
+
+  postgres:
+    container_name: postgres
+    image: postgres:15.2
+    restart: always
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+    ports:
+      - ${POSTGRES_PORT_OUTSIDE}:${POSTGRES_PORT_INSIDE}

@@ -11,7 +11,13 @@ import {createClient} from "redis";
 const usersRepository: Repository<Users> = AppDataSource.getRepository(Users);
 
 //Инициализация Redis
-export const cacheClient = createClient();
+export const cacheClient = createClient({
+    legacyMode: true,
+    socket: {
+        port: Number(process.env.REDIS_PORT_INSIDE),
+        host: process.env.REDIS_HOST,
+    },
+});
 cacheClient.on('error', err => console.log('Redis client Error', err));
 cacheClient.connect().then(() => console.log('Redis connect'));
 
