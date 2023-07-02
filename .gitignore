@@ -2,3 +2,4 @@
 node_modules
 dist
 note.txt
+package-lock.json
