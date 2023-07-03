@@ -5,21 +5,10 @@ import {IFinishParserInfo} from "../templates/interfaces";
 import {Repository} from "typeorm";
 import {Users} from "../db/entitys/users.entity";
 import {AppDataSource} from "../db/data-source";
-import {createClient} from "redis";
+import {cacheClient} from "../db/data-source.redis";
 
 //Юзер репозиторий
 const usersRepository: Repository<Users> = AppDataSource.getRepository(Users);
-
-//Инициализация Redis
-export const cacheClient = createClient({
-    legacyMode: true,
-    socket: {
-        port: Number(process.env.REDIS_PORT_INSIDE),
-        host: process.env.REDIS_HOST,
-    },
-});
-cacheClient.on('error', err => console.log('Redis client Error', err));
-cacheClient.connect().then(() => console.log('Redis connect'));
 
 export class ElectricityService {
     constructor(

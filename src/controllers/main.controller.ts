@@ -2,7 +2,7 @@ import TelegramBot from "node-telegram-bot-api";
 import {IGetUserPoints} from "../templates/interfaces";
 import {StartService} from "../service/start.service";
 import {Helper} from "../service/helper";
-import {cacheClient} from "../service/water.service";
+import {cacheClient} from "../db/data-source.redis";
 
 export class MainController {
     constructor(

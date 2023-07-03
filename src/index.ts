@@ -9,7 +9,7 @@ import {ElectricityService} from "./service/electricity.service";
 
 const TOKEN: string | undefined = process.env.TOKEN;
 if ( !TOKEN ) throw new Error('Нету токена');
-const bot: TelegramBot = new TelegramBot(TOKEN, {polling: true})
+const bot: TelegramBot = new TelegramBot(TOKEN, {polling: true});
 
 export class Start {
     constructor(

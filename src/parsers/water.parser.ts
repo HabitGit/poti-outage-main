@@ -71,5 +71,4 @@ export class WaterParser {
         })
         return resultText;
     }
-
 }
