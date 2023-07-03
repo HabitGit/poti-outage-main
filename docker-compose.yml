@@ -11,6 +11,9 @@ services:
     depends_on:
       - redis
       - postgres
+    volumes:
+      - ./src:/app/src
+      - /app/node_modules
 
   redis:
     container_name: redis
