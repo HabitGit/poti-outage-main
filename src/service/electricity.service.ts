@@ -24,17 +24,17 @@ export class ElectricityService {
         await cacheClient.set('electricityInfo', infoForOutput, {EX: 7800});
 
         if ( infoForOutput === 'Инфо об отключении электричества нет.' ) return;
-        // if ( infoForOutput !== cache ) {
-        //     const chatIds: Users[] = await usersRepository.find({
-        //         select: {
-        //             chatId: true,
-        //         },
-        //     });
-        //     for ( const chatId of chatIds ) {
-        //         await bot.sendMessage(chatId.chatId, infoForOutput)
-        //     }
-        //     return;
-        // }
+        if ( infoForOutput !== cache ) {
+            const chatIds: Users[] = await usersRepository.find({
+                select: {
+                    chatId: true,
+                },
+            });
+            for ( const chatId of chatIds ) {
+                await bot.sendMessage(chatId.chatId, infoForOutput)
+            }
+            return;
+        }
     }
 
     private electricityOutputInfo(info: Array<IFinishParserInfo>): string {

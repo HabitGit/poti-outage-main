@@ -24,17 +24,17 @@ export class WaterService {
         await cacheClient.set('waterInfo', infoForOutput, {EX: 7800});
 
         if ( infoForOutput === 'Инфо об отключении воды нет.' ) return;
-        // if ( infoForOutput !== cache ) {
-        //     const chatIds: Users[] = await usersRepository.find({
-        //         select: {
-        //             chatId: true,
-        //         },
-        //     });
-        //     for ( const chatId of chatIds ) {
-        //         await bot.sendMessage(chatId.chatId, infoForOutput)
-        //     }
-        //     return;
-        // }
+        if ( infoForOutput !== cache ) {
+            const chatIds: Users[] = await usersRepository.find({
+                select: {
+                    chatId: true,
+                },
+            });
+            for ( const chatId of chatIds ) {
+                await bot.sendMessage(chatId.chatId, infoForOutput)
+            }
+            return;
+        }
     }
 
     private waterOutputInfo(info: Array<IFinishParserInfo>): string {
