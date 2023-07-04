@@ -56,14 +56,14 @@ export class ElectricityParser {
                     .split(spliterTwo)
                     .join('')
                     .split(' ')
-                console.log(resultTextStageOne)
                 resultText.push({
                     name: 'электричества',
                     startDate: resultTextStageOne[3],
                     startTime: resultTextStageOne[6],
                     endDate: resultTextStageOne[11],
                     endTime: resultTextStageOne[14],
-                })
+                });
+                console.log(resultText)
             }
         })
         return resultText;

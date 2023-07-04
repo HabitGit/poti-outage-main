@@ -67,6 +67,7 @@ export class WaterParser {
                     endDate: end.split(' ')[0],
                     endTime: end.split(' ')[1],
                 });
+                console.log(resultText)
             }
         })
         return resultText;
