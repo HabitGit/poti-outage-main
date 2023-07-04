@@ -16,22 +16,25 @@ export class WaterService {
         private helper: Helper,
     ) {}
 
-    async cronGetWaterInfo(bot: TelegramBot): Promise<string> {
+    async cronGetWaterInfo(bot: TelegramBot) {
         const info: Array<IFinishParserInfo> = await this.waterParser.getWaterInfo()
         const infoForOutput: string = this.waterOutputInfo(info);
+
         let cache: string | null = await cacheClient.get('waterInfo');
         await cacheClient.set('waterInfo', infoForOutput, {EX: 7800});
-        if ( cache ) return cache;
-        if ( infoForOutput === 'Инфо об отключении воды нет.' ) return infoForOutput;
-        const chatIds: Users[] = await usersRepository.find({
-            select: {
-                chatId: true,
-            },
-        });
-        for ( const chatId of chatIds ) {
-            await bot.sendMessage(chatId.chatId, infoForOutput)
-        }
-        return infoForOutput;
+
+        if ( infoForOutput === 'Инфо об отключении воды нет.' ) return;
+        // if ( infoForOutput !== cache ) {
+        //     const chatIds: Users[] = await usersRepository.find({
+        //         select: {
+        //             chatId: true,
+        //         },
+        //     });
+        //     for ( const chatId of chatIds ) {
+        //         await bot.sendMessage(chatId.chatId, infoForOutput)
+        //     }
+        //     return;
+        // }
     }
 
     private waterOutputInfo(info: Array<IFinishParserInfo>): string {

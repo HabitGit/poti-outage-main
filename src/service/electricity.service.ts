@@ -16,22 +16,25 @@ export class ElectricityService {
         private helper: Helper,
     ) {}
 
-    async cronGetElectricityInfo(bot: TelegramBot): Promise<string> {
+    async cronGetElectricityInfo(bot: TelegramBot) {
         const info: Array<IFinishParserInfo> = await this.electricityParser.getElectricityInfo();
         const infoForOutput: string = this.electricityOutputInfo(info);
+
         let cache: string | null = await cacheClient.get('electricityInfo');
         await cacheClient.set('electricityInfo', infoForOutput, {EX: 7800});
-        if ( cache ) return cache;
-        if ( infoForOutput === 'Инфо об отключении электричества нет.' ) return infoForOutput;
-        const chatIds: Users[] = await usersRepository.find({
-            select: {
-                chatId: true,
-            },
-        });
-        for ( const chatId of chatIds ) {
-            await bot.sendMessage(chatId.chatId, infoForOutput)
-        }
-        return infoForOutput;
+
+        if ( infoForOutput === 'Инфо об отключении электричества нет.' ) return;
+        // if ( infoForOutput !== cache ) {
+        //     const chatIds: Users[] = await usersRepository.find({
+        //         select: {
+        //             chatId: true,
+        //         },
+        //     });
+        //     for ( const chatId of chatIds ) {
+        //         await bot.sendMessage(chatId.chatId, infoForOutput)
+        //     }
+        //     return;
+        // }
     }
 
     private electricityOutputInfo(info: Array<IFinishParserInfo>): string {
