@@ -30,13 +30,13 @@ export class Start {
         //Запрос на информацию об отключениях
         this.job.start();
 
-        bot.onText(/\/getElectricityInfo/, async msg => {
-            await this.electricityService.cronGetElectricityInfo(bot);
-        })
-
-        bot.onText(/\/getWaterInfo/, async msg => {
-            await this.waterService.cronGetWaterInfo(bot);
-        })
+        // bot.onText(/\/getElectricityInfo/, async msg => {
+        //     await this.electricityService.cronGetElectricityInfo(bot);
+        // })
+        //
+        // bot.onText(/\/getWaterInfo/, async msg => {
+        //     await this.waterService.cronGetWaterInfo(bot);
+        // })
 
         //Обработка запросов
         bot.on('message', async msg => {
