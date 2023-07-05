@@ -11,5 +11,6 @@ describe('Cache testing', () => {
         await cacheClient.set('test', 'work');
         const cache = await cacheClient.get('test');
         expect(cache).toBe('work')
+        await cacheClient
     })
 })
