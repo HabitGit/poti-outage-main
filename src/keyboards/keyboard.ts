@@ -8,9 +8,10 @@ interface IKeyboard {
 export const keyboard: IKeyboard = {
     start: [
         [kb.start.registration],
-        [kb.back],
+        [kb.common.back],
     ],
     home: [
-        [kb.home.checkDisabled]
+        [kb.home.checkDisabled],
+        [kb.home.showLinks]
     ],
 }

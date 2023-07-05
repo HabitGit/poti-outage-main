@@ -1,13 +1,16 @@
 type Buttons = {
-    [ buttonLocation: string ]: { [ buttonName: string ]: string }
+    [ buttonLocation: string ]: { [ buttonName: string ]: { text: string } }
 }
-export const buttons = {
+export const buttons: Buttons = {
     start: {
         registration: {text: 'Зарегистрироваться'},
         login: {text: 'Залогиниться'},
     },
-    back: {text: 'Назад'},
+    common: {
+        back: {text: 'Назад'},
+    },
     home: {
-        checkDisabled: {text: 'Показать имеющиеся отключения'}
+        checkDisabled: {text: 'Показать имеющиеся отключения'},
+        showLinks: {text: 'Ссылки на сайты'}
     }
 }

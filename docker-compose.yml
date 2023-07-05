@@ -20,6 +20,8 @@ services:
     image: redis
     ports:
       - ${REDIS_PORT_OUTSIDE}:${REDIS_PORT_INSIDE}
+    volumes:
+      - ./redisdata:/data
 
   postgres:
     container_name: postgres
