@@ -31,7 +31,11 @@ export class ElectricityService {
                 },
             });
             for ( const chatId of chatIds ) {
-                await bot.sendMessage(chatId.chatId, infoForOutput)
+                try {
+                    await bot.sendMessage(chatId.chatId, infoForOutput)
+                } catch (e) {
+                    console.log(e)
+                }
             }
             return;
         }

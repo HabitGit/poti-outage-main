@@ -25,7 +25,7 @@ export class Start {
             .catch((error) => console.log('Error in DB: ', error))
 
         // Установка комманд
-        await bot.setMyCommands(commands);
+        // await bot.setMyCommands(commands);
 
         //Запрос на информацию об отключениях
         this.job.start();
