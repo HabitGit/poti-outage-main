@@ -8,6 +8,7 @@ export const buttons = {
     },
     back: {text: 'Назад'},
     home: {
-        checkDisabled: {text: 'Показать имеющиеся отключения'}
+        checkDisabled: {text: 'Показать имеющиеся отключения'},
+        showLinks: {text: 'Ссылки на сайты'}
     }
 }

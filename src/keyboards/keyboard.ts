@@ -11,6 +11,7 @@ export const keyboard: IKeyboard = {
         [kb.back],
     ],
     home: [
-        [kb.home.checkDisabled]
+        [kb.home.checkDisabled],
+        [kb.home.showLinks]
     ],
 }
