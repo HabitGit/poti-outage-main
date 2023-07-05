@@ -17,6 +17,7 @@ export class ElectricityParser {
 
         // Получение страницы
         const browser: Browser = await puppeteer.launch({
+            headless: 'new',
             args: [
                 '--disable-setuid-sandbox',
                 '--no-sandbox',
