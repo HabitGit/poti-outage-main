@@ -2,7 +2,7 @@ import 'dotenv/config';
 import {MainController} from "./controllers/main.controller";
 import TelegramBot from "node-telegram-bot-api";
 import {AppDataSource} from "./db/data-source";
-import {commands} from "./commands/commands";
+// import {commands} from "./commands/commands";
 import {CronJob} from "cron";
 import {WaterService} from "./service/water.service";
 import {ElectricityService} from "./service/electricity.service";
@@ -25,7 +25,7 @@ export class Start {
             .catch((error) => console.log('Error in DB: ', error))
 
         // Установка комманд
-        await bot.setMyCommands(commands);
+        // await bot.setMyCommands(commands);
 
         //Запрос на информацию об отключениях
         this.job.start();
