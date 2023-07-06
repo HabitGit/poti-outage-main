@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import TelegramBot from "node-telegram-bot-api";
 import {IFinishParserInfo, IGetUserPoints} from "../templates/interfaces";
 
@@ -5,9 +6,9 @@ export class Helper {
     infoOutputRefactoring(infoArray: Array<IFinishParserInfo>): string {
         let result: string = '';
         infoArray.forEach(item => {
-            const link: string = item.name === 'воды'
-              ? 'http://water.gov.ge/page/full/107/'
-              : 'https://my.energo-pro.ge/ow/#/disconns';
+            const link: string | undefined = item.name === 'воды'
+              ? process.env.WATER_LINK
+              : process.env.ELECTRICITY_LINK;
 
             result += `Найдены следующие отключения ${item.name}: 
                       с ${item.startDate} - ${item.startTime} 
