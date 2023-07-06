@@ -27,7 +27,7 @@ export class ClientService {
     });
   };
 
-  async Registration(userId: number, chatId: number, bot: TelegramBot): Promise<TelegramBot.Message> {
+  async Registration(userId: number, chatId: number): Promise<TelegramBot.Message> {
     const isUser: Users | null = await usersRepository.findOne({
       where: { userId: userId }
     });

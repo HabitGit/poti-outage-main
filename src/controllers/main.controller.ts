@@ -3,6 +3,7 @@ import {IGetUserPoints} from "../templates/interfaces";
 import {Helper} from "../service/helper";
 import {cacheClient} from "../db/data-source.redis";
 import { ClientService } from '../service/client.service';
+import { bot } from '../index';
 
 export class MainController {
     constructor(
@@ -10,18 +11,18 @@ export class MainController {
         private helper: Helper,
         ) {}
 
-    async requestHandler(msg: TelegramBot.Message, bot: TelegramBot) {
+    async requestHandler(msg: TelegramBot.Message) {
         const { chatId, userName, userId, message }: IGetUserPoints = await this.helper.getUserPoints(msg);
 
         switch (message) {
 
             case '/start':
-                await this.clientService.CommandStart(chatId, userName || 'Anonymous', userId)
+                await this.clientService.CommandStart(chatId, userName || 'Anonymous', userId);
                 break;
 
             case 'Зарегистрироваться':
-                if ( !userId ) return bot.sendMessage(chatId, 'С вашим аккаунтом что то не так')
-                await this.clientService.Registration(userId, chatId, bot)
+                if ( !userId ) return bot.sendMessage(chatId, 'С вашим аккаунтом что то не так');
+                await this.clientService.Registration(userId, chatId);
                 break;
 
             case 'Показать имеющиеся отключения':
@@ -30,7 +31,7 @@ export class MainController {
                 const result = {
                     water: cacheWater || 'Не получена информация об отключении воды.',
                     electricity: cacheElectricity || 'Не получена информация об отключении электричесва.',
-                }
+                };
                 await bot.sendMessage(chatId, result.water + '\n' + result.electricity);
                 break;
 

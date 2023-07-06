@@ -37,17 +37,19 @@ export class Start {
         //Запрос на информацию об отключениях
         this.job.start();
 
-        // bot.onText(/\/getElectricityInfo/, async msg => {
-        //     await this.electricityService.cronGetElectricityInfo(bot);
-        // })
-        //
-        // bot.onText(/\/getWaterInfo/, async msg => {
-        //     await this.waterService.cronGetWaterInfo(bot);
-        // })
+        bot.onText(/\/getElectricityInfo/, async msg => {
+            const info = await this.electricityService.cronGetElectricityInfo();
+            console.log(info);
+        })
+
+        bot.onText(/\/getWaterInfo/, async msg => {
+            const info = await this.waterService.cronGetWaterInfo();
+            console.log(info);
+        })
 
         //Обработка запросов
         bot.on('message', async msg => {
-            await this.mainController.requestHandler(msg, bot);
+            await this.mainController.requestHandler(msg);
         })
     }
 
