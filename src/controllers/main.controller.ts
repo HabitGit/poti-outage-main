@@ -1,12 +1,12 @@
 import TelegramBot from "node-telegram-bot-api";
 import {IGetUserPoints} from "../templates/interfaces";
-import {StartService} from "../service/start.service";
 import {Helper} from "../service/helper";
 import {cacheClient} from "../db/data-source.redis";
+import { ClientService } from '../service/client.service';
 
 export class MainController {
     constructor(
-        private startService: StartService,
+        private clientService: ClientService,
         private helper: Helper,
         ) {}
 
@@ -16,12 +16,12 @@ export class MainController {
         switch (message) {
 
             case '/start':
-                await this.startService.CommandStart(chatId, userName || 'Anonymous', userId, bot)
+                await this.clientService.CommandStart(chatId, userName || 'Anonymous', userId, bot)
                 break;
 
             case 'Зарегистрироваться':
                 if ( !userId ) return bot.sendMessage(chatId, 'С вашим аккаунтом что то не так')
-                await this.startService.Registration(userId, chatId, bot)
+                await this.clientService.Registration(userId, chatId, bot)
                 break;
 
             case 'Показать имеющиеся отключения':
@@ -36,7 +36,7 @@ export class MainController {
 
             case '/sendMessageFromAdmin':
                 const sendMessage: string = 'Бот будет перезагружен для внесения следующих изменений: теперь он может находить информацию по электричеству. Первые актуальные оповещения поступят после 2х часов ночи, по времени Грузии.';
-                await this.startService.sendMessageFromAdmin(bot, sendMessage);
+                await this.clientService.sendMessageFromAdmin(bot, sendMessage);
                 break;
 
             case 'Ссылки на сайты':
