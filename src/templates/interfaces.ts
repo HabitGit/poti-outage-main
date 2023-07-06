@@ -1,3 +1,5 @@
+import { KeyboardButton } from 'node-telegram-bot-api';
+
 export interface IGetUserPoints {
 
     chatId: number
@@ -20,4 +22,9 @@ export interface IFinishParserInfo {
     endDate: string
 
     endTime: string
+}
+
+export interface IKeyboard {
+
+    [page: string]: KeyboardButton[][]
 }

@@ -1,27 +1,28 @@
 import TelegramBot from "node-telegram-bot-api";
 import {IGetUserPoints} from "../templates/interfaces";
-import {StartService} from "../service/start.service";
 import {Helper} from "../service/helper";
 import {cacheClient} from "../db/data-source.redis";
+import { ClientService } from '../service/client.service';
+import { bot } from '../index';
 
 export class MainController {
     constructor(
-        private startService: StartService,
+        private clientService: ClientService,
         private helper: Helper,
         ) {}
 
-    async requestHandler(msg: TelegramBot.Message, bot: TelegramBot) {
+    async requestHandler(msg: TelegramBot.Message) {
         const { chatId, userName, userId, message }: IGetUserPoints = await this.helper.getUserPoints(msg);
 
         switch (message) {
 
             case '/start':
-                await this.startService.CommandStart(chatId, userName || 'Anonymous', userId, bot)
+                await this.clientService.CommandStart(chatId, userName || 'Anonymous', userId);
                 break;
 
             case 'Зарегистрироваться':
-                if ( !userId ) return bot.sendMessage(chatId, 'С вашим аккаунтом что то не так')
-                await this.startService.Registration(userId, chatId, bot)
+                if ( !userId ) return bot.sendMessage(chatId, 'С вашим аккаунтом что то не так');
+                await this.clientService.Registration(userId, chatId);
                 break;
 
             case 'Показать имеющиеся отключения':
@@ -30,13 +31,13 @@ export class MainController {
                 const result = {
                     water: cacheWater || 'Не получена информация об отключении воды.',
                     electricity: cacheElectricity || 'Не получена информация об отключении электричесва.',
-                }
+                };
                 await bot.sendMessage(chatId, result.water + '\n' + result.electricity);
                 break;
 
             case '/sendMessageFromAdmin':
                 const sendMessage: string = 'Бот будет перезагружен для внесения следующих изменений: теперь он может находить информацию по электричеству. Первые актуальные оповещения поступят после 2х часов ночи, по времени Грузии.';
-                await this.startService.sendMessageFromAdmin(bot, sendMessage);
+                await this.clientService.sendMessageFromAdmin(sendMessage);
                 break;
 
             case 'Ссылки на сайты':

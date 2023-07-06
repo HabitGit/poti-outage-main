@@ -13,4 +13,9 @@ export const AppDataSource = new DataSource({
     entities: ['src/**/*.entity.ts'],
     migrations: ['src/**/*-Migration.ts'],
     migrationsTableName: 'migrations',
-})
+});
+
+//Подключение к БД
+AppDataSource.initialize()
+  .then(() => console.log('BD has connected'))
+  .catch((error) => console.log('Error in DB: ', error))
