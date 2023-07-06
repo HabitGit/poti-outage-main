@@ -1,6 +1,5 @@
-type Buttons = {
-    [ buttonLocation: string ]: { [ buttonName: string ]: { text: string } }
-}
+import { Buttons } from '../templates/types';
+
 export const buttons: Buttons = {
     start: {
         registration: {text: 'Зарегистрироваться'},
@@ -11,6 +10,6 @@ export const buttons: Buttons = {
     },
     home: {
         checkDisabled: {text: 'Показать имеющиеся отключения'},
-        showLinks: {text: 'Ссылки на сайты'}
+        showLinks: {text: 'Ссылки на сайты'},
     }
 }
