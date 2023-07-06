@@ -1,6 +1,7 @@
 import puppeteer, {Browser, Page} from "puppeteer";
 import jsdom from "jsdom";
 import {IFinishParserInfo} from "../templates/interfaces";
+import { Helper } from '../service/helper';
 
 const LINK = process.env.ELECTRICITY_LINK;
 const POTI = 'ფოთი';
@@ -10,9 +11,11 @@ const spliterTwo = 'აღდგენის თარიღი';
 const { JSDOM } = jsdom;
 
 export class ElectricityParser {
-    constructor() {}
+    constructor(
+      private helper: Helper,
+    ) {}
 
-    async getElectricityInfo(): Promise<Array<IFinishParserInfo>> {
+    async getElectricityInfo(): Promise<string> {
         if ( !LINK ) throw new Error('Нету ссылки на сайт');
 
         // Получение страницы
@@ -66,6 +69,7 @@ export class ElectricityParser {
                 console.log(resultText)
             }
         })
-        return resultText;
+        if ( resultText.length === 0 ) return 'Инфо об отключении электричества нет.';
+        return this.helper.infoOutputRefactoring(resultText);
     }
 }
