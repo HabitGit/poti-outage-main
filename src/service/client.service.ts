@@ -1,12 +1,8 @@
 import TelegramBot from "node-telegram-bot-api";
 import {Users} from "../db/entitys/users.entity";
 import {keyboard} from "../keyboards/keyboard";
-import {Repository} from "typeorm";
-import {AppDataSource} from "../db/data-source";
 import {TemplatesText} from "../templates/templates.text";
-import { bot } from '../index';
-
-const usersRepository: Repository<Users> = AppDataSource.getRepository(Users);
+import { bot, usersRepository } from '../index';
 
 export class ClientService {
   constructor(
