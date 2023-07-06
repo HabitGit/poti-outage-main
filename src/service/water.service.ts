@@ -20,7 +20,7 @@ export class WaterService {
         const info: Array<IFinishParserInfo> = await this.waterParser.getWaterInfo()
         const infoForOutput: string = this.waterOutputInfo(info);
 
-        let cache: string | null = await cacheClient.get('waterInfo');
+        const cache: string | null = await cacheClient.get('waterInfo');
         await cacheClient.set('waterInfo', infoForOutput, {EX: 7800});
 
         if ( infoForOutput === 'Инфо об отключении воды нет.' ) return;
