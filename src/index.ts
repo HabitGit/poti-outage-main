@@ -14,9 +14,11 @@ import { ClientService } from './service/client.service';
 import { Repository } from 'typeorm';
 import { Users } from './db/entitys/users.entity';
 
+//bot init
 const TOKEN: string | undefined = process.env.TOKEN;
 if ( !TOKEN ) throw new Error('Нету токена');
 export const bot: TelegramBot = new TelegramBot(TOKEN, {polling: true});
+
 // Users repository
 export const usersRepository: Repository<Users> = AppDataSource.getRepository(Users);
 
@@ -28,10 +30,6 @@ export class Start {
     ) {}
 
     async botOn() {
-        //Подключение к БД
-        await AppDataSource.initialize()
-            .then(() => console.log('BD has connected'))
-            .catch((error) => console.log('Error in DB: ', error))
 
         // Установка комманд
         // await bot.setMyCommands(commands);

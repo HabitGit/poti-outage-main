@@ -1,9 +1,5 @@
 import {buttons as kb} from "./keyboardButtons";
-import {KeyboardButton} from "node-telegram-bot-api";
-
-interface IKeyboard {
-    [page: string]: KeyboardButton[][]
-}
+import { IKeyboard } from '../templates/interfaces';
 
 export const keyboard: IKeyboard = {
     start: [
