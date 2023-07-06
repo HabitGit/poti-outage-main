@@ -1,6 +1,7 @@
 import axios, {AxiosResponse} from "axios";
 import jsdom from "jsdom";
 import {IFinishParserInfo} from "../templates/interfaces";
+import { Helper } from '../service/helper';
 
 const LINK = process.env.WATER_LINK;
 const POTI = 'ფოთის ';
@@ -10,9 +11,11 @@ const QUERY_END = 'div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:
 const { JSDOM } = jsdom;
 
 export class WaterParser {
-    constructor() {}
+    constructor(
+      private helper: Helper,
+    ) {}
 
-    async getWaterInfo(): Promise<Array<IFinishParserInfo>> {
+    async getWaterInfo(): Promise<string> {
         if ( !LINK ) throw new Error('Нету ссылки на сайт')
 
         //Axios request
@@ -70,6 +73,11 @@ export class WaterParser {
                 console.log(resultText)
             }
         })
-        return resultText;
+        return this.waterOutputInfo(resultText);
+    }
+
+    private waterOutputInfo(info: Array<IFinishParserInfo>): string {
+        if ( info.length === 0 ) return 'Инфо об отключении воды нет.';
+        return this.helper.infoOutputRefactoring(info);
     }
 }

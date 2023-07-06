@@ -50,7 +50,7 @@ export class Start {
     }
 
     private job = new CronJob({cronTime: '0,0 */2 * * *',onTick: async () => {
-            await this.waterService.cronGetWaterInfo(bot);
+            await this.waterService.cronGetWaterInfo();
             await this.electricityService.cronGetElectricityInfo(bot);
             console.log('From CRON, check water: ', new Date())
         }, timeZone: 'Asia/Tbilisi'})
@@ -60,10 +60,10 @@ const helper = new Helper()
 const templatesText = new TemplatesText()
 const clientService = new ClientService(templatesText)
 const mainController = new MainController(clientService, helper)
-const waterParser = new WaterParser()
+const waterParser = new WaterParser(helper)
 const electricityParser = new ElectricityParser()
 const electricityService = new ElectricityService(electricityParser, helper)
-const waterService = new WaterService(waterParser, helper)
+const waterService = new WaterService(waterParser, clientService)
 const start = new Start(mainController, waterService, electricityService)
 
 start.botOn()

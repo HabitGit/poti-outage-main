@@ -4,6 +4,7 @@ import {keyboard} from "../keyboards/keyboard";
 import {Repository} from "typeorm";
 import {AppDataSource} from "../db/data-source";
 import {TemplatesText} from "../templates/templates.text";
+import { bot } from '../index';
 
 const usersRepository: Repository<Users> = AppDataSource.getRepository(Users);
 
@@ -53,4 +54,21 @@ export class ClientService {
       await bot.sendMessage(chatId.chatId, message)
     }
   }
+
+  async messageSender(message: string) {
+    const chatIds: Users[] = await usersRepository.find({
+      select: {
+        chatId: true,
+      },
+    });
+
+    for ( const chatId of chatIds ) {
+      try {
+        await bot.sendMessage(chatId.chatId, message)
+      } catch (e) {
+        console.log(e)
+      }
+    }
+  }
+
 }
