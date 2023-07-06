@@ -14,7 +14,7 @@ import {ElectricityParser} from './parsers/electricity.parser';
 
 const TOKEN: string | undefined = process.env.TOKEN;
 if ( !TOKEN ) throw new Error('Нету токена');
-const bot: TelegramBot = new TelegramBot(TOKEN, {polling: true});
+export const bot: TelegramBot = new TelegramBot(TOKEN, {polling: true});
 
 export class Start {
     constructor(
