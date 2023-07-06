@@ -73,11 +73,7 @@ export class WaterParser {
                 console.log(resultText)
             }
         })
-        return this.waterOutputInfo(resultText);
-    }
-
-    private waterOutputInfo(info: Array<IFinishParserInfo>): string {
-        if ( info.length === 0 ) return 'Инфо об отключении воды нет.';
-        return this.helper.infoOutputRefactoring(info);
+        if ( resultText.length === 0 ) return 'Инфо об отключении воды нет.';
+        return this.helper.infoOutputRefactoring(resultText);
     }
 }

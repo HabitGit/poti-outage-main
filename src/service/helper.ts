@@ -5,8 +5,15 @@ export class Helper {
     infoOutputRefactoring(infoArray: Array<IFinishParserInfo>): string {
         let result: string = '';
         infoArray.forEach(item => {
-            const link: string = item.name === 'воды' ? 'http://water.gov.ge/page/full/107/' : 'https://my.energo-pro.ge/ow/#/disconns';
-            result += `Найдены следующие отключения ${item.name}: \n    с ${item.startDate} - ${item.startTime} \n   по ${item.endDate} - ${item.endTime}\nПодробнее по ссылке:\n${link}\n`
+            const link: string = item.name === 'воды'
+              ? 'http://water.gov.ge/page/full/107/'
+              : 'https://my.energo-pro.ge/ow/#/disconns';
+
+            result += `Найдены следующие отключения ${item.name}: 
+                      с ${item.startDate} - ${item.startTime} 
+                   по ${item.endDate} - ${item.endTime}
+                   Подробнее по ссылке:
+                   ${link}\n`
         });
         return result;
     }
