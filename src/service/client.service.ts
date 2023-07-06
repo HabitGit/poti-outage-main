@@ -9,27 +9,29 @@ export class ClientService {
     private templatesText: TemplatesText,
   ) {}
 
-  async CommandStart(chatId: number, userName: string, userId: number | undefined, bot: TelegramBot): Promise<TelegramBot.Message | undefined> {
+  async CommandStart(chatId: number, userName: string, userId: number | undefined): Promise<TelegramBot.Message> {
     const isUser: Users | null = await usersRepository.findOne({where: {userId}})
-    if ( isUser ) return bot.sendMessage(chatId, this.templatesText.welcomeBackMessage(userName || 'Anonymous'), {
+    const message = this.templatesText.welcomeBackMessage(userName || 'Anonymous')
+    if ( isUser ) return bot.sendMessage(chatId, message, {
       reply_markup: {
         keyboard: keyboard.home,
         resize_keyboard: true,
       }
-    })
-    return bot.sendMessage(chatId, this.templatesText.welcomeMessage(userName || 'Anonymous'), {
+    });
+
+    return bot.sendMessage(chatId, message, {
       reply_markup: {
         keyboard: keyboard.start,
         resize_keyboard: true,
       },
-    })
-  }
+    });
+  };
 
-  async Registration(userId: number, chatId: number, bot: TelegramBot) {
+  async Registration(userId: number, chatId: number, bot: TelegramBot): Promise<TelegramBot.Message> {
     const isUser: Users | null = await usersRepository.findOne({
       where: { userId: userId }
     });
-    if ( isUser ) return bot.sendMessage(chatId, 'Вы уже зарегистрированы')
+    if ( isUser ) return bot.sendMessage(chatId, 'Вы уже зарегистрированы');
     await usersRepository.save({
       userId: userId,
       chatId: chatId,
@@ -40,15 +42,11 @@ export class ClientService {
         resize_keyboard: true,
       }
     })
-  }
+  };
 
-  async sendMessageFromAdmin(bot: TelegramBot, message: string) {
-    const userIds: Users[] = await usersRepository.find({
-      select: { chatId: true },
-    });
-    for ( const chatId of userIds ) {
-      await bot.sendMessage(chatId.chatId, message)
-    }
+  async sendMessageFromAdmin(message: string) {
+    //Должна быть логика проверки на админа
+    await this.messageSender(message);
   }
 
   async messageSender(message: string) {
@@ -57,7 +55,6 @@ export class ClientService {
         chatId: true,
       },
     });
-
     for ( const chatId of chatIds ) {
       try {
         await bot.sendMessage(chatId.chatId, message)
@@ -66,5 +63,4 @@ export class ClientService {
       }
     }
   }
-
 }

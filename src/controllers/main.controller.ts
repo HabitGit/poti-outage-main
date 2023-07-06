@@ -16,7 +16,7 @@ export class MainController {
         switch (message) {
 
             case '/start':
-                await this.clientService.CommandStart(chatId, userName || 'Anonymous', userId, bot)
+                await this.clientService.CommandStart(chatId, userName || 'Anonymous', userId)
                 break;
 
             case 'Зарегистрироваться':
@@ -36,7 +36,7 @@ export class MainController {
 
             case '/sendMessageFromAdmin':
                 const sendMessage: string = 'Бот будет перезагружен для внесения следующих изменений: теперь он может находить информацию по электричеству. Первые актуальные оповещения поступят после 2х часов ночи, по времени Грузии.';
-                await this.clientService.sendMessageFromAdmin(bot, sendMessage);
+                await this.clientService.sendMessageFromAdmin(sendMessage);
                 break;
 
             case 'Ссылки на сайты':
