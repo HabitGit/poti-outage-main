@@ -1,7 +1,7 @@
 import TelegramBot from "node-telegram-bot-api";
-import {Users} from "../db/entitys/users.entity";
-import {keyboard} from "../keyboards/keyboard";
-import {TemplatesText} from "../templates/templates.text";
+import { Users } from "../db/entitys/users.entity";
+import { keyboard } from "../keyboards/keyboard";
+import { TemplatesText } from "../templates/templates.text";
 import { bot, usersRepository } from '../index';
 
 export class ClientService {
@@ -10,18 +10,14 @@ export class ClientService {
   ) {}
 
   async CommandStart(chatId: number, userName: string, userId: number | undefined): Promise<TelegramBot.Message> {
-    const isUser: Users | null = await usersRepository.findOne({where: {userId}})
-    const message = this.templatesText.welcomeBackMessage(userName || 'Anonymous')
-    if ( isUser ) return bot.sendMessage(chatId, message, {
-      reply_markup: {
-        keyboard: keyboard.home,
-        resize_keyboard: true,
-      }
-    });
+    const isUser: Users | null = await usersRepository.findOne({where: {userId}});
+    const message = isUser
+      ? this.templatesText.welcomeBackMessage(userName)
+      : this.templatesText.welcomeMessage(userName)
 
     return bot.sendMessage(chatId, message, {
       reply_markup: {
-        keyboard: keyboard.start,
+        keyboard: isUser ? keyboard.home : keyboard.start,
         resize_keyboard: true,
       },
     });
