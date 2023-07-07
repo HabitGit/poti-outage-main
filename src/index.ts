@@ -60,14 +60,14 @@ export class Start {
         }, timeZone: 'Asia/Tbilisi'})
 }
 
-const helper = new Helper()
-const templatesText = new TemplatesText()
-const clientService = new ClientService(templatesText)
-const mainController = new MainController(clientService, helper)
-const waterParser = new WaterParser(helper)
-const electricityParser = new ElectricityParser(helper)
-const electricityService = new ElectricityService(electricityParser, clientService)
-const waterService = new WaterService(waterParser, clientService)
-const start = new Start(mainController, waterService, electricityService)
+const helper = new Helper();
+const templatesText = new TemplatesText();
+const clientService = new ClientService(templatesText);
+const mainController = new MainController(clientService, helper);
+const waterParser = new WaterParser(helper);
+const electricityParser = new ElectricityParser(helper);
+const electricityService = new ElectricityService(electricityParser, clientService);
+const waterService = new WaterService(waterParser, clientService);
+const start = new Start(mainController, waterService, electricityService);
 
 start.botOn()
