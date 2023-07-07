@@ -37,15 +37,15 @@ export class Start {
         //Запрос на информацию об отключениях
         this.job.start();
 
-        bot.onText(/\/getElectricityInfo/, async msg => {
-            const info = await this.electricityService.cronGetElectricityInfo();
-            console.log(info);
-        })
-
-        bot.onText(/\/getWaterInfo/, async msg => {
-            const info = await this.waterService.cronGetWaterInfo();
-            console.log(info);
-        })
+        // bot.onText(/\/getElectricityInfo/, async () => {
+        //     const info = await this.electricityService.cronGetElectricityInfo();
+        //     console.log(info);
+        // })
+        //
+        // bot.onText(/\/getWaterInfo/, async () => {
+        //     const info = await this.waterService.cronGetWaterInfo();
+        //     console.log(info);
+        // })
 
         //Обработка запросов
         bot.on('message', async msg => {
@@ -60,14 +60,14 @@ export class Start {
         }, timeZone: 'Asia/Tbilisi'})
 }
 
-const helper = new Helper()
-const templatesText = new TemplatesText()
-const clientService = new ClientService(templatesText)
-const mainController = new MainController(clientService, helper)
-const waterParser = new WaterParser(helper)
-const electricityParser = new ElectricityParser(helper)
-const electricityService = new ElectricityService(electricityParser, clientService)
-const waterService = new WaterService(waterParser, clientService)
-const start = new Start(mainController, waterService, electricityService)
+const helper = new Helper();
+const templatesText = new TemplatesText();
+const clientService = new ClientService(templatesText);
+const mainController = new MainController(clientService, helper);
+const waterParser = new WaterParser(helper);
+const electricityParser = new ElectricityParser(helper);
+const electricityService = new ElectricityService(electricityParser, clientService);
+const waterService = new WaterService(waterParser, clientService);
+const start = new Start(mainController, waterService, electricityService);
 
 start.botOn()
