@@ -1,10 +1,12 @@
 import 'dotenv/config';
-import {WaterParser} from './water.parser';
+import {WaterParser} from '../parsers/water.parser';
+import { Helper } from '../service/helper';
 
 describe('Water parser tests', () => {
 
     it('Test to resolve parser', async () => {
-        const waterParser = new WaterParser();
+        const helper = new Helper()
+        const waterParser = new WaterParser(helper);
         await expect(waterParser.getWaterInfo()).resolves.toBeDefined();
     })
 })
