@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import {IFinishParserInfo} from '../templates/interfaces';
 import TelegramBot from 'node-telegram-bot-api';
-import {Helper} from './helper';
+import {Helper} from '../service/helper';
 
 
 describe('Testing helper', () => {
@@ -71,9 +71,25 @@ describe('Testing helper', () => {
         const result1 = helper.infoOutputRefactoring(mockInfoArray1);
         const result2 = helper.infoOutputRefactoring(mockInfoArray2);
         const result3 = helper.infoOutputRefactoring(mockInfoArray3);
-        expect(result1).toBe(`Найдены следующие отключения воды: \n    с 123 - 123 \n   по 123 - 123\nПодробнее по ссылке:\nhttp://water.gov.ge/page/full/107/\n`);
-        expect(result2).toBe(`Найдены следующие отключения электричества: \n    с 123 - 123 \n   по 123 - 123\nПодробнее по ссылке:\nhttps://my.energo-pro.ge/ow/#/disconns\n`);
-        expect(result3).toBe(`Найдены следующие отключения электричества: \n    с 123 - 123 \n   по 123 - 123\nПодробнее по ссылке:\nhttps://my.energo-pro.ge/ow/#/disconns\nНайдены следующие отключения воды: \n    с 123 - 123 \n   по 123 - 123\nПодробнее по ссылке:\nhttp://water.gov.ge/page/full/107/\n`);
+        expect(result1).toBe(`Найдены следующие отключения воды: 
+                      с 123 - 123 
+                   по 123 - 123
+                   Подробнее по ссылке:
+                   ${process.env.WATER_LINK}\n`);
+        expect(result2).toBe(`Найдены следующие отключения электричества: 
+                      с 123 - 123 
+                   по 123 - 123
+                   Подробнее по ссылке:
+                   ${process.env.ELECTRICITY_LINK}\n`);
+        expect(result3).toBe(`Найдены следующие отключения электричества: 
+                      с 123 - 123 
+                   по 123 - 123
+                   Подробнее по ссылке:
+                   ${process.env.ELECTRICITY_LINK}\nНайдены следующие отключения воды: 
+                      с 123 - 123 
+                   по 123 - 123
+                   Подробнее по ссылке:
+                   ${process.env.WATER_LINK}\n`);
     });
 
     it('Test get users points', async () => {
