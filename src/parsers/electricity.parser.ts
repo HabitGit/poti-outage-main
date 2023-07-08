@@ -1,6 +1,6 @@
 import puppeteer, {Browser, Page} from "puppeteer";
 import jsdom from "jsdom";
-import {IFinishParserInfo} from "../templates/interfaces";
+import { IFinishParserInfo } from '../templates/interfaces';
 import { Helper } from '../service/helper';
 
 const LINK = process.env.ELECTRICITY_LINK;
@@ -50,7 +50,7 @@ export class ElectricityParser {
         })
 
         // get text
-        let resultText: Array<IFinishParserInfo> = []
+        let resultText: Array<IFinishParserInfo> = [];
         infoInMyCountry.forEach(item => {
             if ( item != null ) {
                 const itemText: string | null = item.textContent;
@@ -60,17 +60,35 @@ export class ElectricityParser {
                     .split(spliterTwo)
                     .join('')
                     .split(' ')
+
+                const startDateSplit: Array<string> = resultTextStageOne[3].split('-');
+                const startTimeSplit: Array<string> = resultTextStageOne[6].split(':');
+                const endDateSplit: Array<string> = resultTextStageOne[11].split('-');
+                const endTimeSplit: Array<string> = resultTextStageOne[14].split(':');
+
+                const startDate: Date = new Date(
+                  +startDateSplit[0],
+                  +startDateSplit[1] - 1,
+                  +startDateSplit[2],
+                  +startTimeSplit[0],
+                  +startTimeSplit[1],
+                );
+                const endDate: Date = new Date(
+                  +endDateSplit[0],
+                  +endDateSplit[1] - 1,
+                  +endDateSplit[2],
+                  +endTimeSplit[0],
+                  +endTimeSplit[1],
+                );
+
                 resultText.push({
-                    name: 'электричества',
-                    startDate: resultTextStageOne[3],
-                    startTime: resultTextStageOne[6],
-                    endDate: resultTextStageOne[11],
-                    endTime: resultTextStageOne[14],
+                    startDate: startDate,
+                    endDate: endDate,
                 });
-                console.log(resultText)
             }
         })
         if ( resultText.length === 0 ) return 'Инфо об отключении электричества нет.';
-        return this.helper.infoOutputRefactoring(resultText);
+        console.log('[+]FINALLY RESULT ABOUT ELECTRICITY: ', resultText);
+        return this.helper.infoOutputRefactoring('электричества', resultText);
     }
 }

@@ -1,6 +1,6 @@
 import axios, {AxiosResponse} from "axios";
 import jsdom from "jsdom";
-import {IFinishParserInfo} from "../templates/interfaces";
+import { IFinishParserInfo } from '../templates/interfaces';
 import { Helper } from '../service/helper';
 
 const LINK = process.env.WATER_LINK;
@@ -61,19 +61,46 @@ export class WaterParser {
                 if( startQueryText === null ) throw new Error('Нету текста у селектора начала')
                 const endQueryText: string | null = endQuery.textContent
                 if ( endQueryText === null ) throw new Error('Нету текста у селектора окончания')
+
                 const start: string = startQueryText.split(': ')[1]
                 const end: string = endQueryText.split(': ')[1]
+
+                const startDateSplit: Array<string> = start
+                  .split(' ')
+                [0].split('/');
+                const startTimeSplit: Array<string> = start
+                  .split(' ')
+                [1].split(':');
+                const endDateSplit: Array<string> = end
+                  .split(' ')
+                [0].split('/');
+                const endTimeSplit: Array<string> = end
+                  .split(' ')
+                [1].split(':');
+
+                const startDate: Date = new Date(
+                  +startDateSplit[2],
+                  +startDateSplit[1] - 1,
+                  +startDateSplit[0],
+                  +startTimeSplit[0],
+                  +startTimeSplit[1],
+                );
+                const endDate: Date = new Date(
+                  +endDateSplit[2],
+                  +endDateSplit[1] - 1,
+                  +endDateSplit[0],
+                  +endTimeSplit[0],
+                  +endTimeSplit[1],
+                );
+
                 resultText.push({
-                    name: 'воды',
-                    startDate: start.split(' ')[0],
-                    startTime: start.split(' ')[1],
-                    endDate: end.split(' ')[0],
-                    endTime: end.split(' ')[1],
+                    startDate: startDate,
+                    endDate: endDate,
                 });
                 console.log(resultText)
             }
         })
         if ( resultText.length === 0 ) return 'Инфо об отключении воды нет.';
-        return this.helper.infoOutputRefactoring(resultText);
+        return this.helper.infoOutputRefactoring('воды', resultText);
     }
 }
