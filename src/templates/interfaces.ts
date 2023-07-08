@@ -13,15 +13,9 @@ export interface IGetUserPoints {
 
 export interface IFinishParserInfo {
 
-    name: string
+    startDate: Date
 
-    startDate: string
-
-    startTime: string
-
-    endDate: string
-
-    endTime: string
+    endDate: Date
 }
 
 export interface IKeyboard {
