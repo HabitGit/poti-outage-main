@@ -50,7 +50,13 @@ export class Start {
         //Обработка запросов
         bot.on('message', async msg => {
             await this.mainController.requestHandler(msg);
-        })
+        });
+
+        const regFromAdmin= new RegExp(`/adm${process.env.ADMIN_PASSWORD}(.+)`);
+      bot.onText(regFromAdmin, async (msg, source) => {
+        if (source === null) return;
+        await this.mainController.toAdmin(source[1]);
+      })
     }
 
     private job = new CronJob({cronTime: '0,0 */2 * * *',onTick: async () => {

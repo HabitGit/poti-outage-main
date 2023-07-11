@@ -45,5 +45,9 @@ export class MainController {
                 await bot.sendMessage(chatId, linksMessage);
                 break;
         }
+    };
+
+    async toAdmin(message: string) {
+        await this.clientService.messageSender(message);
     }
 }
