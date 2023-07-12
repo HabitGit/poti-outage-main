@@ -10,14 +10,19 @@ export class WaterService {
   }
 
   async cronGetWaterInfo() {
-    const info: string = await this.waterParser.getWaterInfo();
+    const info: {endDate: Date | null, message: string} = await this.waterParser.getWaterInfo();
+    if (info.endDate === null) return;
 
-    const cache: string | null = await cacheClient.get('waterInfo');
-    await cacheClient.set('waterInfo', info, { EX: 7800 });
+    const nowDateTimestamp: number = Date.now();
+    const endDateTimestamp: number = info.endDate.getTime();
+    const timeToKeyLife: number = (endDateTimestamp - nowDateTimestamp) / 1000;
+    const key: string = `waterInfo${endDateTimestamp}`;
 
-    if (info === 'Инфо об отключении воды нет.') return;
-    if (info !== cache) {
-      await this.clientService.messageSender(info);
+    const cache: string | null = await cacheClient.get(key);
+    await cacheClient.set(key, info.message, { EX: timeToKeyLife });
+
+    if (info.message !== cache) {
+      await this.clientService.messageSender(info.message);
       return;
     }
   }

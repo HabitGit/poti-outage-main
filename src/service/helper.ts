@@ -3,7 +3,7 @@ import TelegramBot from 'node-telegram-bot-api';
 import { IFinishParserInfo, IGetUserPoints } from '../templates/interfaces';
 
 export class Helper {
-  infoOutputRefactoring(typeOfPublicService: string, infoArray: Array<IFinishParserInfo>): string {
+  infoOutputRefactoring(typeOfPublicService: string, infoArray: Array<IFinishParserInfo>): {endDate: Date, message: string} {
     let startDate: Date = infoArray[0].startDate;
     let endDate: Date = infoArray[0].endDate;
     infoArray.forEach(date => {
@@ -13,7 +13,8 @@ export class Helper {
     const link: string | undefined = typeOfPublicService === 'воды'
       ? process.env.WATER_LINK
       : process.env.ELECTRICITY_LINK;
-    return `Найдены отключения ${typeOfPublicService} в период:\nс ${startDate.toLocaleString('ru-RU')} по ${endDate.toLocaleString('ru-RU')}.\nУзнать точное время про вашу улицу можно на сайте: ${link}`;
+    const message: string = `Найдены отключения ${typeOfPublicService} в период:\nс ${startDate.toLocaleString('ru-RU')} по ${endDate.toLocaleString('ru-RU')}.\nУзнать точное время про вашу улицу можно на сайте: ${link}\n`;
+    return {endDate: endDate, message: message};
   }
 
   async getUserPoints(msg: TelegramBot.Message): Promise<IGetUserPoints> {

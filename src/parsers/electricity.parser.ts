@@ -16,7 +16,7 @@ export class ElectricityParser {
   ) {
   }
 
-  async getElectricityInfo(): Promise<string> {
+  async getElectricityInfo(): Promise<{endDate: Date | null, message: string}> {
     if (!LINK) throw new Error('Нету ссылки на сайт');
     let data: string = '';
 
@@ -93,7 +93,7 @@ export class ElectricityParser {
         });
       }
     });
-    if (resultText.length === 0) return 'Инфо об отключении электричества нет.';
+    if (resultText.length === 0) return {endDate: null, message: 'Инфо об отключении электричества нет.'};
     console.log('[+]FINALLY RESULT ABOUT ELECTRICITY: ', resultText);
     return this.helper.infoOutputRefactoring('электричества', resultText);
   }

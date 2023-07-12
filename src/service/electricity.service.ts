@@ -10,14 +10,19 @@ export class ElectricityService {
   }
 
   async cronGetElectricityInfo() {
-    const info: string = await this.electricityParser.getElectricityInfo();
+    const info: {endDate: Date | null, message: string} = await this.electricityParser.getElectricityInfo();
+    if (info.endDate === null) return;
 
-    let cache: string | null = await cacheClient.get('electricityInfo');
-    await cacheClient.set('electricityInfo', info, { EX: 7800 });
+    const nowDateTimestamp: number = Date.now();
+    const endDateTimestamp: number = info.endDate.getTime();
+    const timeToKeyLife: number = Math.round((endDateTimestamp - nowDateTimestamp) / 1000);
+    const key: string = `electricityInfo${endDateTimestamp}`;
 
-    if (info === 'Инфо об отключении электричества нет.') return;
-    if (info !== cache) {
-      await this.clientService.messageSender(info);
+    let cache: string | null = await cacheClient.get(key);
+    await cacheClient.set(key, info.message, { EX: timeToKeyLife });
+
+    if (info.message !== cache) {
+      await this.clientService.messageSender(info.message);
       return;
     }
   }
