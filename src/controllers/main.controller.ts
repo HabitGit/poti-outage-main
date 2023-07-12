@@ -54,6 +54,7 @@ export class MainController {
 
       case 'Включить рассылку':
         await this.clientService.mailingOn(userId, chatId);
+        break;
     }
   };
 
