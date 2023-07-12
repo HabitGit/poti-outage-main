@@ -12,7 +12,7 @@ services:
       - redis
       - postgres
     volumes:
-      - ./:/app
+      - ./src:/app/src
       - /app/node_modules
 
   redis:

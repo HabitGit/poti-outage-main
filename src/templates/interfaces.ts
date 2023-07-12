@@ -19,6 +19,9 @@ export interface IFinishParserInfo {
 }
 
 export interface IKeyboard {
+  start: KeyboardButton[][];
 
-  [page: string]: KeyboardButton[][];
+  homeMailingEnable: KeyboardButton[][];
+
+  homeMailingDisable: KeyboardButton[][];
 }

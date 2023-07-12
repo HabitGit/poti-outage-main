@@ -20,6 +20,29 @@ export class UsersRepository extends Repository<Users> {
   async getMailingChatIds(): Promise<Users[]> {
     return this.find({
       select: { chatId: true },
+      where: { mailing: true },
+    });
+  }
+
+  async mailingOff(userId: number): Promise<Users> {
+    const user: Users | null = await this.findOne({
+      where: { userId: userId },
+    });
+
+    return this.save({
+      ...user,
+      mailing: false,
+    });
+  }
+
+  async mailingOn(userId: number): Promise<Users> {
+    const user: Users | null = await this.findOne({
+      where: { userId: userId },
+    });
+
+    return this.save({
+      ...user,
+      mailing: true,
     });
   }
 }

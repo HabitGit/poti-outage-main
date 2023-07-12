@@ -47,6 +47,7 @@ describe('Users repository testing', () => {
       id: expect.any(Number),
       userId: 1,
       chatId: 1,
+      mailing: true,
     });
   });
 
@@ -57,6 +58,7 @@ describe('Users repository testing', () => {
       id: expect.any(Number),
       userId: 1,
       chatId: 1,
+      mailing: true,
     });
   });
 

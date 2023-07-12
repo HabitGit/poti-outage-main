@@ -6,8 +6,14 @@ export const keyboard: IKeyboard = {
     [kb.start.registration],
     [kb.common.back],
   ],
-  home: [
+  homeMailingEnable: [
     [kb.home.checkDisabled],
     [kb.home.showLinks],
+    [kb.home.mailingDisable],
+  ],
+  homeMailingDisable: [
+    [kb.home.checkDisabled],
+    [kb.home.showLinks],
+    [kb.home.mailingEnable],
   ],
 };

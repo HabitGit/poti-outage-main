@@ -11,5 +11,7 @@ export const buttons: Buttons = {
   home: {
     checkDisabled: { text: 'Показать имеющиеся отключения' },
     showLinks: { text: 'Ссылки на сайты' },
+    mailingDisable: { text: 'Отключить рассылку' },
+    mailingEnable: { text: 'Включить рассылку' },
   },
 };

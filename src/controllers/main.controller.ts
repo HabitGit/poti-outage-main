@@ -15,16 +15,15 @@ export class MainController {
 
   async requestHandler(msg: TelegramBot.Message) {
     const { chatId, userName, userId, message }: IGetUserPoints = await this.helper.getUserPoints(msg);
+    if (!userId) return bot.sendMessage(chatId, 'С вашим аккаунтом что то не так');
 
     switch (message) {
 
       case '/start':
-        if (!userId) return bot.sendMessage(chatId, 'С вашим аккаунтом что то не так');
         await this.clientService.CommandStart(chatId, userName || 'Anonymous', userId);
         break;
 
       case 'Зарегистрироваться':
-        if (!userId) return bot.sendMessage(chatId, 'С вашим аккаунтом что то не так');
         const userData: CreateUserDto = { userId: userId, chatId: chatId };
         await this.clientService.Registration(userData);
         break;
@@ -48,6 +47,13 @@ export class MainController {
         const linksMessage: string = 'Отключения водоснабжения🚰:\nhttp://water.gov.ge/page/full/107/\nОтключения электричества⚡️:\nhttps://my.energo-pro.ge/ow/#/disconns\nОтключения газа⛽️:\nhttps://mygas.ge/araf/outage';
         await bot.sendMessage(chatId, linksMessage);
         break;
+
+      case 'Отключить рассылку':
+        await this.clientService.mailingOff(userId, chatId);
+        break;
+
+      case 'Включить рассылку':
+        await this.clientService.mailingOn(userId, chatId);
     }
   };
 
