@@ -11,16 +11,12 @@ import {TemplatesText} from './templates/templates.text';
 import {WaterParser} from './parsers/water.parser';
 import {ElectricityParser} from './parsers/electricity.parser';
 import { ClientService } from './service/client.service';
-import { Repository } from 'typeorm';
-import { Users } from './db/entitys/users.entity';
+import { UsersRepository } from './db/repository/users.repository';
 
 //bot init
 const TOKEN: string | undefined = process.env.TOKEN;
 if ( !TOKEN ) throw new Error('Нету токена');
 export const bot: TelegramBot = new TelegramBot(TOKEN, {polling: true});
-
-// Users repository
-export const usersRepository: Repository<Users> = AppDataSource.getRepository(Users);
 
 export class Start {
     constructor(
@@ -68,7 +64,8 @@ export class Start {
 
 const helper = new Helper();
 const templatesText = new TemplatesText();
-const clientService = new ClientService(templatesText);
+const usersRepository = new UsersRepository(AppDataSource);
+const clientService = new ClientService(templatesText, usersRepository);
 const mainController = new MainController(clientService, helper);
 const waterParser = new WaterParser(helper);
 const electricityParser = new ElectricityParser(helper);

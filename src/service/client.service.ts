@@ -2,15 +2,18 @@ import TelegramBot from "node-telegram-bot-api";
 import { Users } from "../db/entitys/users.entity";
 import { keyboard } from "../keyboards/keyboard";
 import { TemplatesText } from "../templates/templates.text";
-import { bot, usersRepository } from '../index';
+import { bot } from '../index';
+import { CreateUserDto } from '../templates/create-user.dto';
+import { UsersRepository } from '../db/repository/users.repository';
 
 export class ClientService {
   constructor(
     private templatesText: TemplatesText,
+    private usersRepository: UsersRepository,
   ) {}
 
-  async CommandStart(chatId: number, userName: string, userId: number | undefined): Promise<TelegramBot.Message> {
-    const isUser: Users | null = await usersRepository.findOne({where: {userId}});
+  async CommandStart(chatId: number, userName: string, userId: number): Promise<TelegramBot.Message> {
+    const isUser: Users | null = await this.usersRepository.getUserById(userId);
     const message = isUser
       ? this.templatesText.welcomeBackMessage(userName)
       : this.templatesText.welcomeMessage(userName)
@@ -23,16 +26,19 @@ export class ClientService {
     });
   };
 
-  async Registration(userId: number, chatId: number): Promise<TelegramBot.Message> {
-    const isUser: Users | null = await usersRepository.findOne({
-      where: { userId: userId }
-    });
-    if ( isUser ) return bot.sendMessage(chatId, 'Вы уже зарегистрированы');
-    await usersRepository.save({
-      userId: userId,
-      chatId: chatId,
-    })
-    return bot.sendMessage(chatId, 'Регистрация прошла успешно', {
+  async Registration(userData: CreateUserDto): Promise<TelegramBot.Message> {
+    const isUser: Users | null = await this.usersRepository.getUserById(
+      userData.userId,
+      );
+
+    if ( isUser ) return bot.sendMessage(
+      userData.chatId,
+      'Вы уже зарегистрированы'
+    );
+
+    await this.usersRepository.createUser(userData);
+
+    return bot.sendMessage(userData.chatId, 'Регистрация прошла успешно', {
       reply_markup: {
         keyboard: keyboard.home,
         resize_keyboard: true,
@@ -46,11 +52,7 @@ export class ClientService {
   }
 
   async messageSender(message: string) {
-    const chatIds: Users[] = await usersRepository.find({
-      select: {
-        chatId: true,
-      },
-    });
+    const chatIds: Users[] = await this.usersRepository.getAllChatIds();
     for ( const chatId of chatIds ) {
       try {
         await bot.sendMessage(chatId.chatId, message)

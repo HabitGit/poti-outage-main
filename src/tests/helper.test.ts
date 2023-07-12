@@ -7,42 +7,19 @@ import {Helper} from '../service/helper';
 describe('Testing helper', () => {
     let mockInfoArray1: IFinishParserInfo[];
     let mockInfoArray2: IFinishParserInfo[];
-    let mockInfoArray3: IFinishParserInfo[];
     let mockMsg: TelegramBot.Message;
 
     beforeAll(() => {
         mockInfoArray1 = [
             {
-                name: 'воды',
-                startDate: '123',
-                startTime: '123',
-                endDate: '123',
-                endTime: '123',
+                startDate: new Date(),
+                endDate: new Date(),
             }
         ];
         mockInfoArray2 = [
             {
-                name: 'электричества',
-                startDate: '123',
-                startTime: '123',
-                endDate: '123',
-                endTime: '123',
-            }
-        ];
-        mockInfoArray3 = [
-            {
-                name: 'электричества',
-                startDate: '123',
-                startTime: '123',
-                endDate: '123',
-                endTime: '123',
-            },
-            {
-                name: 'воды',
-                startDate: '123',
-                startTime: '123',
-                endDate: '123',
-                endTime: '123',
+                startDate: new Date(),
+                endDate: new Date(),
             }
         ];
         mockMsg = {
@@ -68,9 +45,8 @@ describe('Testing helper', () => {
 
     it('Test info output refactoring', () => {
         const helper = new Helper();
-        const result1 = helper.infoOutputRefactoring(mockInfoArray1);
-        const result2 = helper.infoOutputRefactoring(mockInfoArray2);
-        const result3 = helper.infoOutputRefactoring(mockInfoArray3);
+        const result1 = helper.infoOutputRefactoring('воды', mockInfoArray1);
+        const result2 = helper.infoOutputRefactoring('электричества', mockInfoArray2);
         expect(result1).toBe(`Найдены следующие отключения воды: 
                       с 123 - 123 
                    по 123 - 123
@@ -81,15 +57,6 @@ describe('Testing helper', () => {
                    по 123 - 123
                    Подробнее по ссылке:
                    ${process.env.ELECTRICITY_LINK}\n`);
-        expect(result3).toBe(`Найдены следующие отключения электричества: 
-                      с 123 - 123 
-                   по 123 - 123
-                   Подробнее по ссылке:
-                   ${process.env.ELECTRICITY_LINK}\nНайдены следующие отключения воды: 
-                      с 123 - 123 
-                   по 123 - 123
-                   Подробнее по ссылке:
-                   ${process.env.WATER_LINK}\n`);
     });
 
     it('Test get users points', async () => {

@@ -4,6 +4,7 @@ import {Helper} from "../service/helper";
 import {cacheClient} from "../db/data-source.redis";
 import { ClientService } from '../service/client.service';
 import { bot } from '../index';
+import { CreateUserDto } from '../templates/create-user.dto';
 
 export class MainController {
     constructor(
@@ -17,12 +18,14 @@ export class MainController {
         switch (message) {
 
             case '/start':
+                if ( !userId ) return bot.sendMessage(chatId, 'С вашим аккаунтом что то не так');
                 await this.clientService.CommandStart(chatId, userName || 'Anonymous', userId);
                 break;
 
             case 'Зарегистрироваться':
                 if ( !userId ) return bot.sendMessage(chatId, 'С вашим аккаунтом что то не так');
-                await this.clientService.Registration(userId, chatId);
+                const userData: CreateUserDto = { userId: userId, chatId: chatId };
+                await this.clientService.Registration(userData);
                 break;
 
             case 'Показать имеющиеся отключения':
