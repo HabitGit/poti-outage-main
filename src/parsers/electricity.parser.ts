@@ -16,20 +16,25 @@ export class ElectricityParser {
     ) {}
 
     async getElectricityInfo(): Promise<string> {
-        if ( !LINK ) throw new Error('Нету ссылки на сайт');
+        if (!LINK) throw new Error('Нету ссылки на сайт');
+        let data: string = '';
 
-        // Получение страницы
-        const browser: Browser = await puppeteer.launch({
-            headless: 'new',
-            args: [
-                '--disable-setuid-sandbox',
-                '--no-sandbox',
-            ]
-        });
-        const page: Page = await browser.newPage();
-        await page.goto(LINK);
-        const data: string = await page.content();
-        await browser.close();
+        try {
+            // Получение страницы
+            const browser: Browser = await puppeteer.launch({
+                headless: 'new',
+                args: [
+                    '--disable-setuid-sandbox',
+                    '--no-sandbox',
+                ]
+            });
+            const page: Page = await browser.newPage();
+            await page.goto(LINK);
+            data = await page.content();
+            await browser.close();
+        } catch (e) {
+            console.log(e);
+        }
 
         //get HTML dom
         const dom = new JSDOM(data);
