@@ -1,4 +1,4 @@
-import 'dotenv/config'
+import 'dotenv/config';
 import { DataSource } from 'typeorm';
 import { DataSourceConfigTest } from '../../database.config';
 import { UsersRepository } from '../db/repository/users.repository';
@@ -15,7 +15,7 @@ describe('Users repository testing', () => {
       ...DataSourceConfigTest,
     });
 
-    await AppDataSource.initialize()
+    await AppDataSource.initialize();
     usersRepository = new UsersRepository(AppDataSource);
 
     fakeUser = {
@@ -26,7 +26,7 @@ describe('Users repository testing', () => {
     fakeUser2 = {
       userId: 2,
       chatId: 2,
-    }
+    };
 
     //Удаление из бд
     const users: Users[] = await usersRepository.find({
@@ -57,7 +57,7 @@ describe('Users repository testing', () => {
       id: expect.any(Number),
       userId: 1,
       chatId: 1,
-    })
+    });
   });
 
   it('To create 2 same user(Bad request)', async () => {
@@ -74,5 +74,5 @@ describe('Users repository testing', () => {
     await usersRepository.createUser(fakeUser2);
     const isUsersAfter = await usersRepository.getMailingChatIds();
     expect(isUsersAfter.length).toBe(2);
-  })
-})
+  });
+});

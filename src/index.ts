@@ -1,65 +1,68 @@
 import 'dotenv/config';
-import {MainController} from "./controllers/main.controller";
-import TelegramBot from "node-telegram-bot-api";
-import {AppDataSource} from "./db/data-source";
-import {commands} from "./commands/commands";
-import {CronJob} from "cron";
-import {WaterService} from "./service/water.service";
-import {ElectricityService} from "./service/electricity.service";
-import {Helper} from './service/helper';
-import {TemplatesText} from './templates/templates.text';
-import {WaterParser} from './parsers/water.parser';
-import {ElectricityParser} from './parsers/electricity.parser';
+import { MainController } from './controllers/main.controller';
+import TelegramBot from 'node-telegram-bot-api';
+import { AppDataSource } from './db/data-source';
+import { commands } from './commands/commands';
+import { CronJob } from 'cron';
+import { WaterService } from './service/water.service';
+import { ElectricityService } from './service/electricity.service';
+import { Helper } from './service/helper';
+import { TemplatesText } from './templates/templates.text';
+import { WaterParser } from './parsers/water.parser';
+import { ElectricityParser } from './parsers/electricity.parser';
 import { ClientService } from './service/client.service';
 import { UsersRepository } from './db/repository/users.repository';
 
 //bot init
 const TOKEN: string | undefined = process.env.TOKEN;
-if ( !TOKEN ) throw new Error('Нету токена');
-export const bot: TelegramBot = new TelegramBot(TOKEN, {polling: true});
+if (!TOKEN) throw new Error('Нету токена');
+export const bot: TelegramBot = new TelegramBot(TOKEN, { polling: true });
 
 export class Start {
-    constructor(
-        private mainController: MainController,
-        private waterService: WaterService,
-        private electricityService: ElectricityService,
-    ) {}
+  constructor(
+    private mainController: MainController,
+    private waterService: WaterService,
+    private electricityService: ElectricityService,
+  ) {
+  }
 
-    async botOn() {
+  async botOn() {
 
-        // Установка комманд
-        await bot.setMyCommands(commands);
+    // Установка комманд
+    await bot.setMyCommands(commands);
 
-        //Запрос на информацию об отключениях
-        this.job.start();
+    //Запрос на информацию об отключениях
+    this.job.start();
 
-        // bot.onText(/\/getElectricityInfo/, async () => {
-        //     const info = await this.electricityService.cronGetElectricityInfo();
-        //     console.log(info);
-        // })
-        //
-        // bot.onText(/\/getWaterInfo/, async () => {
-        //     const info = await this.waterService.cronGetWaterInfo();
-        //     console.log(info);
-        // })
+    // bot.onText(/\/getElectricityInfo/, async () => {
+    //     const info = await this.electricityService.cronGetElectricityInfo();
+    //     console.log(info);
+    // })
+    //
+    // bot.onText(/\/getWaterInfo/, async () => {
+    //     const info = await this.waterService.cronGetWaterInfo();
+    //     console.log(info);
+    // })
 
-        //Обработка запросов
-        bot.on('message', async msg => {
-            await this.mainController.requestHandler(msg);
-        });
+    //Обработка запросов
+    bot.on('message', async msg => {
+      await this.mainController.requestHandler(msg);
+    });
 
-        const regFromAdmin= new RegExp(`/adm${process.env.ADMIN_PASSWORD}(.+)`);
-      bot.onText(regFromAdmin, async (msg, source) => {
-        if (source === null) return;
-        await this.mainController.toAdmin(source[1]);
-      })
-    }
+    const regFromAdmin = new RegExp(`/adm${process.env.ADMIN_PASSWORD}(.+)`);
+    bot.onText(regFromAdmin, async (msg, source) => {
+      if (source === null) return;
+      await this.mainController.toAdmin(source[1]);
+    });
+  }
 
-    private job = new CronJob({cronTime: '0,0 */2 * * *',onTick: async () => {
-            await this.waterService.cronGetWaterInfo();
-            await this.electricityService.cronGetElectricityInfo();
-            console.log('From CRON, check water: ', new Date())
-        }, timeZone: 'Asia/Tbilisi'})
+  private job = new CronJob({
+    cronTime: '0,0 */2 * * *', onTick: async () => {
+      await this.waterService.cronGetWaterInfo();
+      await this.electricityService.cronGetElectricityInfo();
+      console.log('From CRON, check water: ', new Date());
+    }, timeZone: 'Asia/Tbilisi',
+  });
 }
 
 const helper = new Helper();
@@ -73,4 +76,4 @@ const electricityService = new ElectricityService(electricityParser, clientServi
 const waterService = new WaterService(waterParser, clientService);
 const start = new Start(mainController, waterService, electricityService);
 
-start.botOn()
+start.botOn();

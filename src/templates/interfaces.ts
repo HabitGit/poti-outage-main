@@ -2,23 +2,23 @@ import { KeyboardButton } from 'node-telegram-bot-api';
 
 export interface IGetUserPoints {
 
-    chatId: number
+  chatId: number;
 
-    userId: number | undefined
+  userId: number | undefined;
 
-    userName: string | undefined
+  userName: string | undefined;
 
-    message: string | undefined
+  message: string | undefined;
 }
 
 export interface IFinishParserInfo {
 
-    startDate: Date
+  startDate: Date;
 
-    endDate: Date
+  endDate: Date;
 }
 
 export interface IKeyboard {
 
-    [page: string]: KeyboardButton[][]
+  [page: string]: KeyboardButton[][];
 }

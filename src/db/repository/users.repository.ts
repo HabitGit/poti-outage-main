@@ -19,7 +19,7 @@ export class UsersRepository extends Repository<Users> {
 
   async getMailingChatIds(): Promise<Users[]> {
     return this.find({
-      select: { chatId: true }
+      select: { chatId: true },
     });
   }
 }

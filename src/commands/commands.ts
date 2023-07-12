@@ -1,4 +1,4 @@
-type CommandsType = Array<{command: string, description: string}>
+type CommandsType = Array<{ command: string, description: string }>
 export const commands: CommandsType = [
-    {command: '/start', description: 'Начать'},
-]
+  { command: '/start', description: 'Начать' },
+];
