@@ -10,12 +10,18 @@ export class Users {
         unique: true,
         nullable: false,
     })
-    chatId: number
+    chatId: number;
 
     @Column({
         type: "numeric",
         unique: true,
         nullable: false,
     })
-    userId: number
+    userId: number;
+
+    @Column({
+        type: 'boolean',
+        default: true,
+    })
+    mailing: boolean;
 }
