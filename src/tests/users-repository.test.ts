@@ -68,11 +68,11 @@ describe('Users repository testing', () => {
   });
 
   it('Get all chat ids', async () => {
-    const isUsers = await usersRepository.getAllChatIds();
+    const isUsers = await usersRepository.getMailingChatIds();
     expect(isUsers.length).toBe(0);
     await usersRepository.createUser(fakeUser);
     await usersRepository.createUser(fakeUser2);
-    const isUsersAfter = await usersRepository.getAllChatIds();
+    const isUsersAfter = await usersRepository.getMailingChatIds();
     expect(isUsersAfter.length).toBe(2);
   })
 })

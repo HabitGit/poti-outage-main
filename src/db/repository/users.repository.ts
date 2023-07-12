@@ -17,7 +17,7 @@ export class UsersRepository extends Repository<Users> {
     });
   }
 
-  async getAllChatIds(): Promise<Users[]> {
+  async getMailingChatIds(): Promise<Users[]> {
     return this.find({
       select: { chatId: true }
     });

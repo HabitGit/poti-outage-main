@@ -52,7 +52,7 @@ export class ClientService {
   }
 
   async messageSender(message: string) {
-    const chatIds: Users[] = await this.usersRepository.getAllChatIds();
+    const chatIds: Users[] = await this.usersRepository.getMailingChatIds();
     for ( const chatId of chatIds ) {
       try {
         await bot.sendMessage(chatId.chatId, message)
