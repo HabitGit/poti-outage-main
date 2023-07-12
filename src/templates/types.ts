@@ -1,6 +1,6 @@
 export type Buttons = {
-  [ buttonLocation: string ]:
+  [buttonLocation: string]:
     {
-      [ buttonName: string ]: { text: string }
+      [buttonName: string]: { text: string }
     }
 }

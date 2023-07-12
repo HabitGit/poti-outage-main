@@ -1,100 +1,59 @@
 import 'dotenv/config';
-import {IFinishParserInfo} from '../templates/interfaces';
+import { IFinishParserInfo } from '../templates/interfaces';
 import TelegramBot from 'node-telegram-bot-api';
-import {Helper} from '../service/helper';
+import { Helper } from '../service/helper';
 
 
 describe('Testing helper', () => {
-    let mockInfoArray1: IFinishParserInfo[];
-    let mockInfoArray2: IFinishParserInfo[];
-    let mockInfoArray3: IFinishParserInfo[];
-    let mockMsg: TelegramBot.Message;
+  let mockInfoArray1: IFinishParserInfo[];
+  let mockInfoArray2: IFinishParserInfo[];
+  let mockMsg: TelegramBot.Message;
 
-    beforeAll(() => {
-        mockInfoArray1 = [
-            {
-                name: 'воды',
-                startDate: '123',
-                startTime: '123',
-                endDate: '123',
-                endTime: '123',
-            }
-        ];
-        mockInfoArray2 = [
-            {
-                name: 'электричества',
-                startDate: '123',
-                startTime: '123',
-                endDate: '123',
-                endTime: '123',
-            }
-        ];
-        mockInfoArray3 = [
-            {
-                name: 'электричества',
-                startDate: '123',
-                startTime: '123',
-                endDate: '123',
-                endTime: '123',
-            },
-            {
-                name: 'воды',
-                startDate: '123',
-                startTime: '123',
-                endDate: '123',
-                endTime: '123',
-            }
-        ];
-        mockMsg = {
-            message_id: 1,
-            date: 1,
-            chat: {
-                id: 1,
-                type: 'private',
-            },
-            from: {
-                id: 1,
-                first_name: 'user',
-                is_bot: false,
-            },
-            text: 'text',
-        }
-    })
+  beforeAll(() => {
+    mockInfoArray1 = [
+      {
+        startDate: new Date(1, 1, 1, 1, 1),
+        endDate: new Date(2, 2, 2, 2, 2),
+      },
+    ];
+    mockInfoArray2 = [
+      {
+        startDate: new Date(1, 1, 1, 1, 1),
+        endDate: new Date(2, 2, 2, 2, 2),
+      },
+    ];
+    mockMsg = {
+      message_id: 1,
+      date: 1,
+      chat: {
+        id: 1,
+        type: 'private',
+      },
+      from: {
+        id: 1,
+        first_name: 'user',
+        is_bot: false,
+      },
+      text: 'text',
+    };
+  });
 
-    it('Helper has definite', () => {
-        const helper = new Helper();
-        expect(helper).toBeTruthy();
-    })
+  it('Helper has definite', () => {
+    const helper = new Helper();
+    expect(helper).toBeTruthy();
+  });
 
-    it('Test info output refactoring', () => {
-        const helper = new Helper();
-        const result1 = helper.infoOutputRefactoring(mockInfoArray1);
-        const result2 = helper.infoOutputRefactoring(mockInfoArray2);
-        const result3 = helper.infoOutputRefactoring(mockInfoArray3);
-        expect(result1).toBe(`Найдены следующие отключения воды: 
-                      с 123 - 123 
-                   по 123 - 123
-                   Подробнее по ссылке:
-                   ${process.env.WATER_LINK}\n`);
-        expect(result2).toBe(`Найдены следующие отключения электричества: 
-                      с 123 - 123 
-                   по 123 - 123
-                   Подробнее по ссылке:
-                   ${process.env.ELECTRICITY_LINK}\n`);
-        expect(result3).toBe(`Найдены следующие отключения электричества: 
-                      с 123 - 123 
-                   по 123 - 123
-                   Подробнее по ссылке:
-                   ${process.env.ELECTRICITY_LINK}\nНайдены следующие отключения воды: 
-                      с 123 - 123 
-                   по 123 - 123
-                   Подробнее по ссылке:
-                   ${process.env.WATER_LINK}\n`);
-    });
+  it('Test info output refactoring', () => {
+    const helper = new Helper();
+    const result1 = helper.infoOutputRefactoring('воды', mockInfoArray1);
+    const result2 = helper.infoOutputRefactoring('электричества', mockInfoArray2);
+    expect(result1).toBe(`Найдены отключения воды в период:\nс 01.02.1901, 01:01:00 по 02.03.1902, 02:02:00.\nУзнать точное время про вашу улицу можно на сайте: ${process.env.WATER_LINK}`);
+    expect(result2).toBe(`Найдены отключения электричества в период:\nс 01.02.1901, 01:01:00 по 02.03.1902, 02:02:00.\nУзнать точное время про вашу улицу можно на сайте: ${process.env.ELECTRICITY_LINK}`);
+  });
 
-    it('Test get users points', async () => {
-        const helper = new Helper();
-        const result1 = await helper.getUserPoints(mockMsg);
-        expect(result1).toEqual({ chatId: 1, userId: 1, userName: 'user', message: 'text' })
-    })
-})
+  it('Test get users points', async () => {
+    const helper = new Helper();
+    const result1 = await helper.getUserPoints(mockMsg);
+    expect(result1).toEqual({ chatId: 1, userId: 1, userName: 'user', message: 'text' });
+  });
+});

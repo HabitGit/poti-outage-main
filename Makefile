@@ -1,3 +1,5 @@
+migration-generate:
+	docker exec -i main npm run migration:generate
 migration-run:
 	docker exec -i main npm run migration:run
 local-db-dump:
