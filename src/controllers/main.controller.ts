@@ -29,8 +29,16 @@ export class MainController {
         break;
 
       case 'Показать имеющиеся отключения':
-        const cacheWater: string | null = await cacheClient.get('waterInfo');
-        const cacheElectricity: string | null = await cacheClient.get('electricityInfo');
+        const cacheWaterKeys: string[] = await cacheClient.keys('waterInfo*');
+        const cacheElectricityKeys: string[] = await cacheClient.keys('electricityInfo*');
+
+        const cacheWater: (string | null)[] | null = cacheWaterKeys.length > 0
+          ? await cacheClient.mGet(cacheWaterKeys)
+          : null;
+        const cacheElectricity: (string | null)[] | null = cacheElectricityKeys.length > 0
+          ? await cacheClient.mGet(cacheElectricityKeys)
+          : null;
+
         const result = {
           water: cacheWater || 'Не получена информация об отключении воды.',
           electricity: cacheElectricity || 'Не получена информация об отключении электричесва.',

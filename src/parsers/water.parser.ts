@@ -16,7 +16,7 @@ export class WaterParser {
   ) {
   }
 
-  async getWaterInfo(): Promise<string> {
+  async getWaterInfo(): Promise<{endDate: Date | null, message: string}> {
     if (!LINK) throw new Error('Нету ссылки на сайт');
 
     //Axios request
@@ -101,7 +101,7 @@ export class WaterParser {
         console.log(resultText);
       }
     });
-    if (resultText.length === 0) return 'Инфо об отключении воды нет.';
+    if (resultText.length === 0) return {endDate: null, message: 'Инфо об отключении воды нет.'};
     return this.helper.infoOutputRefactoring('воды', resultText);
   }
 }
