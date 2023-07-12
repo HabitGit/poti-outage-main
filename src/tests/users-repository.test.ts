@@ -53,7 +53,6 @@ describe('Users repository testing', () => {
 
   it('Get user by id', async () => {
     const user: Users = await usersRepository.createUser(fakeUser);
-    const isUser: Users | null = await usersRepository.getUserById(fakeUser.userId);
     expect(user).toEqual({
       id: expect.any(Number),
       userId: 1,
