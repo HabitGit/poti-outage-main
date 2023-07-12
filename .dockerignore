@@ -1,1 +1,6 @@
 pgdata
+dist
+node_modules
+pgdata
+redisdata
+.env
