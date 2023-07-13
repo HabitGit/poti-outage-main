@@ -47,8 +47,8 @@ describe('Testing helper', () => {
     const helper = new Helper();
     const result1 = helper.infoOutputRefactoring('воды', mockInfoArray1);
     const result2 = helper.infoOutputRefactoring('электричества', mockInfoArray2);
-    expect(result1).toBe(`Найдены отключения воды в период:\nс 01.02.1901, 01:01:00 по 02.03.1902, 02:02:00.\nУзнать точное время про вашу улицу можно на сайте: ${process.env.WATER_LINK}`);
-    expect(result2).toBe(`Найдены отключения электричества в период:\nс 01.02.1901, 01:01:00 по 02.03.1902, 02:02:00.\nУзнать точное время про вашу улицу можно на сайте: ${process.env.ELECTRICITY_LINK}`);
+    expect(result1).toEqual({endDate: expect.any(Date), message: `Найдены отключения воды в период:\nс 01.02.1901, 01:01:00 по 02.03.1902, 02:02:00.\nУзнать точное время про вашу улицу можно на сайте: ${process.env.WATER_LINK}\n`});
+    expect(result2).toEqual({endDate: expect.any(Date), message: `Найдены отключения электричества в период:\nс 01.02.1901, 01:01:00 по 02.03.1902, 02:02:00.\nУзнать точное время про вашу улицу можно на сайте: ${process.env.ELECTRICITY_LINK}\n`});
   });
 
   it('Test get users points', async () => {

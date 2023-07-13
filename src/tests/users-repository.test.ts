@@ -5,6 +5,16 @@ import { UsersRepository } from '../db/repository/users.repository';
 import { Users } from '../db/entitys/users.entity';
 import { CreateUserDto } from '../templates/create-user.dto';
 
+jest.mock('../db/data-source.redis', () => {
+  const originalModule = jest.requireActual('../db/test-data-source.redis');
+  return {
+    __esModule: true,
+    ...originalModule
+  }
+})
+
+
+
 describe('Users repository testing', () => {
   let usersRepository: UsersRepository;
   let fakeUser: CreateUserDto;
@@ -73,7 +83,11 @@ describe('Users repository testing', () => {
     expect(isUsers.length).toBe(0);
     await usersRepository.createUser(fakeUser);
     await usersRepository.createUser(fakeUser2);
-    const isUsersAfter = await usersRepository.getChatIds();
-    expect(isUsersAfter.length).toBe(2);
+    let isUsersAfter = await usersRepository.getChatIds();
+    expect(isUsersAfter.length).toBe(0);
+      await setTimeout(async () => {
+      let isUsersAfter = await usersRepository.getChatIds();
+      expect(isUsersAfter.length).toBe(2);
+    }, 11 * 1000)
   });
 });
