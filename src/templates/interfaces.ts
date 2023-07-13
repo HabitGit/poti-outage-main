@@ -25,3 +25,9 @@ export interface IKeyboard {
 
   homeMailingDisable: KeyboardButton[][];
 }
+
+export interface IOutputRefactoring {
+  endDate: Date | null;
+
+  message: string;
+}

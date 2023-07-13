@@ -1,6 +1,7 @@
 import { ElectricityParser } from '../parsers/electricity.parser';
 import { cacheClient } from '../db/data-source.redis';
 import { ClientService } from './client.service';
+import { IOutputRefactoring } from '../templates/interfaces';
 
 export class ElectricityService {
   constructor(
@@ -10,7 +11,7 @@ export class ElectricityService {
   }
 
   async cronGetElectricityInfo() {
-    const info: {endDate: Date | null, message: string} = await this.electricityParser.getElectricityInfo();
+    const info: IOutputRefactoring = await this.electricityParser.getElectricityInfo();
     if (info.endDate === null) return;
 
     const nowDateTimestamp: number = Date.now();

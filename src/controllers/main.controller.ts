@@ -23,6 +23,10 @@ export class MainController {
         await this.clientService.CommandStart(chatId, userName || 'Anonymous', userId);
         break;
 
+      case '/myinfo':
+        await this.clientService.getMyInfo(userId, chatId);
+        break;
+
       case 'Зарегистрироваться':
         const userData: CreateUserDto = { userId: userId, chatId: chatId };
         await this.clientService.Registration(userData);
@@ -44,11 +48,6 @@ export class MainController {
           electricity: cacheElectricity || 'Не получена информация об отключении электричесва.',
         };
         await bot.sendMessage(chatId, result.water + '\n' + result.electricity);
-        break;
-
-      case '/sendMessageFromAdmin':
-        const sendMessage: string = 'Бот будет перезагружен для внесения следующих изменений: теперь он может находить информацию по электричеству. Первые актуальные оповещения поступят после 2х часов ночи, по времени Грузии.';
-        await this.clientService.sendMessageFromAdmin(sendMessage);
         break;
 
       case 'Ссылки на сайты':

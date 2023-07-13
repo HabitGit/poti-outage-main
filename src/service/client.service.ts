@@ -5,6 +5,8 @@ import { TemplatesText } from '../templates/templates.text';
 import { bot } from '../index';
 import { CreateUserDto } from '../templates/create-user.dto';
 import { UsersRepository } from '../db/repository/users.repository';
+import { BotErrors } from '../templates/errors';
+import fs from 'fs';
 
 export class ClientService {
   constructor(
@@ -13,9 +15,11 @@ export class ClientService {
   ) {
   }
 
-  async CommandStart(chatId: number, userName: string, userId: number): Promise<TelegramBot.Message> {
+  async CommandStart(
+    chatId: number, userName: string, userId: number,
+  ): Promise<TelegramBot.Message> {
     const isUser: Users | null = await this.usersRepository.getUserById(userId);
-    const message = isUser
+    const message: string = isUser
       ? this.templatesText.welcomeBackMessage(userName)
       : this.templatesText.welcomeMessage(userName);
 
@@ -32,14 +36,14 @@ export class ClientService {
       userData.userId,
     );
 
-    if (isUser) return bot.sendMessage(
-      userData.chatId,
-      'Вы уже зарегистрированы',
-    );
+    if (isUser) {
+      return bot.sendMessage(userData.chatId, 'Вы уже зарегистрированы');
+    }
 
     await this.usersRepository.createUser(userData);
+    const message: string = 'Регистрация прошла успешно, теперь вам будет приходить рассылка. Что бы ее отменить, выберите соответствующий пунк в меню';
 
-    return bot.sendMessage(userData.chatId, 'Регистрация прошла успешно, теперь вам будет приходить рассылка. Что бы ее отменить, выберите соответствующий пунк в меню', {
+    return bot.sendMessage(userData.chatId, message, {
       reply_markup: {
         keyboard: keyboard.homeMailingEnable,
         resize_keyboard: true,
@@ -53,33 +57,52 @@ export class ClientService {
   }
 
   async messageSender(message: string) {
-    const chatIds: Users[] = await this.usersRepository.getMailingChatIds();
-    for (const chatId of chatIds) {
+    const users: Users[] = await this.usersRepository.getChatIds();
+    for (const user of users) {
       try {
-        await bot.sendMessage(chatId.chatId, message);
+        await this.botSendMessage(user.chatId, message);
       } catch (e) {
-        console.log(e);
+        if (e instanceof BotErrors) {
+          if (e.name === 'BAN_FROM_USER') {
+            await this.usersRepository.deleteUserByChatId(user.chatId);
+          }
+        } else {
+          await fs.writeFile(
+            __dirname + 'errorsLog.txt',
+            '[+]NEW ERROR: ' + e + '\n',
+            { flag: 'a' },
+            (err) => {
+              console.log('ERR FS: ', err);
+            });
+        }
       }
     }
   }
 
+  async botSendMessage(chatId: number, message: string) {
+    try {
+      await bot.sendMessage(chatId, message);
+    } catch (e) {
+      throw new BotErrors({
+        name: 'BAN_FROM_USER',
+        message: `Bot has been baned from user`
+      })
+    }
+  }
+
   async mailingOff(userId: number, chatId: number): Promise<TelegramBot.Message> {
-    const isMailing: Users | null = await this.usersRepository.getUserById(userId);
-    if ( !isMailing ) return bot.sendMessage(chatId, 'Вы не зарегистрированы', {
-      reply_markup: {
-        keyboard: keyboard.start,
-        resize_keyboard: true,
-      },
-    });
+    const isUser: Users | null = await this.checkUser(userId, chatId);
 
-    if ( !isMailing.mailing ) return bot.sendMessage(chatId, 'Вы уже отключили рассылку', {
-      reply_markup: {
-        keyboard: keyboard.homeMailingDisable,
-        resize_keyboard: true,
-      },
-    });
+    if (!isUser?.mailing) {
+      return bot.sendMessage(chatId, 'Вы уже отключили рассылку', {
+        reply_markup: {
+          keyboard: keyboard.homeMailingDisable,
+          resize_keyboard: true,
+        },
+      });
+    }
 
-    await this.usersRepository.mailingOff(userId);
+    await this.usersRepository.turnMailing(userId);
 
     return bot.sendMessage(chatId, 'Рассылка отключена', {
       reply_markup: {
@@ -90,22 +113,18 @@ export class ClientService {
   }
 
   async mailingOn(userId: number, chatId: number): Promise<TelegramBot.Message> {
-    const isMailing: Users | null = await this.usersRepository.getUserById(userId);
-    if ( !isMailing ) return bot.sendMessage(chatId, 'Вы не зарегистрированы', {
-      reply_markup: {
-        keyboard: keyboard.start,
-        resize_keyboard: true,
-      },
-    });
+    const isUser: Users | null = await this.checkUser(userId, chatId);
 
-    if ( isMailing.mailing ) return bot.sendMessage(chatId, 'Ваша рассылка уже включена', {
-      reply_markup: {
-        keyboard: keyboard.homeMailingEnable,
-        resize_keyboard: true,
-      },
-    });
+    if (isUser?.mailing) {
+      return bot.sendMessage(chatId, 'Ваша рассылка уже включена', {
+        reply_markup: {
+          keyboard: keyboard.homeMailingEnable,
+          resize_keyboard: true,
+        },
+      });
+    }
 
-    await this.usersRepository.mailingOn(userId);
+    await this.usersRepository.turnMailing(userId);
 
     return bot.sendMessage(chatId, 'Рассылка включена', {
       reply_markup: {
@@ -113,5 +132,33 @@ export class ClientService {
         resize_keyboard: true,
       },
     });
+  }
+
+  async checkUser(userId: number, chatId: number): Promise<Users | null> {
+    const user: Users | null = await this.usersRepository.getUserById(userId);
+    if (!user) {
+      await bot.sendMessage(chatId, 'Вы не зарегистрированы', {
+        reply_markup: {
+          keyboard: keyboard.start,
+          resize_keyboard: true,
+        },
+      });
+      return null;
+    }
+    return user;
+  }
+
+  async getMyInfo(userId: number, chatId: number) {
+    const user = await this.checkUser(userId, chatId);
+    if (user) {
+      const message = `Информация о вашем аккаунте:\nРассылка: ***${user.mailing ? 'активна' : 'неактивна'}***`;
+      await bot.sendMessage(chatId, message, {
+        reply_markup: {
+          keyboard: user.mailing ? keyboard.homeMailingEnable : keyboard.homeMailingDisable,
+          resize_keyboard: true,
+        },
+        parse_mode: 'Markdown',
+      });
+    }
   }
 }
