@@ -1,6 +1,7 @@
 import { WaterParser } from '../parsers/water.parser';
 import { cacheClient } from '../db/data-source.redis';
 import { ClientService } from './client.service';
+import { IOutputRefactoring } from '../templates/interfaces';
 
 export class WaterService {
   constructor(
@@ -10,7 +11,7 @@ export class WaterService {
   }
 
   async cronGetWaterInfo() {
-    const info: {endDate: Date | null, message: string} = await this.waterParser.getWaterInfo();
+    const info: IOutputRefactoring = await this.waterParser.getWaterInfo();
     if (info.endDate === null) return;
 
     const nowDateTimestamp: number = Date.now();
