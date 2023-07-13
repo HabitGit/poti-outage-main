@@ -1,4 +1,4 @@
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, DeleteResult, Repository } from 'typeorm';
 import { Users } from '../entitys/users.entity';
 import { CreateUserDto } from '../../templates/create-user.dto';
 import { cacheClient } from '../data-source.redis';
@@ -22,7 +22,7 @@ export class UsersRepository extends Repository<Users> {
     return user;
   }
 
-  async getMailingChatIds(): Promise<Users[]> {
+  async getChatIds(): Promise<Users[]> {
     const cache: string | null = await cacheClient.get('mailing');
     if (cache) return JSON.parse(cache);
     const users: Users[] = await this.find({
@@ -40,5 +40,9 @@ export class UsersRepository extends Repository<Users> {
       ...user,
       mailing: user?.mailing ? false : true,
     })
+  }
+
+  async deleteUserByChatId(chatId: number): Promise<DeleteResult> {
+    return this.delete({chatId: chatId});
   }
 }

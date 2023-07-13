@@ -5,6 +5,8 @@ import { TemplatesText } from '../templates/templates.text';
 import { bot } from '../index';
 import { CreateUserDto } from '../templates/create-user.dto';
 import { UsersRepository } from '../db/repository/users.repository';
+import { BotErrors } from '../templates/errors';
+import fs from 'fs';
 
 export class ClientService {
   constructor(
@@ -34,10 +36,9 @@ export class ClientService {
       userData.userId,
     );
 
-    if (isUser) return bot.sendMessage(
-      userData.chatId,
-      'Вы уже зарегистрированы',
-    );
+    if (isUser) {
+      return bot.sendMessage(userData.chatId,'Вы уже зарегистрированы');
+    }
 
     await this.usersRepository.createUser(userData);
     const message: string = 'Регистрация прошла успешно, теперь вам будет приходить рассылка. Что бы ее отменить, выберите соответствующий пунк в меню';
@@ -56,13 +57,36 @@ export class ClientService {
   }
 
   async messageSender(message: string) {
-    const users: Users[] = await this.usersRepository.getMailingChatIds();
+    const users: Users[] = await this.usersRepository.getChatIds();
     for (const user of users) {
       try {
-        await bot.sendMessage(user.chatId, message);
+        await this.botSendMessage(user.chatId, message);
       } catch (e) {
-        console.log(e);
+        if (e instanceof BotErrors) {
+          if (e.name === 'BAN_FROM_USER') {
+            await this.usersRepository.deleteUserByChatId(user.chatId);
+          }
+        } else {
+          await fs.writeFile(
+            __dirname + 'errorsLog.txt',
+            '[+]NEW ERROR: ' + e + '\n',
+            {flag: 'a'},
+            (err) => {
+            console.log('ERR FS: ', err);
+          });
+        }
       }
+    }
+  }
+
+  async botSendMessage(chatId: number, message: string) {
+    try {
+      await bot.sendMessage(chatId, message);
+    } catch (e) {
+      throw new BotErrors({
+        name: 'BAN_FROM_USER',
+        message: `Bot has been baned from user`
+      })
     }
   }
 
