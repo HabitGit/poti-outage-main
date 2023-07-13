@@ -37,7 +37,7 @@ export class ClientService {
     );
 
     if (isUser) {
-      return bot.sendMessage(userData.chatId,'Вы уже зарегистрированы');
+      return bot.sendMessage(userData.chatId, 'Вы уже зарегистрированы');
     }
 
     await this.usersRepository.createUser(userData);
@@ -70,10 +70,10 @@ export class ClientService {
           await fs.writeFile(
             __dirname + 'errorsLog.txt',
             '[+]NEW ERROR: ' + e + '\n',
-            {flag: 'a'},
+            { flag: 'a' },
             (err) => {
-            console.log('ERR FS: ', err);
-          });
+              console.log('ERR FS: ', err);
+            });
         }
       }
     }
@@ -94,12 +94,12 @@ export class ClientService {
     const isUser: Users | null = await this.checkUser(userId, chatId);
 
     if (!isUser?.mailing) {
-      return bot.sendMessage(chatId,'Вы уже отключили рассылку',{
-          reply_markup: {
-            keyboard: keyboard.homeMailingDisable,
-            resize_keyboard: true,
-          },
-        });
+      return bot.sendMessage(chatId, 'Вы уже отключили рассылку', {
+        reply_markup: {
+          keyboard: keyboard.homeMailingDisable,
+          resize_keyboard: true,
+        },
+      });
     }
 
     await this.usersRepository.turnMailing(userId);
@@ -116,12 +116,12 @@ export class ClientService {
     const isUser: Users | null = await this.checkUser(userId, chatId);
 
     if (isUser?.mailing) {
-      return bot.sendMessage(chatId,'Ваша рассылка уже включена',{
-          reply_markup: {
-            keyboard: keyboard.homeMailingEnable,
-            resize_keyboard: true,
-          },
-        });
+      return bot.sendMessage(chatId, 'Ваша рассылка уже включена', {
+        reply_markup: {
+          keyboard: keyboard.homeMailingEnable,
+          resize_keyboard: true,
+        },
+      });
     }
 
     await this.usersRepository.turnMailing(userId);
@@ -146,5 +146,19 @@ export class ClientService {
       return null;
     }
     return user;
+  }
+
+  async getMyInfo(userId: number, chatId: number) {
+    const user = await this.checkUser(userId, chatId);
+    if (user) {
+      const message = `Информация о вашем аккаунте:\nРассылка: ***${user.mailing ? 'активна' : 'неактивна'}***`;
+      await bot.sendMessage(chatId, message, {
+        reply_markup: {
+          keyboard: user.mailing ? keyboard.homeMailingEnable : keyboard.homeMailingDisable,
+          resize_keyboard: true,
+        },
+        parse_mode: 'Markdown',
+      });
+    }
   }
 }
