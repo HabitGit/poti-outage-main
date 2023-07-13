@@ -24,25 +24,14 @@ export class UsersRepository extends Repository<Users> {
     });
   }
 
-  async mailingOff(userId: number): Promise<Users> {
+  async turnMailing(userId: number): Promise<Users> {
     const user: Users | null = await this.findOne({
       where: { userId: userId },
     });
 
     return this.save({
       ...user,
-      mailing: false,
-    });
-  }
-
-  async mailingOn(userId: number): Promise<Users> {
-    const user: Users | null = await this.findOne({
-      where: { userId: userId },
-    });
-
-    return this.save({
-      ...user,
-      mailing: true,
-    });
+      mailing: user?.mailing ? false : true,
+    })
   }
 }

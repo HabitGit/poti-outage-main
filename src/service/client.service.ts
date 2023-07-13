@@ -13,9 +13,11 @@ export class ClientService {
   ) {
   }
 
-  async CommandStart(chatId: number, userName: string, userId: number): Promise<TelegramBot.Message> {
+  async CommandStart(
+    chatId: number, userName: string, userId: number,
+  ): Promise<TelegramBot.Message> {
     const isUser: Users | null = await this.usersRepository.getUserById(userId);
-    const message = isUser
+    const message: string = isUser
       ? this.templatesText.welcomeBackMessage(userName)
       : this.templatesText.welcomeMessage(userName);
 
@@ -38,8 +40,9 @@ export class ClientService {
     );
 
     await this.usersRepository.createUser(userData);
+    const message: string = 'Регистрация прошла успешно, теперь вам будет приходить рассылка. Что бы ее отменить, выберите соответствующий пунк в меню';
 
-    return bot.sendMessage(userData.chatId, 'Регистрация прошла успешно, теперь вам будет приходить рассылка. Что бы ее отменить, выберите соответствующий пунк в меню', {
+    return bot.sendMessage(userData.chatId, message, {
       reply_markup: {
         keyboard: keyboard.homeMailingEnable,
         resize_keyboard: true,
@@ -53,10 +56,10 @@ export class ClientService {
   }
 
   async messageSender(message: string) {
-    const chatIds: Users[] = await this.usersRepository.getMailingChatIds();
-    for (const chatId of chatIds) {
+    const users: Users[] = await this.usersRepository.getMailingChatIds();
+    for (const user of users) {
       try {
-        await bot.sendMessage(chatId.chatId, message);
+        await bot.sendMessage(user.chatId, message);
       } catch (e) {
         console.log(e);
       }
@@ -64,22 +67,18 @@ export class ClientService {
   }
 
   async mailingOff(userId: number, chatId: number): Promise<TelegramBot.Message> {
-    const isMailing: Users | null = await this.usersRepository.getUserById(userId);
-    if ( !isMailing ) return bot.sendMessage(chatId, 'Вы не зарегистрированы', {
-      reply_markup: {
-        keyboard: keyboard.start,
-        resize_keyboard: true,
-      },
-    });
+    const isUser: Users | null = await this.checkUser(userId, chatId);
 
-    if ( !isMailing.mailing ) return bot.sendMessage(chatId, 'Вы уже отключили рассылку', {
-      reply_markup: {
-        keyboard: keyboard.homeMailingDisable,
-        resize_keyboard: true,
-      },
-    });
+    if (!isUser?.mailing) {
+      return bot.sendMessage(chatId,'Вы уже отключили рассылку',{
+          reply_markup: {
+            keyboard: keyboard.homeMailingDisable,
+            resize_keyboard: true,
+          },
+        });
+    }
 
-    await this.usersRepository.mailingOff(userId);
+    await this.usersRepository.turnMailing(userId);
 
     return bot.sendMessage(chatId, 'Рассылка отключена', {
       reply_markup: {
@@ -90,22 +89,18 @@ export class ClientService {
   }
 
   async mailingOn(userId: number, chatId: number): Promise<TelegramBot.Message> {
-    const isMailing: Users | null = await this.usersRepository.getUserById(userId);
-    if ( !isMailing ) return bot.sendMessage(chatId, 'Вы не зарегистрированы', {
-      reply_markup: {
-        keyboard: keyboard.start,
-        resize_keyboard: true,
-      },
-    });
+    const isUser: Users | null = await this.checkUser(userId, chatId);
 
-    if ( isMailing.mailing ) return bot.sendMessage(chatId, 'Ваша рассылка уже включена', {
-      reply_markup: {
-        keyboard: keyboard.homeMailingEnable,
-        resize_keyboard: true,
-      },
-    });
+    if (isUser?.mailing) {
+      return bot.sendMessage(chatId,'Ваша рассылка уже включена',{
+          reply_markup: {
+            keyboard: keyboard.homeMailingEnable,
+            resize_keyboard: true,
+          },
+        });
+    }
 
-    await this.usersRepository.mailingOn(userId);
+    await this.usersRepository.turnMailing(userId);
 
     return bot.sendMessage(chatId, 'Рассылка включена', {
       reply_markup: {
@@ -113,5 +108,19 @@ export class ClientService {
         resize_keyboard: true,
       },
     });
+  }
+
+  async checkUser(userId: number, chatId: number): Promise<Users | null> {
+    const user: Users | null = await this.usersRepository.getUserById(userId);
+    if (!user) {
+      await bot.sendMessage(chatId, 'Вы не зарегистрированы', {
+        reply_markup: {
+          keyboard: keyboard.start,
+          resize_keyboard: true,
+        },
+      });
+      return null;
+    }
+    return user;
   }
 }
