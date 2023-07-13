@@ -1,9 +1,9 @@
 import 'dotenv/config';
 import TelegramBot from 'node-telegram-bot-api';
-import { IFinishParserInfo, IGetUserPoints } from '../templates/interfaces';
+import { IFinishParserInfo, IGetUserPoints, IOutputRefactoring } from '../templates/interfaces';
 
 export class Helper {
-  infoOutputRefactoring(typeOfPublicService: string, infoArray: Array<IFinishParserInfo>): {endDate: Date, message: string} {
+  infoOutputRefactoring(typeOfPublicService: string, infoArray: Array<IFinishParserInfo>): IOutputRefactoring {
     let startDate: Date = infoArray[0].startDate;
     let endDate: Date = infoArray[0].endDate;
     infoArray.forEach(date => {

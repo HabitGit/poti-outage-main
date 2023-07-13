@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from 'axios';
 import jsdom from 'jsdom';
-import { IFinishParserInfo } from '../templates/interfaces';
+import { IFinishParserInfo, IOutputRefactoring } from '../templates/interfaces';
 import { Helper } from '../service/helper';
 
 const LINK = process.env.WATER_LINK;
@@ -16,7 +16,7 @@ export class WaterParser {
   ) {
   }
 
-  async getWaterInfo(): Promise<{endDate: Date | null, message: string}> {
+  async getWaterInfo(): Promise<IOutputRefactoring> {
     if (!LINK) throw new Error('Нету ссылки на сайт');
 
     //Axios request

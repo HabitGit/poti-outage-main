@@ -1,6 +1,6 @@
 import puppeteer, { Browser, Page } from 'puppeteer';
 import jsdom from 'jsdom';
-import { IFinishParserInfo } from '../templates/interfaces';
+import { IFinishParserInfo, IOutputRefactoring } from '../templates/interfaces';
 import { Helper } from '../service/helper';
 
 const LINK = process.env.ELECTRICITY_LINK;
@@ -16,7 +16,7 @@ export class ElectricityParser {
   ) {
   }
 
-  async getElectricityInfo(): Promise<{endDate: Date | null, message: string}> {
+  async getElectricityInfo(): Promise<IOutputRefactoring> {
     if (!LINK) throw new Error('Нету ссылки на сайт');
     let data: string = '';
 
