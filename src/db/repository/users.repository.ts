@@ -37,10 +37,14 @@ export class UsersRepository extends Repository<Users> {
     const user: Users | null = await this.findOne({
       where: { userId: userId },
     });
-    return this.save({
+    const updateUser: Users = await this.save({
       ...user,
       mailing: user?.mailing ? false : true,
     });
+    await cacheClient.set(`user${userId}`, JSON.stringify(updateUser), {
+      EX: 10,
+    });
+    return updateUser;
   }
 
   async deleteUserByChatId(chatId: number): Promise<DeleteResult> {
