@@ -5,16 +5,15 @@ import { Helper } from '../service/helper';
 
 const LINK = process.env.WATER_LINK;
 const POTI = 'ფოთის ';
-const QUERY_START = 'div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(2)';
-const QUERY_END = 'div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(3)';
+const QUERY_START =
+  'div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(2)';
+const QUERY_END =
+  'div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(3)';
 
 const { JSDOM } = jsdom;
 
 export class WaterParser {
-  constructor(
-    private helper: Helper,
-  ) {
-  }
+  constructor(private helper: Helper) {}
 
   async getWaterInfo(): Promise<IOutputRefactoring> {
     if (!LINK) throw new Error('Нету ссылки на сайт');
@@ -35,23 +34,28 @@ export class WaterParser {
     //Get html dom
     const dom: jsdom.JSDOM = new JSDOM(html);
     const document: Document = dom.window.document;
-    const items: NodeListOf<Element> = document.querySelectorAll('[class="panel panel-default"]');
+    const items: NodeListOf<Element> = document.querySelectorAll(
+      '[class="panel panel-default"]',
+    );
 
     //Search info about country
     const infoInMyCountry: Array<Element | null> = [];
-    items.forEach(item => {
-      const query: Element | null = item.querySelector(('[data-toggle="collapse"]'));
+    items.forEach((item) => {
+      const query: Element | null = item.querySelector(
+        '[data-toggle="collapse"]',
+      );
       if (query === null) throw new Error('Item is null');
 
       const isTextQuery: string | null = query.textContent;
       if (isTextQuery === null) throw new Error('Нету текста у объекта');
 
       const isCityName: number = isTextQuery.indexOf(POTI);
-      if (isCityName >= 0) infoInMyCountry.push(item.querySelector('[class="col-sm-12"]'));
+      if (isCityName >= 0)
+        infoInMyCountry.push(item.querySelector('[class="col-sm-12"]'));
     });
 
     //get text
-    let resultText: Array<IFinishParserInfo> = [];
+    const resultText: Array<IFinishParserInfo> = [];
     infoInMyCountry.forEach((item) => {
       if (item != null) {
         const startQuery: Element | null = item.querySelector(QUERY_START);
@@ -59,25 +63,19 @@ export class WaterParser {
         const endQuery: Element | null = item.querySelector(QUERY_END);
         if (endQuery === null) throw new Error('Нету квери окончания');
         const startQueryText: string | null = startQuery.textContent;
-        if (startQueryText === null) throw new Error('Нету текста у селектора начала');
+        if (startQueryText === null)
+          throw new Error('Нету текста у селектора начала');
         const endQueryText: string | null = endQuery.textContent;
-        if (endQueryText === null) throw new Error('Нету текста у селектора окончания');
+        if (endQueryText === null)
+          throw new Error('Нету текста у селектора окончания');
 
         const start: string = startQueryText.split(': ')[1];
         const end: string = endQueryText.split(': ')[1];
 
-        const startDateSplit: Array<string> = start
-          .split(' ')
-          [0].split('/');
-        const startTimeSplit: Array<string> = start
-          .split(' ')
-          [1].split(':');
-        const endDateSplit: Array<string> = end
-          .split(' ')
-          [0].split('/');
-        const endTimeSplit: Array<string> = end
-          .split(' ')
-          [1].split(':');
+        const startDateSplit: Array<string> = start.split(' ')[0].split('/');
+        const startTimeSplit: Array<string> = start.split(' ')[1].split(':');
+        const endDateSplit: Array<string> = end.split(' ')[0].split('/');
+        const endTimeSplit: Array<string> = end.split(' ')[1].split(':');
 
         const startDate: Date = new Date(
           +startDateSplit[2],
@@ -101,7 +99,8 @@ export class WaterParser {
         console.log(resultText);
       }
     });
-    if (resultText.length === 0) return {endDate: null, message: 'Инфо об отключении воды нет.'};
+    if (resultText.length === 0)
+      return { endDate: null, message: 'Инфо об отключении воды нет.' };
     return this.helper.infoOutputRefactoring('воды', resultText);
   }
 }

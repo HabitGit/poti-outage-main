@@ -7,8 +7,7 @@ export class WaterService {
   constructor(
     private waterParser: WaterParser,
     private clientService: ClientService,
-  ) {
-  }
+  ) {}
 
   async cronGetWaterInfo() {
     const info: IOutputRefactoring = await this.waterParser.getWaterInfo();

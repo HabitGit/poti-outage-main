@@ -23,11 +23,9 @@ export class Start {
     private mainController: MainController,
     private waterService: WaterService,
     private electricityService: ElectricityService,
-  ) {
-  }
+  ) {}
 
   async botOn() {
-
     // Установка комманд
     await bot.setMyCommands(commands);
 
@@ -45,7 +43,7 @@ export class Start {
     // })
 
     //Обработка запросов
-    bot.on('message', async msg => {
+    bot.on('message', async (msg) => {
       await this.mainController.requestHandler(msg);
     });
 
@@ -57,11 +55,13 @@ export class Start {
   }
 
   private job = new CronJob({
-    cronTime: '0,0 */2 * * *', onTick: async () => {
+    cronTime: '0,0 */2 * * *',
+    onTick: async () => {
       await this.waterService.cronGetWaterInfo();
       await this.electricityService.cronGetElectricityInfo();
       console.log('From CRON, check water: ', new Date());
-    }, timeZone: 'Asia/Tbilisi',
+    },
+    timeZone: 'Asia/Tbilisi',
   });
 }
 
@@ -72,7 +72,10 @@ const clientService = new ClientService(templatesText, usersRepository);
 const mainController = new MainController(clientService, helper);
 const waterParser = new WaterParser(helper);
 const electricityParser = new ElectricityParser(helper);
-const electricityService = new ElectricityService(electricityParser, clientService);
+const electricityService = new ElectricityService(
+  electricityParser,
+  clientService,
+);
 const waterService = new WaterService(waterParser, clientService);
 const start = new Start(mainController, waterService, electricityService);
 

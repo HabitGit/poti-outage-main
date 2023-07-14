@@ -9,7 +9,10 @@ export const buttons: Buttons = {
     back: { text: 'Назад' },
   },
   home: {
-    checkDisabled: { text: 'Показать имеющиеся отключения' },
+    checkDisabledWater: { text: 'Показать имеющиеся отключения воды' },
+    checkDisabledElectricity: {
+      text: 'Показать имеющиеся отключения электричества',
+    },
     showLinks: { text: 'Ссылки на сайты' },
     mailingDisable: { text: 'Отключить рассылку' },
     mailingEnable: { text: 'Включить рассылку' },

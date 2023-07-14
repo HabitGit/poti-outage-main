@@ -7,19 +7,21 @@ export class ElectricityService {
   constructor(
     private electricityParser: ElectricityParser,
     private clientService: ClientService,
-  ) {
-  }
+  ) {}
 
   async cronGetElectricityInfo() {
-    const info: IOutputRefactoring = await this.electricityParser.getElectricityInfo();
+    const info: IOutputRefactoring =
+      await this.electricityParser.getElectricityInfo();
     if (info.endDate === null) return;
 
     const nowDateTimestamp: number = Date.now();
     const endDateTimestamp: number = info.endDate.getTime();
-    const timeToKeyLife: number = Math.round((endDateTimestamp - nowDateTimestamp) / 1000);
+    const timeToKeyLife: number = Math.round(
+      (endDateTimestamp - nowDateTimestamp) / 1000,
+    );
     const key: string = `electricityInfo${endDateTimestamp}`;
 
-    let cache: string | null = await cacheClient.get(key);
+    const cache: string | null = await cacheClient.get(key);
     await cacheClient.set(key, info.message, { EX: timeToKeyLife });
 
     if (info.message !== cache) {

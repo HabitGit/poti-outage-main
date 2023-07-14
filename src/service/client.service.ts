@@ -12,11 +12,12 @@ export class ClientService {
   constructor(
     private templatesText: TemplatesText,
     private usersRepository: UsersRepository,
-  ) {
-  }
+  ) {}
 
   async CommandStart(
-    chatId: number, userName: string, userId: number,
+    chatId: number,
+    userName: string,
+    userId: number,
   ): Promise<TelegramBot.Message> {
     const isUser: Users | null = await this.usersRepository.getUserById(userId);
     const message: string = isUser
@@ -29,7 +30,7 @@ export class ClientService {
         resize_keyboard: true,
       },
     });
-  };
+  }
 
   async Registration(userData: CreateUserDto): Promise<TelegramBot.Message> {
     const isUser: Users | null = await this.usersRepository.getUserById(
@@ -41,7 +42,8 @@ export class ClientService {
     }
 
     await this.usersRepository.createUser(userData);
-    const message: string = 'Регистрация прошла успешно, теперь вам будет приходить рассылка. Что бы ее отменить, выберите соответствующий пунк в меню';
+    const message: string =
+      'Регистрация прошла успешно, теперь вам будет приходить рассылка. Что бы ее отменить, выберите соответствующий пунк в меню';
 
     return bot.sendMessage(userData.chatId, message, {
       reply_markup: {
@@ -49,7 +51,7 @@ export class ClientService {
         resize_keyboard: true,
       },
     });
-  };
+  }
 
   async sendMessageFromAdmin(message: string) {
     //Должна быть логика проверки на админа
@@ -73,7 +75,8 @@ export class ClientService {
             { flag: 'a' },
             (err) => {
               console.log('ERR FS: ', err);
-            });
+            },
+          );
         }
       }
     }
@@ -85,12 +88,15 @@ export class ClientService {
     } catch (e) {
       throw new BotErrors({
         name: 'BAN_FROM_USER',
-        message: `Bot has been baned from user`
-      })
+        message: 'Bot has been baned from user',
+      });
     }
   }
 
-  async mailingOff(userId: number, chatId: number): Promise<TelegramBot.Message> {
+  async mailingOff(
+    userId: number,
+    chatId: number,
+  ): Promise<TelegramBot.Message> {
     const isUser: Users | null = await this.checkUser(userId, chatId);
 
     if (!isUser?.mailing) {
@@ -112,7 +118,10 @@ export class ClientService {
     });
   }
 
-  async mailingOn(userId: number, chatId: number): Promise<TelegramBot.Message> {
+  async mailingOn(
+    userId: number,
+    chatId: number,
+  ): Promise<TelegramBot.Message> {
     const isUser: Users | null = await this.checkUser(userId, chatId);
 
     if (isUser?.mailing) {
@@ -151,10 +160,14 @@ export class ClientService {
   async getMyInfo(userId: number, chatId: number) {
     const user = await this.checkUser(userId, chatId);
     if (user) {
-      const message = `Информация о вашем аккаунте:\nРассылка: ***${user.mailing ? 'активна' : 'неактивна'}***`;
+      const message = `Информация о вашем аккаунте:\nРассылка: ***${
+        user.mailing ? 'активна' : 'неактивна'
+      }***`;
       await bot.sendMessage(chatId, message, {
         reply_markup: {
-          keyboard: user.mailing ? keyboard.homeMailingEnable : keyboard.homeMailingDisable,
+          keyboard: user.mailing
+            ? keyboard.homeMailingEnable
+            : keyboard.homeMailingDisable,
           resize_keyboard: true,
         },
         parse_mode: 'Markdown',

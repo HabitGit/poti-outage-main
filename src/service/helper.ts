@@ -3,24 +3,37 @@ import TelegramBot from 'node-telegram-bot-api';
 import {
   IFinishParserInfo,
   IGetUserPoints,
-  IOutputRefactoring
+  IOutputRefactoring,
 } from '../templates/interfaces';
 
 export class Helper {
   infoOutputRefactoring(
-    typeOfPublicService: string, infoArray: Array<IFinishParserInfo>
+    typeOfPublicService: string,
+    infoArray: Array<IFinishParserInfo>,
   ): IOutputRefactoring {
     let startDate: Date = infoArray[0].startDate;
     let endDate: Date = infoArray[0].endDate;
-    infoArray.forEach(date => {
+    const streets: Set<string> = new Set();
+    infoArray.forEach((date) => {
       startDate = startDate < date.startDate ? startDate : date.startDate;
       endDate = endDate > date.endDate ? endDate : date.endDate;
+      date.streets?.forEach((street) => {
+        streets.add(street.trim());
+      });
     });
-    const link: string | undefined = typeOfPublicService === 'воды'
-      ? process.env.WATER_LINK
-      : process.env.ELECTRICITY_LINK;
-    const message: string = `Найдены отключения ${typeOfPublicService} в период:\nс ${startDate.toLocaleString('ru-RU')} по ${endDate.toLocaleString('ru-RU')}.\nУзнать точное время про вашу улицу можно на сайте: ${link}\n`;
-    return {endDate: endDate, message: message};
+    const link: string | undefined =
+      typeOfPublicService === 'воды'
+        ? process.env.WATER_LINK
+        : process.env.ELECTRICITY_LINK;
+    const streetsToOutput =
+      streets.size > 0
+        ? `\nНа улицах:\n${Array.from(streets).join(',\n')}
+Узнать точное время про вашу улицу можно на сайте: ${link}\n`
+        : `\nУзнать точное время про вашу улицу можно на сайте: ${link}\n`;
+    const message: string = `Найдены отключения ${typeOfPublicService} в период:\nс ${startDate.toLocaleString(
+      'ru-RU',
+    )} по ${endDate.toLocaleString('ru-RU')}.${streetsToOutput}`;
+    return { endDate: endDate, message: message };
   }
 
   async getUserPoints(msg: TelegramBot.Message): Promise<IGetUserPoints> {
