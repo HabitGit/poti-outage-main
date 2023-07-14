@@ -5,9 +5,9 @@ jobs:
   init:
     runs-on: ubuntu-latest
     env:
-      REDIS_HOST: ${{ REDIS_HOST }}
-      REDIS_PORT_INSIDE: ${{ REDIS_PORT_INSIDE }}
-      REDIS_PORT_OUTSIDE: ${{ REDIS_PORT_OUTSIDE }}
+      REDIS_HOST: ${{ github.REDIS_HOST }}
+      REDIS_PORT_INSIDE: ${{ github.REDIS_PORT_INSIDE }}
+      REDIS_PORT_OUTSIDE: ${{ github.REDIS_PORT_OUTSIDE }}
     steps:
        - uses: actions/checkout@v3
        - name: Build docker compose
