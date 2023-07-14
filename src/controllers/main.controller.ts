@@ -36,28 +36,35 @@ export class MainController {
         await this.clientService.Registration(userData);
         break;
 
-      case 'Показать имеющиеся отключения':
+      case 'Показать имеющиеся отключения воды':
         const cacheWaterKeys: string[] = await cacheClient.keys('waterInfo*');
+
+        const cacheWater: string[] | null =
+          cacheWaterKeys.length > 0
+            ? ((await cacheClient.mGet(cacheWaterKeys)) as string[])
+            : null;
+        await bot.sendMessage(
+          chatId,
+          cacheWater?.join('\n') ||
+            'Не получена информация об отключении воды.',
+        );
+        break;
+
+      case 'Показать имеющиеся отключения электричества':
         const cacheElectricityKeys: string[] = await cacheClient.keys(
           'electricityInfo*',
         );
 
-        const cacheWater: (string | null)[] | null =
-          cacheWaterKeys.length > 0
-            ? await cacheClient.mGet(cacheWaterKeys)
-            : null;
         const cacheElectricity: (string | null)[] | null =
           cacheElectricityKeys.length > 0
             ? await cacheClient.mGet(cacheElectricityKeys)
             : null;
 
-        const result = {
-          water: cacheWater || 'Не получена информация об отключении воды.',
-          electricity:
-            cacheElectricity ||
+        await bot.sendMessage(
+          chatId,
+          cacheElectricity?.join('\n') ||
             'Не получена информация об отключении электричесва.',
-        };
-        await bot.sendMessage(chatId, result.water + '\n' + result.electricity);
+        );
         break;
 
       case 'Ссылки на сайты':
