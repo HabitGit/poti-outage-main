@@ -5,8 +5,10 @@ import { Helper } from '../service/helper';
 
 const LINK = process.env.ELECTRICITY_LINK;
 const POTI = 'ფოთი';
-const spliterOne = 'ჩაჭრის თარიღი';
-const spliterTwo = 'აღდგენის თარიღი';
+const spliterOne = 'გათიშვის არეალი';
+const spliterTwo = 'ჩაჭრის თარიღი';
+const spliterThree = 'დასახელება:';
+const spliterFour = 'აღდგენის თარიღი';
 
 const { JSDOM } = jsdom;
 
@@ -67,9 +69,20 @@ export class ElectricityParser {
         const itemText: string | null = item.textContent;
         if (itemText === null)
           throw new Error('[ELECTRICITY PARSER]-Отсутствует текст-информация');
-        const resultTextStageOne = itemText
+        const streetsArray = itemText
           .split(spliterOne)[1]
-          .split(spliterTwo)
+          .split(spliterTwo)[0]
+          .split(spliterThree)[0]
+          .split(':')[1]
+          .split(',');
+
+        const streets = streetsArray.map((item) => {
+          return item.split('/')[2];
+        });
+
+        const resultTextStageOne = itemText
+          .split(spliterTwo)[1]
+          .split(spliterFour)
           .join('')
           .split(' ');
 
@@ -96,6 +109,7 @@ export class ElectricityParser {
         resultText.push({
           startDate: startDate,
           endDate: endDate,
+          streets: streets,
         });
       }
     });

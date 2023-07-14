@@ -14,6 +14,8 @@ export interface IFinishParserInfo {
   startDate: Date;
 
   endDate: Date;
+
+  streets?: string[];
 }
 
 export interface IKeyboard {
