@@ -1,7 +1,6 @@
 import { KeyboardButton } from 'node-telegram-bot-api';
 
 export interface IGetUserPoints {
-
   chatId: number;
 
   userId: number | undefined;
@@ -12,7 +11,6 @@ export interface IGetUserPoints {
 }
 
 export interface IFinishParserInfo {
-
   startDate: Date;
 
   endDate: Date;

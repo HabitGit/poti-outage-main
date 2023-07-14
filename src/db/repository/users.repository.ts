@@ -15,10 +15,10 @@ export class UsersRepository extends Repository<Users> {
   async getUserById(userId: number): Promise<Users | null> {
     const cache: string | null = await cacheClient.get(`user${userId}`);
     if (cache) return JSON.parse(cache);
-    const user: Users | null = await this.findOne(
-      { where: { userId: userId },
-      });
-    await cacheClient.set(`user${userId}`, JSON.stringify(user), {EX:10});
+    const user: Users | null = await this.findOne({
+      where: { userId: userId },
+    });
+    await cacheClient.set(`user${userId}`, JSON.stringify(user), { EX: 10 });
     return user;
   }
 
@@ -29,20 +29,21 @@ export class UsersRepository extends Repository<Users> {
       select: { chatId: true },
       where: { mailing: true },
     });
-    await cacheClient.set('mailing', JSON.stringify(users), {EX:10});
+    await cacheClient.set('mailing', JSON.stringify(users), { EX: 10 });
     return users;
   }
 
   async turnMailing(userId: number): Promise<Users> {
-    const user: Users | null = await this.findOne({where:{userId:userId},
+    const user: Users | null = await this.findOne({
+      where: { userId: userId },
     });
     return this.save({
       ...user,
       mailing: user?.mailing ? false : true,
-    })
+    });
   }
 
   async deleteUserByChatId(chatId: number): Promise<DeleteResult> {
-    return this.delete({chatId: chatId});
+    return this.delete({ chatId: chatId });
   }
 }

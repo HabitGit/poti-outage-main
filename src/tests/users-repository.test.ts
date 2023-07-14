@@ -9,11 +9,9 @@ jest.mock('../db/data-source.redis', () => {
   const originalModule = jest.requireActual('../db/test-data-source.redis');
   return {
     __esModule: true,
-    ...originalModule
-  }
-})
-
-
+    ...originalModule,
+  };
+});
 
 describe('Users repository testing', () => {
   let usersRepository: UsersRepository;
@@ -83,11 +81,11 @@ describe('Users repository testing', () => {
     expect(isUsers.length).toBe(0);
     await usersRepository.createUser(fakeUser);
     await usersRepository.createUser(fakeUser2);
-    let isUsersAfter = await usersRepository.getChatIds();
+    const isUsersAfter = await usersRepository.getChatIds();
     expect(isUsersAfter.length).toBe(0);
-      await setTimeout(async () => {
-      let isUsersAfter = await usersRepository.getChatIds();
+    await setTimeout(async () => {
+      const isUsersAfter = await usersRepository.getChatIds();
       expect(isUsersAfter.length).toBe(2);
-    }, 11 * 1000)
+    }, 11 * 1000);
   });
 });
