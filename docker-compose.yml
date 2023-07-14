@@ -19,7 +19,7 @@ services:
     container_name: redis
     image: redis
     ports:
-      - ${REDIS_PORT_OUTSIDE}:${REDIS_PORT_INSIDE}
+      - "${REDIS_PORT_OUTSIDE}:${REDIS_PORT_INSIDE}"
     volumes:
       - ./redisdata:/data
 
@@ -36,4 +36,4 @@ services:
     volumes:
       - ./pgdata:/var/lib/postgresql/data
     ports:
-      - ${POSTGRES_PORT_OUTSIDE}:${POSTGRES_PORT_INSIDE}
+      - "${POSTGRES_PORT_OUTSIDE}:${POSTGRES_PORT_INSIDE}"
