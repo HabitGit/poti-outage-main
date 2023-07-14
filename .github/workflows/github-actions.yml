@@ -1,37 +1,36 @@
 name: GitHub Actions Demo
 run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
-on: [ push ]
+on: [push]
 jobs:
   init:
     runs-on: ubuntu-latest
+    env:
+      REDIS_HOST: ${{ github.REDIS_HOST }}
+      REDIS_PORT_INSIDE: ${{ github.REDIS_PORT_INSIDE }}
+      REDIS_PORT_OUTSIDE: ${{ github.REDIS_PORT_OUTSIDE }}
+      POSTGRES_USER: ${{ github.POSTGRES_USER }}
+      POSTGRES_PASSWORD: ${{ github.POSTGRES_PASSWORD }}
+      POSTGRES_DB: ${{ github.POSTGRES_DB }}
+      POSTGRES_TEST_DB: ${{ github.POSTGRES_TEST_DB }}
+      POSTGRES_PORT_OUTSIDE: ${{ github.POSTGRES_PORT_OUTSIDE }}
+      POSTGRES_PORT_INSIDE: ${{ github.POSTGRES_PORT_INSIDE }}
+      POSTGRES_HOST: ${{ github.POSTGRES_HOST }}
+      TEST_POSTGRES_HOST: ${{ github.TEST_POSTGRES_HOST }}
+      TEST_POSTGRES_PORT: ${{ github.TEST_POSTGRES_PORT }}
+      TEST_POSTGRES_DB: ${{ github.TEST_POSTGRES_DB }}
+      WATER_LINK: ${{ github.WATER_LINK }}
+      ELECTRICITY_LINK: ${{ github.ELECTRICITY_LINK }}
+      ADMIN_PASSWORD: ${{ github.ADMIN_PASSWORD }}
     steps:
-      - uses: actions/checkout@v3
-      - uses: isbang/compose-action@v1.4.1
-        with:
-          compose-file: "./docker-compose.yml"
-        env:
-          env:
-            REDIS_HOST: ${{ github.REDIS_HOST }}
-            REDIS_PORT_INSIDE: ${{ github.REDIS_PORT_INSIDE }}
-            REDIS_PORT_OUTSIDE: ${{ github.REDIS_PORT_OUTSIDE }}
-            POSTGRES_USER: ${{ github.POSTGRES_USER }}
-            POSTGRES_PASSWORD: ${{ github.POSTGRES_PASSWORD }}
-            POSTGRES_DB: ${{ github.POSTGRES_DB }}
-            POSTGRES_TEST_DB: ${{ github.POSTGRES_TEST_DB }}
-            POSTGRES_PORT_OUTSIDE: ${{ github.POSTGRES_PORT_OUTSIDE }}
-            POSTGRES_PORT_INSIDE: ${{ github.POSTGRES_PORT_INSIDE }}
-            POSTGRES_HOST: ${{ github.POSTGRES_HOST }}
-            TEST_POSTGRES_HOST: ${{ github.TEST_POSTGRES_HOST }}
-            TEST_POSTGRES_PORT: ${{ github.TEST_POSTGRES_PORT }}
-            TEST_POSTGRES_DB: ${{ github.TEST_POSTGRES_DB }}
-            WATER_LINK: ${{ github.WATER_LINK }}
-            ELECTRICITY_LINK: ${{ github.ELECTRICITY_LINK }}
-            ADMIN_PASSWORD: ${{ github.ADMIN_PASSWORD }}
-      - name: Build docker compose
-        run: docker compose up -d
-      - name: build project
-        run: npm run build
-      - name: ESlinter
-        run: npm run lint
-      - name: unit tests
-        run: npm run test
+       - uses: actions/checkout@v3
+       - uses: isbang/compose-action@v1.4.1
+         with:
+           compose-file: "./docker-compose.yml"
+       - name: Build docker compose
+         run: docker compose up -d
+       - name: build project
+         run: npm run build
+       - name: ESlinter
+         run: npm run lint
+       - name: unit tests
+         run: npm run test
