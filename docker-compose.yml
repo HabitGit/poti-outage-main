@@ -35,6 +35,5 @@ services:
       - POSTGRES_DB=${POSTGRES_DB}
     volumes:
       - ./pgdata:/var/lib/postgresql/data
-      - ./docker-entrypoint-initdb.d/:/docker-entrypoint-initdb.d
     ports:
       - ${POSTGRES_PORT_OUTSIDE}:${POSTGRES_PORT_INSIDE}
