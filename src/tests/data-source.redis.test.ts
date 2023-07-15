@@ -8,6 +8,7 @@ cacheClient.connect();
 describe('Cache testing', () => {
   afterAll(async () => {
     await cacheClient.del('test');
+    await cacheClient.quit();
   });
 
   it('Test to Redis working', async () => {

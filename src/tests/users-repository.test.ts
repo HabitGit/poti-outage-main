@@ -4,6 +4,7 @@ import { DataSourceConfigTest } from '../../database.config';
 import { UsersRepository } from '../db/repository/users.repository';
 import { Users } from '../db/entitys/users.entity';
 import { CreateUserDto } from '../templates/create-user.dto';
+import { cacheClient } from '../db/test-data-source.redis';
 
 jest.mock('../db/data-source.redis', () => {
   const originalModule = jest.requireActual('../db/test-data-source.redis');
@@ -14,17 +15,18 @@ jest.mock('../db/data-source.redis', () => {
 });
 
 describe('Users repository testing', () => {
+  let appDataSource: DataSource;
   let usersRepository: UsersRepository;
   let fakeUser: CreateUserDto;
   let fakeUser2: CreateUserDto;
 
-  beforeEach(async () => {
-    const AppDataSource: DataSource = new DataSource({
+  beforeAll(async () => {
+    appDataSource = new DataSource({
       ...DataSourceConfigTest,
     });
 
-    await AppDataSource.initialize();
-    usersRepository = new UsersRepository(AppDataSource);
+    await appDataSource.initialize();
+    usersRepository = new UsersRepository(appDataSource);
 
     fakeUser = {
       userId: 1,
@@ -35,14 +37,15 @@ describe('Users repository testing', () => {
       userId: 2,
       chatId: 2,
     };
+  });
 
-    //Удаление из бд
-    const users: Users[] = await usersRepository.find({
-      select: { id: true },
-    });
-    users.map(async (user: Users) => {
-      await usersRepository.delete({ id: user.id });
-    });
+  afterEach(async () => {
+    await usersRepository.clear();
+  });
+
+  afterAll(async () => {
+    await cacheClient.quit();
+    await appDataSource.destroy();
   });
 
   it('User rep has been defined', () => {

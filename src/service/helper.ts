@@ -36,12 +36,16 @@ export class Helper {
     return { endDate: endDate, message: message };
   }
 
-  async getUserPoints(msg: TelegramBot.Message): Promise<IGetUserPoints> {
+  getUserPoints(msg: TelegramBot.Message): IGetUserPoints {
     return {
       chatId: msg.chat.id,
       userId: msg.from?.id,
       userName: msg.from?.first_name,
       message: msg.text,
     };
+  }
+
+  async delay(ms: number) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 }
