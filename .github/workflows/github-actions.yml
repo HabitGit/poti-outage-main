@@ -27,6 +27,8 @@ jobs:
          run: touch .env
        - name: Build docker compose
          run: docker compose up postgres redis -d
+       - name: Sleep
+         run: sleep 10
        - name: Init main DB
          run: docker exec -i postgres_db psql -U postgres -h localhost -p 5432 -d postgres  < ./initdb.d/poti-public-outage.create.sql
        - name: Init test DB
