@@ -6,7 +6,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       REDIS_HOST: ${{ secrets.REDIS_HOST }}
-      REDIS_PORT_INSIDE: Number(${{ secrets.REDIS_PORT_INSIDE }})
+      REDIS_PORT_INSIDE: ${{ secrets.REDIS_PORT_INSIDE }}
       REDIS_PORT_OUTSIDE: ${{ secrets.REDIS_PORT_OUTSIDE }}
       POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
       POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
