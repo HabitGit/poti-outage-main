@@ -5,6 +5,7 @@ import { UsersRepository } from '../db/repository/users.repository';
 import { Users } from '../db/entitys/users.entity';
 import { CreateUserDto } from '../templates/create-user.dto';
 import { cacheClient } from '../db/test-data-source.redis';
+import { Helper } from '../service/helper';
 
 jest.mock('../db/data-source.redis', () => {
   const originalModule = jest.requireActual('../db/test-data-source.redis');
@@ -15,6 +16,7 @@ jest.mock('../db/data-source.redis', () => {
 });
 
 describe('Users repository testing', () => {
+  let helper: Helper;
   let appDataSource: DataSource;
   let usersRepository: UsersRepository;
   let fakeUser: CreateUserDto;
@@ -37,6 +39,8 @@ describe('Users repository testing', () => {
       userId: 2,
       chatId: 2,
     };
+
+    helper = new Helper();
   });
 
   afterEach(async () => {
@@ -86,9 +90,8 @@ describe('Users repository testing', () => {
     await usersRepository.createUser(fakeUser2);
     const isUsersAfter = await usersRepository.getChatIds();
     expect(isUsersAfter.length).toBe(0);
-    setTimeout(async () => {
-      const isUsersAfter = await usersRepository.getChatIds();
-      expect(isUsersAfter.length).toBe(2);
-    }, 11 * 1000);
+    await helper.delay(4 * 1000);
+    const isUsersAfter2 = await usersRepository.getChatIds();
+    expect(isUsersAfter2.length).toBe(2);
   });
 });

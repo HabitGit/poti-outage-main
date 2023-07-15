@@ -18,7 +18,7 @@ export class UsersRepository extends Repository<Users> {
     const user: Users | null = await this.findOne({
       where: { userId: userId },
     });
-    await cacheClient.set(`user${userId}`, JSON.stringify(user), { EX: 10 });
+    await cacheClient.set(`user${userId}`, JSON.stringify(user), { EX: 4 });
     return user;
   }
 
@@ -29,7 +29,7 @@ export class UsersRepository extends Repository<Users> {
       select: { chatId: true },
       where: { mailing: true },
     });
-    await cacheClient.set('mailing', JSON.stringify(users), { EX: 10 });
+    await cacheClient.set('mailing', JSON.stringify(users), { EX: 4 });
     return users;
   }
 
