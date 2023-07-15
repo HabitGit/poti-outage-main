@@ -26,11 +26,7 @@ jobs:
        - name: Create fake .env
          run: touch .env
        - name: Build docker compose
-         run: docker compose up redis postgres -d
-       - name: main db init
-         run: docker exec -i postgres pg_restore --verbose --clean --no-acl --no-owner -h localhost -U postgres -d poti_public_outage /initdb/poti_public_outage.create.sql
-       - name: test db init
-         run: docker exec -i postgres pg_restore --verbose --clean --no-acl --no-owner -h localhost -U postgres -d test /initdb/test.create.sql
+         run: docker compose up postgres redis -d
        - name: Install modules
          run: npm install
        - name: build project
