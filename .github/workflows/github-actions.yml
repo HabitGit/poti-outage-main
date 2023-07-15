@@ -28,9 +28,9 @@ jobs:
        - name: Build docker compose
          run: docker compose up redis postgres -d
        - name: main db init
-         run: docker exec -i postgres pg_restore --verbose --clean --no-acl --no-owner -h localhost -U postgres -d poti_public_outage /dbbackup/poti_public_outage.create.sql
+         run: docker exec -i postgres pg_restore --verbose --clean --no-acl --no-owner -h localhost -U postgres -d poti_public_outage /initdb/poti_public_outage.create.sql
        - name: test db init
-         run: docker exec -i postgres pg_restore --verbose --clean --no-acl --no-owner -h localhost -U postgres -d test /dbbackup/test.create.sql
+         run: docker exec -i postgres pg_restore --verbose --clean --no-acl --no-owner -h localhost -U postgres -d test /initdb/test.create.sql
        - name: Install modules
          run: npm install
        - name: build project
