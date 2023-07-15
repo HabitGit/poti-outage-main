@@ -45,7 +45,7 @@ describe('Users repository testing', () => {
     });
   });
 
-  it('User rep has been defined', async () => {
+  it('User rep has been defined', () => {
     expect(usersRepository).toBeDefined();
   });
 
