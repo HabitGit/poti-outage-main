@@ -30,6 +30,8 @@ jobs:
          run: touch .env
        - name: Build docker compose
          run: docker compose up -d
+       - name: Install modules
+         run: npm install
        - name: build project
          run: npm run build
        - name: ESlinter
