@@ -28,9 +28,9 @@ jobs:
        - name: Build docker compose
          run: docker compose up postgres redis -d
        - name: Init main DB
-         run: docker exec -i postgres psql -U postgres -d postgres  < ./initdb.d/poti-public-outage.create.sql
+         run: docker exec -i postgres psql -U postgres_db -d postgres  < ./initdb.d/poti-public-outage.create.sql
        - name: Init test DB
-         run: docker exec -i postgres psql -U postgres -d postgres  < ./initdb.d/test.create.sql
+         run: docker exec -i postgres psql -U postgres_db -d postgres  < ./initdb.d/test.create.sql
        - name: Install modules
          run: npm install
        - name: build project
