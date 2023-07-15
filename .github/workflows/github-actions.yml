@@ -5,22 +5,22 @@ jobs:
   init:
     runs-on: ubuntu-latest
     env:
-      REDIS_HOST: ${{ github.REDIS_HOST }}
-      REDIS_PORT_INSIDE: Number(${{ github.REDIS_PORT_INSIDE }})
-      REDIS_PORT_OUTSIDE: ${{ github.REDIS_PORT_OUTSIDE }}
-      POSTGRES_USER: ${{ github.POSTGRES_USER }}
-      POSTGRES_PASSWORD: ${{ github.POSTGRES_PASSWORD }}
-      POSTGRES_DB: ${{ github.POSTGRES_DB }}
-      POSTGRES_TEST_DB: ${{ github.POSTGRES_TEST_DB }}
-      POSTGRES_PORT_OUTSIDE: ${{ github.POSTGRES_PORT_OUTSIDE }}
-      POSTGRES_PORT_INSIDE: ${{ github.POSTGRES_PORT_INSIDE }}
-      POSTGRES_HOST: ${{ github.POSTGRES_HOST }}
-      TEST_POSTGRES_HOST: ${{ github.TEST_POSTGRES_HOST }}
-      TEST_POSTGRES_PORT: ${{ github.TEST_POSTGRES_PORT }}
-      TEST_POSTGRES_DB: ${{ github.TEST_POSTGRES_DB }}
-      WATER_LINK: ${{ github.WATER_LINK }}
-      ELECTRICITY_LINK: ${{ github.ELECTRICITY_LINK }}
-      ADMIN_PASSWORD: ${{ github.ADMIN_PASSWORD }}
+      REDIS_HOST: ${{ secrets.REDIS_HOST }}
+      REDIS_PORT_INSIDE: Number(${{ secrets.REDIS_PORT_INSIDE }})
+      REDIS_PORT_OUTSIDE: ${{ secrets.REDIS_PORT_OUTSIDE }}
+      POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+      POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+      POSTGRES_TEST_DB: ${{ secrets.POSTGRES_TEST_DB }}
+      POSTGRES_PORT_OUTSIDE: ${{ secrets.POSTGRES_PORT_OUTSIDE }}
+      POSTGRES_PORT_INSIDE: ${{ secrets.POSTGRES_PORT_INSIDE }}
+      POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
+      TEST_POSTGRES_HOST: ${{ secrets.TEST_POSTGRES_HOST }}
+      TEST_POSTGRES_PORT: ${{ secrets.TEST_POSTGRES_PORT }}
+      TEST_POSTGRES_DB: ${{ secrets.TEST_POSTGRES_DB }}
+      WATER_LINK: ${{ secrets.WATER_LINK }}
+      ELECTRICITY_LINK: ${{ secrets.ELECTRICITY_LINK }}
+      ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
     steps:
        - uses: actions/checkout@v3
        - uses: isbang/compose-action@v1.4.1
