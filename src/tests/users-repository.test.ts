@@ -86,7 +86,7 @@ describe('Users repository testing', () => {
     await usersRepository.createUser(fakeUser2);
     const isUsersAfter = await usersRepository.getChatIds();
     expect(isUsersAfter.length).toBe(0);
-    await setTimeout(async () => {
+    setTimeout(async () => {
       const isUsersAfter = await usersRepository.getChatIds();
       expect(isUsersAfter.length).toBe(2);
     }, 11 * 1000);
