@@ -12,6 +12,7 @@ import { WaterParser } from './parsers/water.parser';
 import { ElectricityParser } from './parsers/electricity.parser';
 import { ClientService } from './service/client.service';
 import { UsersRepository } from './db/repository/users.repository';
+import { QueryController } from './controllers/query.controller';
 
 //bot init
 const TOKEN: string | undefined = process.env.TOKEN;
@@ -21,6 +22,7 @@ export const bot: TelegramBot = new TelegramBot(TOKEN, { polling: true });
 export class Start {
   constructor(
     private mainController: MainController,
+    private queryController: QueryController,
     private waterService: WaterService,
     private electricityService: ElectricityService,
   ) {}
@@ -47,6 +49,11 @@ export class Start {
       await this.mainController.requestHandler(msg);
     });
 
+    //Обработка квери
+    bot.on('callback_query', async (query: TelegramBot.CallbackQuery) => {
+      await this.queryController.requestQueryHandler(query);
+    });
+
     const regFromAdmin = new RegExp(`/adm${process.env.ADMIN_PASSWORD}(.+)`);
     bot.onText(regFromAdmin, async (msg, source) => {
       if (source === null) return;
@@ -71,17 +78,28 @@ export class Start {
 
 const helper = new Helper();
 const templatesText = new TemplatesText();
+
 const usersRepository = new UsersRepository(AppDataSource);
-const clientService = new ClientService(templatesText, usersRepository);
-const mainController = new MainController(clientService, helper);
+
 const waterParser = new WaterParser(helper);
 const electricityParser = new ElectricityParser(helper);
+
+const clientService = new ClientService(templatesText, usersRepository);
 const electricityService = new ElectricityService(
   electricityParser,
   clientService,
 );
+
+const mainController = new MainController(clientService, helper);
+const queryController = new QueryController(clientService, helper);
+
 const waterService = new WaterService(waterParser, clientService);
-const start = new Start(mainController, waterService, electricityService);
+const start = new Start(
+  mainController,
+  queryController,
+  waterService,
+  electricityService,
+);
 
 try {
   start.botOn();

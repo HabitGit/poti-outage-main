@@ -1,4 +1,4 @@
-import { KeyboardButton } from 'node-telegram-bot-api';
+import { InlineKeyboardButton, KeyboardButton } from 'node-telegram-bot-api';
 
 export interface IGetUserPoints {
   chatId: number;
@@ -8,6 +8,14 @@ export interface IGetUserPoints {
   userName: string | undefined;
 
   message: string | undefined;
+}
+
+export interface IGetUserPointsQuery {
+  data?: string;
+
+  chatId?: number;
+
+  userId: number;
 }
 
 export interface IFinishParserInfo {
@@ -21,9 +29,12 @@ export interface IFinishParserInfo {
 export interface IKeyboard {
   start: KeyboardButton[][];
 
-  homeMailingEnable: KeyboardButton[][];
+  home: KeyboardButton[][];
+}
 
-  homeMailingDisable: KeyboardButton[][];
+export interface IInlineKeyboard {
+  myInfoEnable: InlineKeyboardButton[][];
+  myInfoDisable: InlineKeyboardButton[][];
 }
 
 export interface IOutputRefactoring {

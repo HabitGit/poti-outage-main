@@ -3,6 +3,7 @@ import TelegramBot from 'node-telegram-bot-api';
 import {
   IFinishParserInfo,
   IGetUserPoints,
+  IGetUserPointsQuery,
   IOutputRefactoring,
 } from '../templates/interfaces';
 
@@ -42,6 +43,14 @@ export class Helper {
       userId: msg.from?.id,
       userName: msg.from?.first_name,
       message: msg.text,
+    };
+  }
+
+  getUserPointsQuery(query: TelegramBot.CallbackQuery): IGetUserPointsQuery {
+    return {
+      data: query.data,
+      chatId: query.message?.chat.id,
+      userId: query.from.id,
     };
   }
 

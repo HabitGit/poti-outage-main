@@ -7,6 +7,7 @@ import { CreateUserDto } from '../templates/create-user.dto';
 import { UsersRepository } from '../db/repository/users.repository';
 import { BotErrors } from '../templates/errors';
 import fs from 'fs';
+import { inlineKeyboard } from '../keyboards/inline-keyboard';
 
 export class ClientService {
   constructor(
@@ -26,7 +27,7 @@ export class ClientService {
 
     return bot.sendMessage(chatId, message, {
       reply_markup: {
-        keyboard: isUser ? keyboard.homeMailingEnable : keyboard.start,
+        keyboard: isUser ? keyboard.home : keyboard.start,
         resize_keyboard: true,
       },
     });
@@ -47,7 +48,7 @@ export class ClientService {
 
     return bot.sendMessage(userData.chatId, message, {
       reply_markup: {
-        keyboard: keyboard.homeMailingEnable,
+        keyboard: keyboard.home,
         resize_keyboard: true,
       },
     });
@@ -93,54 +94,36 @@ export class ClientService {
     }
   }
 
-  async mailingOff(
-    userId: number,
-    chatId: number,
-  ): Promise<TelegramBot.Message> {
+  async mailingOff(userId: number, chatId: number) {
     const isUser: Users | null = await this.checkUser(userId, chatId);
 
     if (!isUser?.mailing) {
-      return bot.sendMessage(chatId, 'Вы уже отключили рассылку', {
-        reply_markup: {
-          keyboard: keyboard.homeMailingDisable,
-          resize_keyboard: true,
-        },
-      });
+      await bot.sendMessage(chatId, 'Вы уже отключили рассылку');
+      return;
     }
 
     await this.usersRepository.turnMailing(userId);
 
-    return bot.sendMessage(chatId, 'Рассылка отключена', {
-      reply_markup: {
-        keyboard: keyboard.homeMailingDisable,
-        resize_keyboard: true,
-      },
-    });
+    await bot.sendMessage(chatId, 'Рассылка отключена');
+
+    await this.getMyInfo(userId, chatId);
+    return;
   }
 
-  async mailingOn(
-    userId: number,
-    chatId: number,
-  ): Promise<TelegramBot.Message> {
+  async mailingOn(userId: number, chatId: number) {
     const isUser: Users | null = await this.checkUser(userId, chatId);
 
     if (isUser?.mailing) {
-      return bot.sendMessage(chatId, 'Ваша рассылка уже включена', {
-        reply_markup: {
-          keyboard: keyboard.homeMailingEnable,
-          resize_keyboard: true,
-        },
-      });
+      await bot.sendMessage(chatId, 'Ваша рассылка уже включена');
+      return;
     }
 
     await this.usersRepository.turnMailing(userId);
 
-    return bot.sendMessage(chatId, 'Рассылка включена', {
-      reply_markup: {
-        keyboard: keyboard.homeMailingEnable,
-        resize_keyboard: true,
-      },
-    });
+    await bot.sendMessage(chatId, 'Рассылка включена');
+
+    await this.getMyInfo(userId, chatId);
+    return;
   }
 
   async checkUser(userId: number, chatId: number): Promise<Users | null> {
@@ -165,10 +148,9 @@ export class ClientService {
       }***`;
       await bot.sendMessage(chatId, message, {
         reply_markup: {
-          keyboard: user.mailing
-            ? keyboard.homeMailingEnable
-            : keyboard.homeMailingDisable,
-          resize_keyboard: true,
+          inline_keyboard: user.mailing
+            ? inlineKeyboard.myInfoEnable
+            : inlineKeyboard.myInfoDisable,
         },
         parse_mode: 'Markdown',
       });

@@ -3,3 +3,12 @@ export type Buttons = {
     [buttonName: string]: { text: string };
   };
 };
+
+export type InlineButtons = {
+  [buttonLocation: string]: {
+    [buttonName: string]: {
+      text: string;
+      callback_data: string;
+    };
+  };
+};
