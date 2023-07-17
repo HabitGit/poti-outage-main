@@ -1,0 +1,43 @@
+name: GitHub Actions Demo
+run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
+on: [push]
+jobs:
+  init:
+    runs-on: ubuntu-latest
+    env:
+      REDIS_HOST: ${{ secrets.REDIS_HOST }}
+      REDIS_PORT_INSIDE: ${{ secrets.REDIS_PORT_INSIDE }}
+      REDIS_PORT_OUTSIDE: ${{ secrets.REDIS_PORT_OUTSIDE }}
+      POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+      POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+      POSTGRES_TEST_DB: ${{ secrets.POSTGRES_TEST_DB }}
+      POSTGRES_PORT_OUTSIDE: ${{ secrets.POSTGRES_PORT_OUTSIDE }}
+      POSTGRES_PORT_INSIDE: ${{ secrets.POSTGRES_PORT_INSIDE }}
+      POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
+      TEST_POSTGRES_HOST: ${{ secrets.TEST_POSTGRES_HOST }}
+      TEST_POSTGRES_PORT: ${{ secrets.TEST_POSTGRES_PORT }}
+      TEST_POSTGRES_DB: ${{ secrets.TEST_POSTGRES_DB }}
+      WATER_LINK: ${{ secrets.WATER_LINK }}
+      ELECTRICITY_LINK: ${{ secrets.ELECTRICITY_LINK }}
+      ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+    steps:
+       - uses: actions/checkout@v3
+       - name: Create fake .env
+         run: touch .env
+       - name: Build docker compose
+         run: docker compose up postgres redis -d
+       - name: Sleep
+         run: sleep 10
+       - name: Init main DB
+         run: docker exec -i postgres_db psql -U postgres -h localhost -p 5432 -d postgres  < ./initdb.d/poti-public-outage.create.sql
+       - name: Init test DB
+         run: docker exec -i postgres_db psql -U postgres -h localhost -p 5432 -d postgres  < ./initdb.d/test.create.sql
+       - name: Install modules
+         run: npm install
+       - name: build project
+         run: npm run build
+       - name: ESlinter
+         run: npm run lint
+       - name: unit tests
+         run: npm run test

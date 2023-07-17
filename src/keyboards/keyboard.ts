@@ -10,7 +10,8 @@ export const keyboard: IKeyboard = {
     [kb.home.mailingDisable],
   ],
   homeMailingDisable: [
-    [kb.home.checkDisabled],
+    [kb.home.checkDisabledWater],
+    [kb.home.checkDisabledElectricity],
     [kb.home.showLinks],
     [kb.home.mailingEnable],
   ],

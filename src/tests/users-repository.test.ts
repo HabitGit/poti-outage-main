@@ -4,6 +4,8 @@ import { DataSourceConfigTest } from '../../database.config';
 import { UsersRepository } from '../db/repository/users.repository';
 import { Users } from '../db/entitys/users.entity';
 import { CreateUserDto } from '../templates/create-user.dto';
+import { cacheClient } from '../db/test-data-source.redis';
+import { Helper } from '../service/helper';
 
 jest.mock('../db/data-source.redis', () => {
   const originalModule = jest.requireActual('../db/test-data-source.redis');
@@ -14,17 +16,19 @@ jest.mock('../db/data-source.redis', () => {
 });
 
 describe('Users repository testing', () => {
+  let helper: Helper;
+  let appDataSource: DataSource;
   let usersRepository: UsersRepository;
   let fakeUser: CreateUserDto;
   let fakeUser2: CreateUserDto;
 
-  beforeEach(async () => {
-    const AppDataSource: DataSource = new DataSource({
+  beforeAll(async () => {
+    appDataSource = new DataSource({
       ...DataSourceConfigTest,
     });
 
-    await AppDataSource.initialize();
-    usersRepository = new UsersRepository(AppDataSource);
+    await appDataSource.initialize();
+    usersRepository = new UsersRepository(appDataSource);
 
     fakeUser = {
       userId: 1,
@@ -36,16 +40,19 @@ describe('Users repository testing', () => {
       chatId: 2,
     };
 
-    //Удаление из бд
-    const users: Users[] = await usersRepository.find({
-      select: { id: true },
-    });
-    users.map(async (user: Users) => {
-      await usersRepository.delete({ id: user.id });
-    });
+    helper = new Helper();
   });
 
-  it('User rep has been defined', async () => {
+  afterEach(async () => {
+    await usersRepository.clear();
+  });
+
+  afterAll(async () => {
+    await cacheClient.quit();
+    await appDataSource.destroy();
+  });
+
+  it('User rep has been defined', () => {
     expect(usersRepository).toBeDefined();
   });
 
@@ -83,9 +90,8 @@ describe('Users repository testing', () => {
     await usersRepository.createUser(fakeUser2);
     const isUsersAfter = await usersRepository.getChatIds();
     expect(isUsersAfter.length).toBe(0);
-    await setTimeout(async () => {
-      const isUsersAfter = await usersRepository.getChatIds();
-      expect(isUsersAfter.length).toBe(2);
-    }, 11 * 1000);
+    await helper.delay(4 * 1000);
+    const isUsersAfter2 = await usersRepository.getChatIds();
+    expect(isUsersAfter2.length).toBe(2);
   });
 });

@@ -24,7 +24,7 @@ services:
       - ./redisdata:/data
 
   postgres:
-    container_name: postgres
+    container_name: postgres_db
     image: postgres:15.2
     restart: always
     env_file:

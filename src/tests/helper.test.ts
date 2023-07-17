@@ -59,9 +59,9 @@ describe('Testing helper', () => {
     });
   });
 
-  it('Test get users points', async () => {
+  it('Test get users points', () => {
     const helper = new Helper();
-    const result1 = await helper.getUserPoints(mockMsg);
+    const result1 = helper.getUserPoints(mockMsg);
     expect(result1).toEqual({
       chatId: 1,
       userId: 1,
