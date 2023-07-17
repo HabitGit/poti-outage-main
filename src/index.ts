@@ -79,4 +79,8 @@ const electricityService = new ElectricityService(
 const waterService = new WaterService(waterParser, clientService);
 const start = new Start(mainController, waterService, electricityService);
 
-start.botOn();
+try {
+  start.botOn();
+} catch (e) {
+  console.log('[-]*ERROR* in index file: ', e);
+}
