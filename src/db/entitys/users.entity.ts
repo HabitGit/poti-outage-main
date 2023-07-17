@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Streets } from './streets.entity';
 
 @Entity()
 export class Users {
@@ -24,4 +25,13 @@ export class Users {
     default: true,
   })
   mailing: boolean;
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
+
+  @ManyToOne(() => Streets, (street) => street.id)
+  street: Streets;
 }
