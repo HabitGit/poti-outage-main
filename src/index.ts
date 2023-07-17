@@ -57,8 +57,12 @@ export class Start {
   private job = new CronJob({
     cronTime: '0,0 */2 * * *',
     onTick: async () => {
-      await this.waterService.cronGetWaterInfo();
-      await this.electricityService.cronGetElectricityInfo();
+      try {
+        await this.waterService.cronGetWaterInfo();
+        await this.electricityService.cronGetElectricityInfo();
+      } catch (e) {
+        console.log('[-]*ERROR* in Crone: ', e);
+      }
       console.log('From CRON, check water: ', new Date());
     },
     timeZone: 'Asia/Tbilisi',
