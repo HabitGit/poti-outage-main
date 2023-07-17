@@ -15,7 +15,9 @@ export class WaterService {
 
     const nowDateTimestamp: number = Date.now();
     const endDateTimestamp: number = info.endDate.getTime();
-    const timeToKeyLife: number = (endDateTimestamp - nowDateTimestamp) / 1000;
+    const timeToKeyLife: number = Math.round(
+      (endDateTimestamp - nowDateTimestamp) / 1000,
+    );
     const key: string = `waterInfo${endDateTimestamp}`;
 
     const cache: string | null = await cacheClient.get(key);

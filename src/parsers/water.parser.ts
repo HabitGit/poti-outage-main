@@ -96,7 +96,7 @@ export class WaterParser {
           startDate: startDate,
           endDate: endDate,
         });
-        console.log(resultText);
+        console.log('[+]*WATER PARSER* result text: ', resultText);
       }
     });
     if (resultText.length === 0)
