@@ -4,7 +4,7 @@ export const inlineButtons: InlineButtons = {
   myInfo: {
     addStreet: {
       text: 'Добавить улицу',
-      callback_data: 'TCB',
+      callback_data: 'addS',
     },
     mailingDisable: {
       text: 'Отключить рассылку',

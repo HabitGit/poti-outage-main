@@ -2,6 +2,7 @@ import { DataSource, DeleteResult, Repository } from 'typeorm';
 import { Users } from '../entitys/users.entity';
 import { CreateUserDto } from '../../templates/create-user.dto';
 import { cacheClient } from '../data-source.redis';
+import { UpdateUserDto } from '../../templates/update-user.dto';
 
 export class UsersRepository extends Repository<Users> {
   constructor(private dataSource: DataSource) {
@@ -49,5 +50,11 @@ export class UsersRepository extends Repository<Users> {
 
   async deleteUserByChatId(chatId: number): Promise<DeleteResult> {
     return this.delete({ chatId: chatId });
+  }
+
+  async updateUserByUserId(updateUserData: UpdateUserDto): Promise<Users> {
+    return this.save({
+      ...updateUserData,
+    });
   }
 }

@@ -1,10 +1,14 @@
 import TelegramBot from 'node-telegram-bot-api';
 import { ClientService } from '../service/client.service';
 import { Helper } from '../service/helper';
+import { CreateStreetDto } from '../templates/create-street.dto';
+import { Streets } from '../db/entitys/streets.entity';
+import { StreetsService } from '../service/streets.service';
 
 export class QueryController {
   constructor(
     private clientService: ClientService,
+    private streetsService: StreetsService,
     private helper: Helper,
   ) {}
 
@@ -19,6 +23,10 @@ export class QueryController {
 
       case 'maEn':
         await this.clientService.mailingOn(userId, chatId);
+        break;
+
+      case 'addS':
+        await this.clientService.registrationStreet(userId, chatId);
         break;
     }
   }

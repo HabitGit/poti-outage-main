@@ -13,6 +13,9 @@ import { ElectricityParser } from './parsers/electricity.parser';
 import { ClientService } from './service/client.service';
 import { UsersRepository } from './db/repository/users.repository';
 import { QueryController } from './controllers/query.controller';
+import { StreetsService } from './service/streets.service';
+import { StreetsRepository } from './db/repository/streets.repository';
+import { CreateStreetDto } from './templates/create-street.dto';
 
 //bot init
 const TOKEN: string | undefined = process.env.TOKEN;
@@ -43,6 +46,14 @@ export class Start {
     //     const info = await this.waterService.cronGetWaterInfo();
     //     console.log(info);
     // })
+    // bot.onText(/\/addStreet/, async () => {
+    //   const testData: CreateStreetDto[] = [
+    //     {
+    //       nameGeo: 'რუსთაველის რკ.',
+    //     },
+    //   ];
+    //   await this.queryController.addStreet(testData);
+    // });
 
     //Обработка запросов
     bot.on('message', async (msg) => {
@@ -79,19 +90,38 @@ export class Start {
 const helper = new Helper();
 const templatesText = new TemplatesText();
 
+const streetsRepository = new StreetsRepository(AppDataSource);
 const usersRepository = new UsersRepository(AppDataSource);
 
 const waterParser = new WaterParser(helper);
 const electricityParser = new ElectricityParser(helper);
 
-const clientService = new ClientService(templatesText, usersRepository);
+const listenerService = new StreetsService(
+  streetsRepository,
+  usersRepository,
+  helper,
+);
+const clientService = new ClientService(
+  templatesText,
+  usersRepository,
+  listenerService,
+);
 const electricityService = new ElectricityService(
   electricityParser,
   clientService,
 );
+const streetsService = new StreetsService(
+  streetsRepository,
+  usersRepository,
+  helper,
+);
 
 const mainController = new MainController(clientService, helper);
-const queryController = new QueryController(clientService, helper);
+const queryController = new QueryController(
+  clientService,
+  streetsService,
+  helper,
+);
 
 const waterService = new WaterService(waterParser, clientService);
 const start = new Start(

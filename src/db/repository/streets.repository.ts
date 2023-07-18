@@ -27,4 +27,10 @@ export class StreetsRepository extends Repository<Streets> {
   async getStreets(): Promise<Streets[]> {
     return this.find();
   }
+
+  async getStreetByNameGeo(nameGeo: string): Promise<Streets | null> {
+    return this.findOne({
+      where: { nameGeo },
+    });
+  }
 }

@@ -8,11 +8,13 @@ import { UsersRepository } from '../db/repository/users.repository';
 import { BotErrors } from '../templates/errors';
 import fs from 'fs';
 import { inlineKeyboard } from '../keyboards/inline-keyboard';
+import { StreetsService } from './streets.service';
 
 export class ClientService {
   constructor(
     private templatesText: TemplatesText,
     private usersRepository: UsersRepository,
+    private streetsService: StreetsService,
   ) {}
 
   async CommandStart(
@@ -155,5 +157,13 @@ export class ClientService {
         parse_mode: 'Markdown',
       });
     }
+  }
+
+  async registrationStreet(userId: number, chatId: number) {
+    await bot.sendMessage(
+      chatId,
+      'Введите название улицы на грузинском, или скопируйте с одного из сайтов',
+    );
+    await bot.on('message', await this.streetsService.registrationStreet);
   }
 }
