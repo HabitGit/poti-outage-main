@@ -7,11 +7,13 @@ import { BotService } from './bot.service';
 import { Message, myInfoOutput } from '../templates/messages.template';
 import { BotErrors } from '../templates/errors';
 import { inlineKeyboard } from '../keyboards/inline-keyboard';
+import { StreetsService } from './streets.service';
 
 export class SocialService {
   constructor(
     private usersRepository: UsersRepository,
     private botService: BotService,
+    private streetsService: StreetsService,
   ) {}
 
   async registration(userData: CreateUserDto): Promise<TelegramBot.Message> {
@@ -83,5 +85,37 @@ export class SocialService {
 
     await this.myInfo(userId, chatId);
     return;
+  }
+
+  async mailingOn(userId: number, chatId: number) {
+    const isUser: Users | null = await this.usersRepository.getUserByUserId(
+      userId,
+    );
+    if (!isUser) {
+      return this.botService.sendMessage(chatId, Message.userUndefined);
+    }
+
+    if (isUser.mailing) {
+      await this.botService.sendMessage(chatId, 'Ваша рассылка уже включена');
+      return;
+    }
+
+    await this.usersRepository.turnMailing(isUser);
+
+    await this.botService.sendMessage(chatId, 'Рассылка включена');
+
+    await this.myInfo(userId, chatId);
+    return;
+  }
+
+  async registrationStreet(userId: number, chatId: number) {
+    await this.botService.sendMessage(
+      chatId,
+      'Введите название улицы на грузинском, или скопируйте с одного из сайтов',
+    );
+    await this.botService.on(
+      'message',
+      await this.streetsService.registrationStreet,
+    );
   }
 }
