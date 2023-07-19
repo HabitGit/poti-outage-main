@@ -1,32 +1,39 @@
 import TelegramBot from 'node-telegram-bot-api';
-import { ClientService } from '../service/client.service';
-import { Helper } from '../service/helper';
-import { CreateStreetDto } from '../templates/create-street.dto';
-import { Streets } from '../db/entitys/streets.entity';
 import { StreetsService } from '../service/streets.service';
+import { SocialService } from '../service/social.service';
+import { Helper } from '../service/helper';
+import { IGetUserPointsQuery } from '../templates/interfaces';
+import { BotErrors } from '../templates/errors';
 
 export class QueryController {
   constructor(
-    private clientService: ClientService,
+    private socialService: SocialService,
     private streetsService: StreetsService,
     private helper: Helper,
   ) {}
 
-  async requestQueryHandler(query: TelegramBot.CallbackQuery) {
-    const { data, userId, chatId } = this.helper.getUserPointsQuery(query);
-    if (!chatId) return;
+  requestQueryHandler = async (query: TelegramBot.CallbackQuery) => {
+    const { data, userId, chatId }: IGetUserPointsQuery =
+      this.helper.getUserPointsQuery(query);
+
+    if (!chatId) {
+      throw new BotErrors({
+        name: 'CHAT_UNDEFINED',
+        message: 'Нету айди чата',
+      });
+    }
 
     switch (data) {
       case 'maDi':
-        await this.clientService.mailingOff(userId, chatId);
+        await this.socialService.mailingOff(userId, chatId);
         break;
 
       case 'maEn':
-        await this.clientService.mailingOn(userId, chatId);
+        await this.socialService.mailingOn(userId, chatId);
         break;
 
       case 'addS':
-        await this.clientService.registrationStreet(userId, chatId);
+        await this.socialService.registrationStreet(userId, chatId);
         break;
     }
   }
