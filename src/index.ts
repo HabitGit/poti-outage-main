@@ -68,6 +68,7 @@ const electricityParser = new ElectricityParser(helper);
 const botService = new BotService(configEnv);
 const streetsService = new StreetsService(
   streetsRepository,
+  usersRepository,
   helper,
   botService,
 );
