@@ -54,6 +54,16 @@ export class Helper {
     };
   }
 
+  getKeyboard<T, L extends keyof T, B extends keyof T[L]>(
+    keyboardButtons: T,
+    location: L,
+    buttons: B[],
+  ) {
+    return buttons.map((button) => {
+      return keyboardButtons[location][button];
+    });
+  }
+
   async delay(ms: number) {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
