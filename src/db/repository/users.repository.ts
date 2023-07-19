@@ -10,15 +10,22 @@ export class UsersRepository extends Repository<Users> {
   }
 
   async createUser(userData: CreateUserDto): Promise<Users> {
-    return this.save(userData);
+    const user: Users = await this.save(userData);
+    await cacheClient.set(`user${user.userId}`, JSON.stringify(user), {
+      EX: 4,
+    });
+    return user;
   }
 
-  async getUserById(userId: number): Promise<Users | null> {
+  async getUserByUserId(userId: number): Promise<Users | null> {
     const cache: string | null = await cacheClient.get(`user${userId}`);
     if (cache) return JSON.parse(cache);
+
     const user: Users | null = await this.findOne({
       where: { userId: userId },
+      relations: { street: true },
     });
+
     await cacheClient.set(`user${userId}`, JSON.stringify(user), { EX: 4 });
     return user;
   }
@@ -34,15 +41,12 @@ export class UsersRepository extends Repository<Users> {
     return users;
   }
 
-  async turnMailing(userId: number): Promise<Users> {
-    const user: Users | null = await this.findOne({
-      where: { userId: userId },
-    });
+  async turnMailing(user: Users): Promise<Users> {
     const updateUser: Users = await this.save({
       ...user,
-      mailing: user?.mailing ? false : true,
+      mailing: !user.mailing,
     });
-    await cacheClient.set(`user${userId}`, JSON.stringify(updateUser), {
+    await cacheClient.set(`user${user.userId}`, JSON.stringify(updateUser), {
       EX: 10,
     });
     return updateUser;
