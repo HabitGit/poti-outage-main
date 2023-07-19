@@ -24,4 +24,12 @@ export class BotService extends TelegramBot {
   ) {
     return this.removeListener('message', listener);
   }
+
+  async queryListenerOn(listener: (query: TelegramBot.CallbackQuery) => void) {
+    return this.on('callback_query', listener);
+  }
+
+  async queryListenerOff(listener: (query: TelegramBot.CallbackQuery) => void) {
+    return this.removeListener('callback_query', listener);
+  }
 }
