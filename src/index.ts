@@ -28,12 +28,18 @@ export class Main {
   ) {}
 
   async botOn() {
-    await botService.setMyCommands(commands);
-    await botService.messageListenerOn(this.messageController.requestHandler);
-    await botService.queryListenerOn(this.queryController.requestQueryHandler);
-    await botService.adminListener(this.adminController.requestHandlerAdmin);
+    try {
+      await botService.setMyCommands(commands);
+      await botService.messageListenerOn(this.messageController.requestHandler);
+      await botService.queryListenerOn(
+        this.queryController.requestQueryHandler,
+      );
+      await botService.adminListener(this.adminController.requestHandlerAdmin);
 
-    this.job.start();
+      this.job.start();
+    } catch (e) {
+      console.log('[-]*ERROR* in index file: ', e);
+    }
   }
 
   private job = new CronJob({
@@ -103,8 +109,4 @@ const main = new Main(
   adminController,
 );
 
-try {
-  main.botOn();
-} catch (e) {
-  console.log('[-]*ERROR* in index file: ', e);
-}
+main.botOn();
