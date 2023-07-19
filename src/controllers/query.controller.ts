@@ -33,8 +33,12 @@ export class QueryController {
         break;
 
       case 'addS':
-        await this.socialService.registrationStreet(userId, chatId);
+        await this.streetsService.registrationStreet(userId, chatId);
         break;
     }
-  }
+  };
+
+  // async addStreet(streetData: CreateStreetDto[]): Promise<Streets[]> {
+  //   return this.streetsService.addStreets(streetData);
+  // }
 }

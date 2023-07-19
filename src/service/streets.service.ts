@@ -16,7 +16,7 @@ export class StreetsService {
     private botService: BotService,
   ) {}
 
-  registrationStreet = async (msg: TelegramBot.Message) => {
+  registrationStreetListener = async (msg: TelegramBot.Message) => {
     const {
       message: streetName,
       chatId,
@@ -41,7 +41,7 @@ export class StreetsService {
       await this.streetsRepository.getStreetByNameGeo(streetName);
 
     if (!isStreet) {
-      await this.botService.messageListenerOff(this.registrationStreet);
+      await this.botService.messageListenerOff(this.registrationStreetListener);
       return this.botService.sendMessage(
         chatId,
         'Такая улица пока что не добавлена в базу, или указана с ошибкой',
@@ -50,8 +50,16 @@ export class StreetsService {
     const updateUserData: UpdateUserDto = { userId: userId, street: isStreet };
     await this.usersRepository.updateUserByUserId(updateUserData);
     await this.botService.sendMessage(chatId, 'Улица успешно зарегистрирована');
-    await this.botService.messageListenerOff(this.registrationStreet);
+    await this.botService.messageListenerOff(this.registrationStreetListener);
   };
+
+  async registrationStreet(userId: number, chatId: number) {
+    await this.botService.sendMessage(
+      chatId,
+      'Введите название улицы на грузинском, или скопируйте с одного из сайтов',
+    );
+    await this.botService.messageListenerOn(this.registrationStreetListener);
+  }
 
   async addStreets(streetsData: CreateStreetDto[]): Promise<Streets[]> {
     const createdStreets: Streets[] = [];

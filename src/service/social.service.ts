@@ -109,16 +109,6 @@ export class SocialService {
     return;
   }
 
-  async registrationStreet(userId: number, chatId: number) {
-    await this.botService.sendMessage(
-      chatId,
-      'Введите название улицы на грузинском, или скопируйте с одного из сайтов',
-    );
-    await this.botService.messageListenerOn(
-      this.streetsService.registrationStreet,
-    );
-  }
-
   async messageSender(message: string) {
     const users: Users[] = await this.usersRepository.getChatIds();
     for (const user of users) {

@@ -1,4 +1,4 @@
-import { DataSource, DeleteResult, Repository } from 'typeorm';
+import { DataSource, DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { Users } from '../entitys/users.entity';
 import { CreateUserDto } from '../../templates/dtos/create-user.dto';
 import { cacheClient } from '../data-source.redis';
@@ -56,9 +56,12 @@ export class UsersRepository extends Repository<Users> {
     return this.delete({ chatId: chatId });
   }
 
-  async updateUserByUserId(updateUserData: UpdateUserDto): Promise<Users> {
-    return this.save({
-      ...updateUserData,
-    });
+  async updateUserByUserId(
+    updateUserData: UpdateUserDto,
+  ): Promise<UpdateResult> {
+    return this.update(
+      { userId: updateUserData.userId },
+      { street: updateUserData.street },
+    );
   }
 }
