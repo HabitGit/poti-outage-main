@@ -1,11 +1,11 @@
-import { CreateUserDto } from '../templates/create-user.dto';
+import { CreateUserDto } from '../templates/dtos/create-user.dto';
 import TelegramBot from 'node-telegram-bot-api';
 import { Users } from '../db/entitys/users.entity';
 import { keyboard } from '../keyboards/keyboard';
 import { UsersRepository } from '../db/repository/users.repository';
 import { BotService } from './bot.service';
-import { Message, myInfoOutput } from '../templates/messages.template';
-import { BotErrors } from '../templates/errors';
+import { Message, myInfoOutput } from '../templates/helpers/messages.template';
+import { BotErrors } from '../templates/errors/errors';
 import { inlineKeyboard } from '../keyboards/inline-keyboard';
 import { StreetsService } from './streets.service';
 import * as fs from 'fs';
@@ -114,9 +114,8 @@ export class SocialService {
       chatId,
       'Введите название улицы на грузинском, или скопируйте с одного из сайтов',
     );
-    await this.botService.on(
-      'message',
-      await this.streetsService.registrationStreet,
+    await this.botService.messageListenerOn(
+      this.streetsService.registrationStreet,
     );
   }
 

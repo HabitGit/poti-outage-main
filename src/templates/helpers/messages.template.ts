@@ -1,4 +1,4 @@
-import { IMyInfo } from './interfaces';
+import { IMyInfo } from '../interfaces/interfaces';
 
 export const Message = {
   invalidUser: 'Отсутствует информация о вашем телеграм аккаунте',

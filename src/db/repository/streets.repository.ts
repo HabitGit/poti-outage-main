@@ -1,7 +1,7 @@
 import { DataSource, Repository } from 'typeorm';
 import { Streets } from '../entitys/streets.entity';
-import { CreateStreetDto } from '../../templates/create-street.dto';
-import { UpdateStreetDto } from '../../templates/update-street.dto';
+import { CreateStreetDto } from '../../templates/dtos/create-street.dto';
+import { UpdateStreetDto } from '../../templates/dtos/update-street.dto';
 
 export class StreetsRepository extends Repository<Streets> {
   constructor(private dataSource: DataSource) {

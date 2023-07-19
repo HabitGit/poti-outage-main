@@ -1,6 +1,6 @@
 import { WaterParser } from '../parsers/water.parser';
 import { cacheClient } from '../db/data-source.redis';
-import { IOutputRefactoring } from '../templates/interfaces';
+import { IOutputRefactoring } from '../templates/interfaces/interfaces';
 import { BotService } from './bot.service';
 import { SocialService } from './social.service';
 

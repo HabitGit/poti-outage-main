@@ -1,7 +1,7 @@
 import 'dotenv/config';
-import { IFinishParserInfo } from '../templates/interfaces';
+import { IFinishParserInfo } from '../templates/interfaces/interfaces';
 import TelegramBot from 'node-telegram-bot-api';
-import { Helper } from '../service/helper';
+import { Helper } from '../templates/helpers/helper';
 
 describe('Testing helper', () => {
   let mockInfoArray1: IFinishParserInfo[];

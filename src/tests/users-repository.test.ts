@@ -3,9 +3,9 @@ import { DataSource } from 'typeorm';
 import { DataSourceConfigTest } from '../../database.config';
 import { UsersRepository } from '../db/repository/users.repository';
 import { Users } from '../db/entitys/users.entity';
-import { CreateUserDto } from '../templates/create-user.dto';
+import { CreateUserDto } from '../templates/dtos/create-user.dto';
 import { cacheClient } from '../db/test-data-source.redis';
-import { Helper } from '../service/helper';
+import { Helper } from '../templates/helpers/helper';
 
 jest.mock('../db/data-source.redis', () => {
   const originalModule = jest.requireActual('../db/test-data-source.redis');

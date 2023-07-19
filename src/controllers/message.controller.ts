@@ -1,12 +1,12 @@
 import TelegramBot from 'node-telegram-bot-api';
-import { IGetUserPoints } from '../templates/interfaces';
-import { Helper } from '../service/helper';
+import { IGetUserPoints } from '../templates/interfaces/interfaces';
+import { Helper } from '../templates/helpers/helper';
 import { BotService } from '../service/bot.service';
 import { CommandService } from '../service/command.service';
-import { BotErrors } from '../templates/errors';
-import { CreateUserDto } from '../templates/create-user.dto';
+import { BotErrors } from '../templates/errors/errors';
+import { CreateUserDto } from '../templates/dtos/create-user.dto';
 import { SocialService } from '../service/social.service';
-import { Message } from '../templates/messages.template';
+import { Message } from '../templates/helpers/messages.template';
 import { WaterService } from '../service/water.service';
 import { ElectricityService } from '../service/electricity.service';
 

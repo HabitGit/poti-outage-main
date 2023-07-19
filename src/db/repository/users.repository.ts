@@ -1,8 +1,8 @@
 import { DataSource, DeleteResult, Repository } from 'typeorm';
 import { Users } from '../entitys/users.entity';
-import { CreateUserDto } from '../../templates/create-user.dto';
+import { CreateUserDto } from '../../templates/dtos/create-user.dto';
 import { cacheClient } from '../data-source.redis';
-import { UpdateUserDto } from '../../templates/update-user.dto';
+import { UpdateUserDto } from '../../templates/dtos/update-user.dto';
 
 export class UsersRepository extends Repository<Users> {
   constructor(private dataSource: DataSource) {

@@ -5,7 +5,7 @@ import {
   IGetUserPoints,
   IGetUserPointsQuery,
   IOutputRefactoring,
-} from '../templates/interfaces';
+} from '../interfaces/interfaces';
 
 export class Helper {
   infoOutputRefactoring(

@@ -1,5 +1,5 @@
 import { buttons as kb } from './keyboardButtons';
-import { IKeyboard } from '../templates/interfaces';
+import { IKeyboard } from '../templates/interfaces/interfaces';
 
 export const keyboard: IKeyboard = {
   start: [[kb.start.registration], [kb.common.back]],

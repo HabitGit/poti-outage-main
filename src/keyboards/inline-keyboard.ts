@@ -1,4 +1,4 @@
-import { IInlineKeyboard } from '../templates/interfaces';
+import { IInlineKeyboard } from '../templates/interfaces/interfaces';
 import { inlineButtons as ikb } from './inline-keyboardButtons';
 
 export const inlineKeyboard: IInlineKeyboard = {

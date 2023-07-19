@@ -6,7 +6,7 @@ import { BotService } from './bot.service';
 import {
   welcomeBackMessage,
   welcomeMessage,
-} from '../templates/messages.template';
+} from '../templates/helpers/messages.template';
 
 export class CommandService {
   constructor(

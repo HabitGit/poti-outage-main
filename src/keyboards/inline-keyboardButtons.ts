@@ -1,4 +1,4 @@
-import { InlineButtons } from '../templates/types';
+import { InlineButtons } from '../templates/types/types';
 
 export const inlineButtons: InlineButtons = {
   myInfo: {

@@ -1,7 +1,10 @@
 import axios, { AxiosResponse } from 'axios';
 import jsdom from 'jsdom';
-import { IFinishParserInfo, IOutputRefactoring } from '../templates/interfaces';
-import { Helper } from '../service/helper';
+import {
+  IFinishParserInfo,
+  IOutputRefactoring,
+} from '../templates/interfaces/interfaces';
+import { Helper } from '../templates/helpers/helper';
 
 const LINK = process.env.WATER_LINK;
 const POTI = 'ფოთის ';

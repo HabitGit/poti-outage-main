@@ -1,6 +1,6 @@
 import { MessageController } from './controllers/message.controller';
 import { AppDataSource } from './db/data-source';
-import { Helper } from './service/helper';
+import { Helper } from './templates/helpers/helper';
 import { UsersRepository } from './db/repository/users.repository';
 import { StreetsService } from './service/streets.service';
 import { StreetsRepository } from './db/repository/streets.repository';
