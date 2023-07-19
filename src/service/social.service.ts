@@ -8,6 +8,7 @@ import { Message, myInfoOutput } from '../templates/messages.template';
 import { BotErrors } from '../templates/errors';
 import { inlineKeyboard } from '../keyboards/inline-keyboard';
 import { StreetsService } from './streets.service';
+import * as fs from 'fs';
 
 export class SocialService {
   constructor(
@@ -117,5 +118,40 @@ export class SocialService {
       'message',
       await this.streetsService.registrationStreet,
     );
+  }
+
+  async messageSender(message: string) {
+    const users: Users[] = await this.usersRepository.getChatIds();
+    for (const user of users) {
+      try {
+        await this.botSendMessage(user.chatId, message);
+      } catch (e) {
+        if (e instanceof BotErrors) {
+          if (e.name === 'BAN_FROM_USER') {
+            await this.usersRepository.deleteUserByChatId(user.chatId);
+          }
+        } else {
+          await fs.writeFile(
+            __dirname + 'errorsLog.txt',
+            '[+]NEW ERROR: ' + e + '\n',
+            { flag: 'a' },
+            (err) => {
+              console.log('ERR FS: ', err);
+            },
+          );
+        }
+      }
+    }
+  }
+
+  async botSendMessage(chatId: number, message: string) {
+    try {
+      await this.botService.sendMessage(chatId, message);
+    } catch (e) {
+      throw new BotErrors({
+        name: 'BAN_FROM_USER',
+        message: 'Bot has been baned from user',
+      });
+    }
   }
 }

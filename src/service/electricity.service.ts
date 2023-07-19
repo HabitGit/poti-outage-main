@@ -1,12 +1,14 @@
 import { ElectricityParser } from '../parsers/electricity.parser';
 import { cacheClient } from '../db/data-source.redis';
-import { ClientService } from './client.service';
 import { IOutputRefactoring } from '../templates/interfaces';
+import { BotService } from './bot.service';
+import { SocialService } from './social.service';
 
 export class ElectricityService {
   constructor(
     private electricityParser: ElectricityParser,
-    private clientService: ClientService,
+    private socialService: SocialService,
+    private botService: BotService,
   ) {}
 
   async cronGetElectricityInfo() {
@@ -25,8 +27,24 @@ export class ElectricityService {
     await cacheClient.set(key, info.message, { EX: timeToKeyLife });
 
     if (info.message !== cache) {
-      await this.clientService.messageSender(info.message);
+      await this.socialService.messageSender(info.message);
       return;
     }
+  }
+
+  async showElectricityBlackouts(chatId: number) {
+    const cacheElectricityKeys: string[] = await cacheClient.keys(
+      'electricityInfo*',
+    );
+
+    const cacheElectricity: (string | null)[] | null =
+      cacheElectricityKeys.length > 0
+        ? await cacheClient.mGet(cacheElectricityKeys)
+        : null;
+    await this.botService.sendMessage(
+      chatId,
+      cacheElectricity?.join('\n') ||
+        'Не получена информация об отключении электричесва.',
+    );
   }
 }

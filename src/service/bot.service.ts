@@ -32,4 +32,13 @@ export class BotService extends TelegramBot {
   async queryListenerOff(listener: (query: TelegramBot.CallbackQuery) => void) {
     return this.removeListener('callback_query', listener);
   }
+
+  async adminListener(
+    callback: (msg: TelegramBot.Message, match: RegExpExecArray | null) => void,
+  ) {
+    return this.onText(
+      new RegExp(`/adm${process.env.ADMIN_PASSWORD}(.+)`),
+      callback,
+    );
+  }
 }
