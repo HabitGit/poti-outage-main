@@ -1,4 +1,5 @@
 import { InlineKeyboardButton, KeyboardButton } from 'node-telegram-bot-api';
+import { Streets } from '../db/entitys/streets.entity';
 
 export interface IGetUserPoints {
   chatId: number;
@@ -41,4 +42,10 @@ export interface IOutputRefactoring {
   endDate: Date | null;
 
   message: string;
+}
+
+export interface IMyInfo {
+  mailing: boolean;
+
+  street: Streets | null;
 }

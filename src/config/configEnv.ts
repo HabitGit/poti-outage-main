@@ -1,7 +1,7 @@
 import { IConfigService } from './config.interface';
 import process from 'node:process';
 
-export class ConfigService implements IConfigService {
+export class ConfigEnv implements IConfigService {
   get(key: string): string {
     const findEnv: string | undefined = process.env[key];
     if (!findEnv) {
