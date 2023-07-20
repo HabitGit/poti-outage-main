@@ -4,7 +4,7 @@ import { DataSourceConfigTest } from '../../database.config';
 import { UsersRepository } from '../db/repository/users.repository';
 import { Users } from '../db/entitys/users.entity';
 import { CreateUserDto } from '../templates/dtos/create-user.dto';
-import { cacheClient } from '../db/test-data-source.redis';
+import { testCacheClient } from '../db/test-data-source.redis';
 import { Helper } from '../templates/helpers/helper';
 
 jest.mock('../db/data-source.redis', () => {
@@ -48,7 +48,7 @@ describe('Users repository testing', () => {
   });
 
   afterAll(async () => {
-    await cacheClient.quit();
+    await testCacheClient.quit();
     await appDataSource.destroy();
   });
 
