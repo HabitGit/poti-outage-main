@@ -6,6 +6,7 @@ import {
   IGetUserPointsQuery,
   IOutputRefactoring,
 } from '../interfaces/interfaces';
+import { Buttons } from '../types/types';
 
 export class Helper {
   infoOutputRefactoring(
@@ -54,14 +55,19 @@ export class Helper {
     };
   }
 
-  getKeyboard<T, L extends keyof T, B extends keyof T[L]>(
+  getKeyboard<T extends Buttons, L extends keyof T, B extends keyof T[L]>(
     keyboardButtons: T,
-    location: L,
+    locations: L[],
     buttons: B[],
   ) {
-    return buttons.map((button) => {
-      return keyboardButtons[location][button];
+    const result: Array<T[L][B][]> = [];
+    locations.map((location) => {
+      return buttons.map((button) => {
+        const isButton: T[L][B] = keyboardButtons[location][button];
+        if (isButton) result.push([isButton]);
+      });
     });
+    return result;
   }
 
   async delay(ms: number) {
