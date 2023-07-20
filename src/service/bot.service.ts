@@ -1,5 +1,5 @@
 import TelegramBot from 'node-telegram-bot-api';
-import { IConfigService } from '../config/config.interface';
+import { IConfigService } from '../templates/interfaces/interfaces';
 
 export class BotService extends TelegramBot {
   constructor(private readonly configService: IConfigService) {

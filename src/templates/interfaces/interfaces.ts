@@ -39,3 +39,7 @@ export interface IMyInfo {
   mailing: boolean;
   street: Streets | null;
 }
+
+export interface IConfigService {
+  get(key: string): string;
+}

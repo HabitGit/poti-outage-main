@@ -1,5 +1,5 @@
-import { IConfigService } from './config.interface';
 import process from 'node:process';
+import { IConfigService } from '../templates/interfaces/interfaces';
 
 export class ConfigEnv implements IConfigService {
   get(key: string): string {
