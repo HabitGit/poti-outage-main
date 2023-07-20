@@ -1,19 +1,14 @@
-import { createClient } from 'redis';
+import { testCacheClient } from '../db/test-data-source.redis';
 
-const cacheClient = createClient({
-  url: 'redis://@localhost:6378',
-});
-cacheClient.on('error', (err) => console.log('Redis Client Error', err));
-cacheClient.connect();
 describe('Cache testing', () => {
   afterAll(async () => {
-    await cacheClient.del('test');
-    await cacheClient.quit();
+    await testCacheClient.del('test');
+    await testCacheClient.quit();
   });
 
   it('Test to Redis working', async () => {
-    await cacheClient.set('test', 'work');
-    const cache = await cacheClient.get('test');
+    await testCacheClient.set('test', 'work');
+    const cache = await testCacheClient.get('test');
     expect(cache).toBe('work');
   });
 });
