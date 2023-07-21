@@ -18,6 +18,7 @@ import { CronJob } from 'cron';
 import { AdminController } from './controllers/admin.controller';
 import { CacheService } from './service/cache.service';
 import { cacheClient } from './db/data-source.redis';
+import { LogicService } from './service/logic.service';
 
 export class Main {
   constructor(
@@ -27,6 +28,7 @@ export class Main {
     private waterService: WaterService,
     private electricityService: ElectricityService,
     private adminController: AdminController,
+    private logicService: LogicService,
   ) {}
 
   async botOn() {
@@ -48,7 +50,7 @@ export class Main {
     cronTime: '0,0 */2 * * *',
     onTick: async () => {
       try {
-        await this.waterService.cronGetWaterInfo();
+        await this.logicService.sendOutageInfo();
         await this.electricityService.cronGetElectricityInfo();
       } catch (e) {
         console.log('[-]*ERROR* in Crone: ', e);
@@ -83,12 +85,7 @@ const socialService = new SocialService(
 );
 const commandService = new CommandService(usersRepository, socialService);
 
-const waterService = new WaterService(
-  waterParser,
-  socialService,
-  botService,
-  cacheService,
-);
+const waterService = new WaterService(waterParser, cacheService);
 
 const electricityService = new ElectricityService(
   electricityParser,
@@ -102,6 +99,9 @@ const queryController = new QueryController(
   streetsService,
   helper,
 );
+
+const adminController = new AdminController(socialService);
+const logicService = new LogicService(waterService, socialService, botService);
 const messageController = new MessageController(
   helper,
   botService,
@@ -109,8 +109,8 @@ const messageController = new MessageController(
   socialService,
   waterService,
   electricityService,
+  logicService,
 );
-const adminController = new AdminController(socialService);
 const main = new Main(
   botService,
   messageController,
@@ -118,6 +118,7 @@ const main = new Main(
   waterService,
   electricityService,
   adminController,
+  logicService,
 );
 
 main.botOn();
