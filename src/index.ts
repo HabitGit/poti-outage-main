@@ -16,6 +16,8 @@ import { ElectricityParser } from './parsers/electricity.parser';
 import { QueryController } from './controllers/query.controller';
 import { CronJob } from 'cron';
 import { AdminController } from './controllers/admin.controller';
+import { CacheService } from './service/cache.service';
+import { cacheClient } from './db/data-source.redis';
 
 export class Main {
   constructor(
@@ -61,7 +63,8 @@ const configEnv = new ConfigEnv();
 
 const helper = new Helper();
 const streetsRepository = new StreetsRepository(AppDataSource);
-const usersRepository = new UsersRepository(AppDataSource);
+const cacheService = new CacheService(cacheClient);
+const usersRepository = new UsersRepository(AppDataSource, cacheService);
 //
 const waterParser = new WaterParser(helper);
 const electricityParser = new ElectricityParser(helper);
@@ -78,17 +81,20 @@ const socialService = new SocialService(
   botService,
   streetsService,
 );
-const commandService = new CommandService(
-  usersRepository,
-  socialService,
-);
+const commandService = new CommandService(usersRepository, socialService);
 
-const waterService = new WaterService(waterParser, socialService, botService);
+const waterService = new WaterService(
+  waterParser,
+  socialService,
+  botService,
+  cacheService,
+);
 
 const electricityService = new ElectricityService(
   electricityParser,
   socialService,
   botService,
+  cacheService,
 );
 
 const queryController = new QueryController(

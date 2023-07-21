@@ -1,14 +1,15 @@
 import { ElectricityParser } from '../parsers/electricity.parser';
-import { cacheClient } from '../db/data-source.redis';
 import { IOutputRefactoring } from '../templates/interfaces/interfaces';
 import { BotService } from './bot.service';
 import { SocialService } from './social.service';
+import { CacheService } from './cache.service';
 
 export class ElectricityService {
   constructor(
     private electricityParser: ElectricityParser,
     private socialService: SocialService,
     private botService: BotService,
+    private cacheService: CacheService,
   ) {}
 
   async cronGetElectricityInfo() {
@@ -23,8 +24,8 @@ export class ElectricityService {
     );
     const key: string = `electricityInfo${endDateTimestamp}`;
 
-    const cache: string | null = await cacheClient.get(key);
-    await cacheClient.set(key, info.message, { EX: timeToKeyLife });
+    const cache: string | null = await this.cacheService.get(key);
+    await this.cacheService.set(key, info.message, timeToKeyLife);
 
     if (info.message !== cache) {
       await this.socialService.messageSender(info.message);
@@ -33,13 +34,13 @@ export class ElectricityService {
   }
 
   async showElectricityBlackouts(chatId: number) {
-    const cacheElectricityKeys: string[] = await cacheClient.keys(
+    const cacheElectricityKeys: string[] = await this.cacheService.keys(
       'electricityInfo*',
     );
 
     const cacheElectricity: (string | null)[] | null =
       cacheElectricityKeys.length > 0
-        ? await cacheClient.mGet(cacheElectricityKeys)
+        ? await this.cacheService.mGet(cacheElectricityKeys)
         : null;
     await this.botService.sendMessage(
       chatId,

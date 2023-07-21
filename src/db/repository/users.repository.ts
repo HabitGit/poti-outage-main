@@ -1,24 +1,25 @@
 import { DataSource, DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { Users } from '../entitys/users.entity';
 import { CreateUserDto } from '../../templates/dtos/create-user.dto';
-import { cacheClient } from '../data-source.redis';
 import { UpdateUserDto } from '../../templates/dtos/update-user.dto';
+import { CacheService } from '../../service/cache.service';
 
 export class UsersRepository extends Repository<Users> {
-  constructor(private dataSource: DataSource) {
+  constructor(
+    private dataSource: DataSource,
+    private cacheService: CacheService,
+  ) {
     super(Users, dataSource.createEntityManager());
   }
 
   async createUser(userData: CreateUserDto): Promise<Users> {
     const user: Users = await this.save(userData);
-    await cacheClient.set(`user${user.userId}`, JSON.stringify(user), {
-      EX: 4,
-    });
+    await this.cacheService.set(`user${user.userId}`, JSON.stringify(user), 4);
     return user;
   }
 
   async getUserByUserId(userId: number): Promise<Users | null> {
-    const cache: string | null = await cacheClient.get(`user${userId}`);
+    const cache: string | null = await this.cacheService.get(`user${userId}`);
     if (cache) return JSON.parse(cache);
 
     const user: Users | null = await this.findOne({
@@ -26,18 +27,18 @@ export class UsersRepository extends Repository<Users> {
       relations: { street: true },
     });
 
-    await cacheClient.set(`user${userId}`, JSON.stringify(user), { EX: 4 });
+    await this.cacheService.set(`user${userId}`, JSON.stringify(user), 4);
     return user;
   }
 
   async getChatIds(): Promise<Users[]> {
-    const cache: string | null = await cacheClient.get('mailing');
+    const cache: string | null = await this.cacheService.get('mailing');
     if (cache) return JSON.parse(cache);
     const users: Users[] = await this.find({
       select: { chatId: true },
       where: { mailing: true },
     });
-    await cacheClient.set('mailing', JSON.stringify(users), { EX: 4 });
+    await this.cacheService.set('mailing', JSON.stringify(users), 4);
     return users;
   }
 
@@ -46,9 +47,11 @@ export class UsersRepository extends Repository<Users> {
       ...user,
       mailing: !user.mailing,
     });
-    await cacheClient.set(`user${user.userId}`, JSON.stringify(updateUser), {
-      EX: 10,
-    });
+    await this.cacheService.set(
+      `user${user.userId}`,
+      JSON.stringify(updateUser),
+      10,
+    );
     return updateUser;
   }
 

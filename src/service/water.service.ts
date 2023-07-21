@@ -1,14 +1,15 @@
 import { WaterParser } from '../parsers/water.parser';
-import { cacheClient } from '../db/data-source.redis';
 import { IOutputRefactoring } from '../templates/interfaces/interfaces';
 import { BotService } from './bot.service';
 import { SocialService } from './social.service';
+import { CacheService } from './cache.service';
 
 export class WaterService {
   constructor(
     private waterParser: WaterParser,
     private socialService: SocialService,
     private botService: BotService,
+    private cacheService: CacheService,
   ) {}
 
   async cronGetWaterInfo() {
@@ -22,8 +23,8 @@ export class WaterService {
     );
     const key: string = `waterInfo${endDateTimestamp}`;
 
-    const cache: string | null = await cacheClient.get(key);
-    await cacheClient.set(key, info.message, { EX: timeToKeyLife });
+    const cache: string | null = await this.cacheService.get(key);
+    await this.cacheService.set(key, info.message, timeToKeyLife);
 
     if (info.message !== cache) {
       await this.socialService.messageSender(info.message);
@@ -32,11 +33,11 @@ export class WaterService {
   }
 
   async showWaterBlackouts(chatId: number) {
-    const cacheWaterKeys: string[] = await cacheClient.keys('waterInfo*');
+    const cacheWaterKeys: string[] = await this.cacheService.keys('waterInfo*');
 
     const cacheWater: string[] | null =
       cacheWaterKeys.length > 0
-        ? ((await cacheClient.mGet(cacheWaterKeys)) as string[])
+        ? ((await this.cacheService.mGet(cacheWaterKeys)) as string[])
         : null;
     await this.botService.sendMessage(
       chatId,
