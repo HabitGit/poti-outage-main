@@ -1,6 +1,6 @@
 import TelegramBot from 'node-telegram-bot-api';
 import { Users } from '../db/entitys/users.entity';
-import { keyboard } from '../keyboards/keyboard';
+import { Keyboard } from '../keyboards/keyboard';
 import { UsersRepository } from '../db/repository/users.repository';
 import { BotService } from './bot.service';
 import {
