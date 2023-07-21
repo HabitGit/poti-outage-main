@@ -1,6 +1,6 @@
 import 'dotenv/config';
 import { WaterParser } from '../parsers/water.parser';
-import { Helper } from '../service/helper';
+import { Helper } from '../templates/helpers/helper';
 
 describe('Water parser tests', () => {
   it('Test to resolve parser', async () => {

@@ -1,12 +1,14 @@
 import 'dotenv/config';
-import { IFinishParserInfo } from '../templates/interfaces';
+import { IFinishParserInfo } from '../templates/interfaces/interfaces';
 import TelegramBot from 'node-telegram-bot-api';
-import { Helper } from '../service/helper';
+import { Helper } from '../templates/helpers/helper';
+import { buttons } from '../keyboards/keyboardButtons';
 
 describe('Testing helper', () => {
   let mockInfoArray1: IFinishParserInfo[];
   let mockInfoArray2: IFinishParserInfo[];
   let mockMsg: TelegramBot.Message;
+  let mockQuery: TelegramBot.CallbackQuery;
 
   beforeAll(() => {
     mockInfoArray1 = [
@@ -34,6 +36,24 @@ describe('Testing helper', () => {
         is_bot: false,
       },
       text: 'text',
+    };
+    mockQuery = {
+      id: '1',
+      from: {
+        id: 1,
+        is_bot: false,
+        first_name: 'user',
+      },
+      message: {
+        date: 123,
+        message_id: 1,
+        chat: {
+          id: 1,
+          type: 'private',
+        },
+      },
+      chat_instance: 'asd',
+      data: 'some data',
     };
   });
 
@@ -68,5 +88,28 @@ describe('Testing helper', () => {
       userName: 'user',
       message: 'text',
     });
+  });
+
+  it('Test get user points query', () => {
+    const helper = new Helper();
+    const result1 = helper.getUserPointsQuery(mockQuery);
+    expect(result1).toEqual({
+      data: 'some data',
+      chatId: 1,
+      userId: 1,
+    });
+  });
+
+  it('Test get keyboard', () => {
+    const helper = new Helper();
+    const result1 = helper.getKeyboard(
+      buttons,
+      ['start', 'home', 'common'],
+      ['registration', 'checkDisabledWater'],
+    );
+    expect(result1).toEqual([
+      [{ text: 'Зарегистрироваться' }],
+      [{ text: 'Показать имеющиеся отключения воды' }],
+    ]);
   });
 });

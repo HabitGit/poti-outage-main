@@ -1,7 +1,10 @@
 import puppeteer, { Browser, Page } from 'puppeteer';
 import jsdom from 'jsdom';
-import { IFinishParserInfo, IOutputRefactoring } from '../templates/interfaces';
-import { Helper } from '../service/helper';
+import {
+  IFinishParserInfo,
+  IOutputRefactoring,
+} from '../templates/interfaces/interfaces';
+import { Helper } from '../templates/helpers/helper';
 
 const LINK = process.env.ELECTRICITY_LINK;
 const POTI = 'ფოთი';
