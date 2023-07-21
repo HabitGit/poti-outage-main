@@ -16,7 +16,9 @@ export function myInfoOutput(myInfo: IMyInfo): string {
     myInfo.street === null ? 'не указана' : myInfo.street.nameGeo;
   return `Информация о вашем аккаунте:
   Рассылка: *${mailing}*
-  Улица: *${street}*`;
+  Улица: *${street}*
+  Рассылка по названию улицы в данный момент не активнa, 
+  можно просто ее добавить`;
 }
 
 export function welcomeMessage(userName: string): string {
