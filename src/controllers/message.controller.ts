@@ -9,7 +9,7 @@ import { SocialService } from '../service/social.service';
 import { Message } from '../templates/helpers/messages.template';
 import { WaterService } from '../service/water.service';
 import { ElectricityService } from '../service/electricity.service';
-import { LogicService } from '../service/logic.service';
+import { OutageLogicService } from '../service/outage-logic.service';
 
 export class MessageController {
   constructor(
@@ -19,7 +19,7 @@ export class MessageController {
     private socialService: SocialService,
     private waterService: WaterService,
     private electricityService: ElectricityService,
-    private logicService: LogicService,
+    private logicService: OutageLogicService,
   ) {}
 
   // async toAdmin(message: string) {

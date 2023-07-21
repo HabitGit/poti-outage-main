@@ -2,7 +2,7 @@ import { WaterService } from './water.service';
 import { SocialService } from './social.service';
 import { BotService } from './bot.service';
 
-export class LogicService {
+export class OutageLogicService {
   constructor(
     private waterService: WaterService,
     private socialService: SocialService,

@@ -18,7 +18,8 @@ import { CronJob } from 'cron';
 import { AdminController } from './controllers/admin.controller';
 import { CacheService } from './service/cache.service';
 import { cacheClient } from './db/data-source.redis';
-import { LogicService } from './service/logic.service';
+import { OutageLogicService } from './service/outage-logic.service';
+import { StreetsLogicService } from './service/streets-logic.service';
 
 export class Main {
   constructor(
@@ -28,7 +29,7 @@ export class Main {
     private waterService: WaterService,
     private electricityService: ElectricityService,
     private adminController: AdminController,
-    private logicService: LogicService,
+    private logicService: OutageLogicService,
   ) {}
 
   async botOn() {
@@ -71,12 +72,7 @@ const usersRepository = new UsersRepository(AppDataSource, cacheService);
 const waterParser = new WaterParser(helper);
 const electricityParser = new ElectricityParser(helper);
 const botService = new BotService(configEnv);
-const streetsService = new StreetsService(
-  streetsRepository,
-  usersRepository,
-  helper,
-  botService,
-);
+const streetsService = new StreetsService(streetsRepository, usersRepository);
 
 const socialService = new SocialService(
   usersRepository,
@@ -93,15 +89,24 @@ const electricityService = new ElectricityService(
   botService,
   cacheService,
 );
-
-const queryController = new QueryController(
-  socialService,
+const streetsLogicService = new StreetsLogicService(
   streetsService,
   helper,
+  botService,
+);
+const queryController = new QueryController(
+  socialService,
+  streetsLogicService,
+  helper,
+  botService,
 );
 
 const adminController = new AdminController(socialService);
-const logicService = new LogicService(waterService, socialService, botService);
+const outageLogicService = new OutageLogicService(
+  waterService,
+  socialService,
+  botService,
+);
 const messageController = new MessageController(
   helper,
   botService,
@@ -109,7 +114,7 @@ const messageController = new MessageController(
   socialService,
   waterService,
   electricityService,
-  logicService,
+  outageLogicService,
 );
 const main = new Main(
   botService,
@@ -118,7 +123,7 @@ const main = new Main(
   waterService,
   electricityService,
   adminController,
-  logicService,
+  outageLogicService,
 );
 
 main.botOn();
