@@ -2,7 +2,7 @@ import { buttons as kb } from './keyboardButtons';
 import { IKeyboard } from '../templates/interfaces/interfaces';
 
 export const keyboard: IKeyboard = {
-  start: [[kb.start.registration], [kb.common.back]],
+  start: [[kb.start.registration]],
   home: [
     [kb.home.checkDisabledWater],
     [kb.home.checkDisabledElectricity],
