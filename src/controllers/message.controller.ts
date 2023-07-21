@@ -63,7 +63,7 @@ export class MessageController {
         break;
 
       case 'Показать имеющиеся отключения электричества':
-        await this.electricityService.showElectricityBlackouts(chatId);
+        await this.logicService.sendElectricityBlackout(chatId);
         break;
 
       case 'Ссылки на сайты':
