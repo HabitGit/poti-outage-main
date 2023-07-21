@@ -1,6 +1,5 @@
-import TelegramBot from 'node-telegram-bot-api';
-import { IConfigService, IKeyboard } from '../templates/interfaces/interfaces';
-import { Keyboard } from '../keyboards/keyboard';
+import TelegramBot, { KeyboardButton } from 'node-telegram-bot-api';
+import { IConfigService } from '../templates/interfaces/interfaces';
 
 export class BotService extends TelegramBot {
   constructor(private readonly configService: IConfigService) {
