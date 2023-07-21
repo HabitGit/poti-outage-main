@@ -148,4 +148,20 @@ export class SocialService {
       });
     }
   }
+
+  async welcomeBack(chatId: number, userName: string) {
+    return this.botService.keyboardMessenger(
+      chatId,
+      welcomeBackMessage(userName),
+      Keyboard.home,
+    );
+  }
+
+  async welcome(chatId: number, userName: string) {
+    return this.botService.keyboardMessenger(
+      chatId,
+      welcomeMessage(userName),
+      Keyboard.start,
+    );
+  }
 }
