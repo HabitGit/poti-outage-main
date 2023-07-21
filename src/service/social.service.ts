@@ -4,7 +4,12 @@ import { Users } from '../db/entitys/users.entity';
 import { Keyboard } from '../keyboards/keyboard';
 import { UsersRepository } from '../db/repository/users.repository';
 import { BotService } from './bot.service';
-import { Message, myInfoOutput } from '../templates/helpers/messages.template';
+import {
+  Message,
+  myInfoOutput,
+  welcomeBackMessage,
+  welcomeMessage,
+} from '../templates/helpers/messages.template';
 import { BotErrors } from '../templates/errors/errors';
 import { inlineKeyboard } from '../keyboards/inline-keyboard';
 import { StreetsService } from './streets.service';
