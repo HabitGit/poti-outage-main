@@ -35,6 +35,11 @@ export interface IOutputRefactoring {
   message: string;
 }
 
+export interface IGetInfo {
+  endDate: Date;
+  message: string;
+}
+
 export interface IMyInfo {
   mailing: boolean;
   street: Streets | null;

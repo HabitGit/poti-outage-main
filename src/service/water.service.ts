@@ -1,5 +1,8 @@
 import { WaterParser } from '../parsers/water.parser';
-import { IOutputRefactoring } from '../templates/interfaces/interfaces';
+import {
+  IGetInfo,
+  IOutputRefactoring,
+} from '../templates/interfaces/interfaces';
 import { BotService } from './bot.service';
 import { SocialService } from './social.service';
 import { CacheService } from './cache.service';
@@ -16,15 +19,9 @@ export class WaterService {
     const info: IOutputRefactoring = await this.waterParser.getWaterInfo();
     if (info.endDate === null) return;
 
-    const nowDateTimestamp: number = Date.now();
-    const endDateTimestamp: number = info.endDate.getTime();
-    const timeToKeyLife: number = Math.round(
-      (endDateTimestamp - nowDateTimestamp) / 1000,
+    const cache: string | null = await this.cacheService.getWaterInfo(
+      info as IGetInfo,
     );
-    const key: string = `waterInfo${endDateTimestamp}`;
-
-    const cache: string | null = await this.cacheService.get(key);
-    await this.cacheService.set(key, info.message, timeToKeyLife);
 
     if (info.message !== cache) {
       await this.socialService.messageSender(info.message);
