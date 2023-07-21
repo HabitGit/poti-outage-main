@@ -18,6 +18,8 @@ import { CronJob } from 'cron';
 import { AdminController } from './controllers/admin.controller';
 import { CacheService } from './service/cache.service';
 import { cacheClient } from './db/data-source.redis';
+import { OutageLogicService } from './service/outage-logic.service';
+import { StreetsLogicService } from './service/streets-logic.service';
 
 export class Main {
   constructor(
@@ -27,6 +29,7 @@ export class Main {
     private waterService: WaterService,
     private electricityService: ElectricityService,
     private adminController: AdminController,
+    private logicService: OutageLogicService,
   ) {}
 
   async botOn() {
@@ -48,8 +51,8 @@ export class Main {
     cronTime: '0,0 */2 * * *',
     onTick: async () => {
       try {
-        await this.waterService.cronGetWaterInfo();
-        await this.electricityService.cronGetElectricityInfo();
+        await this.logicService.sendWaterOutageInfo();
+        await this.logicService.sendElectricityOutageInfo();
       } catch (e) {
         console.log('[-]*ERROR* in Crone: ', e);
       }
@@ -69,38 +72,35 @@ const usersRepository = new UsersRepository(AppDataSource, cacheService);
 const waterParser = new WaterParser(helper);
 const electricityParser = new ElectricityParser(helper);
 const botService = new BotService(configEnv);
-const streetsService = new StreetsService(
-  streetsRepository,
-  usersRepository,
-  helper,
-  botService,
-);
+const streetsService = new StreetsService(streetsRepository, usersRepository);
 
-const socialService = new SocialService(
-  usersRepository,
-  botService,
-  streetsService,
-);
+const socialService = new SocialService(usersRepository, botService);
 const commandService = new CommandService(usersRepository, socialService);
 
-const waterService = new WaterService(
-  waterParser,
-  socialService,
-  botService,
-  cacheService,
-);
+const waterService = new WaterService(waterParser, cacheService);
 
 const electricityService = new ElectricityService(
   electricityParser,
-  socialService,
-  botService,
   cacheService,
 );
-
-const queryController = new QueryController(
-  socialService,
+const streetsLogicService = new StreetsLogicService(
   streetsService,
   helper,
+  botService,
+);
+const queryController = new QueryController(
+  socialService,
+  streetsLogicService,
+  helper,
+  botService,
+);
+
+const adminController = new AdminController(socialService);
+const outageLogicService = new OutageLogicService(
+  waterService,
+  electricityService,
+  socialService,
+  botService,
 );
 const messageController = new MessageController(
   helper,
@@ -109,8 +109,8 @@ const messageController = new MessageController(
   socialService,
   waterService,
   electricityService,
+  outageLogicService,
 );
-const adminController = new AdminController(socialService);
 const main = new Main(
   botService,
   messageController,
@@ -118,6 +118,7 @@ const main = new Main(
   waterService,
   electricityService,
   adminController,
+  outageLogicService,
 );
 
 main.botOn();

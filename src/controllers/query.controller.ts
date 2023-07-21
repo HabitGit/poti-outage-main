@@ -1,15 +1,17 @@
 import TelegramBot from 'node-telegram-bot-api';
-import { StreetsService } from '../service/streets.service';
 import { SocialService } from '../service/social.service';
 import { Helper } from '../templates/helpers/helper';
 import { IGetUserPointsQuery } from '../templates/interfaces/interfaces';
 import { BotErrors } from '../templates/errors/errors';
+import { BotService } from '../service/bot.service';
+import { StreetsLogicService } from '../service/streets-logic.service';
 
 export class QueryController {
   constructor(
     private socialService: SocialService,
-    private streetsService: StreetsService,
+    private streetsLogicService: StreetsLogicService,
     private helper: Helper,
+    private botService: BotService,
   ) {}
 
   requestQueryHandler = async (query: TelegramBot.CallbackQuery) => {
@@ -33,7 +35,13 @@ export class QueryController {
         break;
 
       case 'addS':
-        await this.streetsService.registrationStreet(userId, chatId);
+        await this.botService.sendMessage(
+          chatId,
+          'Введите название улицы на грузинском, или скопируйте с одного из сайтов',
+        );
+        await this.botService.messageListenerOn(
+          this.streetsLogicService.registrationStreetListener,
+        );
         break;
     }
   };

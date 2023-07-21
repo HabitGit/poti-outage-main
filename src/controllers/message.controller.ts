@@ -9,6 +9,7 @@ import { SocialService } from '../service/social.service';
 import { Message } from '../templates/helpers/messages.template';
 import { WaterService } from '../service/water.service';
 import { ElectricityService } from '../service/electricity.service';
+import { OutageLogicService } from '../service/outage-logic.service';
 
 export class MessageController {
   constructor(
@@ -18,6 +19,7 @@ export class MessageController {
     private socialService: SocialService,
     private waterService: WaterService,
     private electricityService: ElectricityService,
+    private logicService: OutageLogicService,
   ) {}
 
   // async toAdmin(message: string) {
@@ -57,11 +59,11 @@ export class MessageController {
         break;
 
       case 'Показать имеющиеся отключения воды':
-        await this.waterService.showWaterBlackouts(chatId);
+        await this.logicService.sendWaterBlackout(chatId);
         break;
 
       case 'Показать имеющиеся отключения электричества':
-        await this.electricityService.showElectricityBlackouts(chatId);
+        await this.logicService.sendElectricityBlackout(chatId);
         break;
 
       case 'Ссылки на сайты':
