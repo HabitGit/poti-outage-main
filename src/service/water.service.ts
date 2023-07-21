@@ -11,7 +11,7 @@ export class WaterService {
     private cacheService: CacheService,
   ) {}
 
-  async cronGetWaterInfo(): Promise<string | undefined> {
+  async getWaterInfo(): Promise<string | undefined> {
     const info: IOutputRefactoring = await this.waterParser.getWaterInfo();
     if (info.endDate === null) return;
 

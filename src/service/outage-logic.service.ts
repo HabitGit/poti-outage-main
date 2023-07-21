@@ -11,7 +11,7 @@ export class OutageLogicService {
 
   async sendOutageInfo() {
     const isInfo: string | undefined =
-      await this.waterService.cronGetWaterInfo();
+      await this.waterService.getWaterInfo();
     if (isInfo) return this.socialService.messageSender(isInfo);
     return;
   }
