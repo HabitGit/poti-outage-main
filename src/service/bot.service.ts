@@ -42,4 +42,17 @@ export class BotService extends TelegramBot {
       callback,
     );
   }
+
+  async keyboardMessenger(
+    chatId: number,
+    message: string,
+    keyboard: KeyboardButton[][],
+  ) {
+    return this.sendMessage(chatId, message, {
+      reply_markup: {
+        keyboard: keyboard,
+        resize_keyboard: true,
+      },
+    });
+  }
 }

@@ -1,4 +1,4 @@
-import TelegramBot from 'node-telegram-bot-api';
+import TelegramBot, { KeyboardButton } from 'node-telegram-bot-api';
 import { Users } from '../db/entitys/users.entity';
 import { Keyboard } from '../keyboards/keyboard';
 import { UsersRepository } from '../db/repository/users.repository';
@@ -26,11 +26,10 @@ export class CommandService {
       ? welcomeBackMessage(userName)
       : welcomeMessage(userName);
 
-    return this.botService.sendMessage(chatId, message, {
-      reply_markup: {
-        keyboard: isUser ? keyboard.home : keyboard.start,
-        resize_keyboard: true,
-      },
-    });
+    const keyboard: KeyboardButton[][] = isUser
+      ? Keyboard.home
+      : Keyboard.start;
+
+    return this.botService.keyboardMessenger(chatId, message, keyboard);
   }
 }
