@@ -81,8 +81,6 @@ const waterService = new WaterService(waterParser, cacheService);
 
 const electricityService = new ElectricityService(
   electricityParser,
-  socialService,
-  botService,
   cacheService,
 );
 const streetsLogicService = new StreetsLogicService(
