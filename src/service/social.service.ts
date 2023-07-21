@@ -12,14 +12,12 @@ import {
 } from '../templates/helpers/messages.template';
 import { BotErrors } from '../templates/errors/errors';
 import { inlineKeyboard } from '../keyboards/inline-keyboard';
-import { StreetsService } from './streets.service';
 import * as fs from 'fs';
 
 export class SocialService {
   constructor(
     private usersRepository: UsersRepository,
     private botService: BotService,
-    private streetsService: StreetsService,
   ) {}
 
   async registration(userData: CreateUserDto): Promise<TelegramBot.Message> {
