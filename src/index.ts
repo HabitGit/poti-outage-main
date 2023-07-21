@@ -73,12 +73,16 @@ const streetsService = new StreetsService(
   botService,
 );
 
-const commandService = new CommandService(usersRepository, botService);
 const socialService = new SocialService(
   usersRepository,
   botService,
   streetsService,
 );
+const commandService = new CommandService(
+  usersRepository,
+  socialService,
+);
+
 const waterService = new WaterService(waterParser, socialService, botService);
 
 const electricityService = new ElectricityService(
