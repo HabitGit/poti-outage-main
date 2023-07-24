@@ -16,6 +16,7 @@ export class Helper {
     let startDate: Date = infoArray[0].startDate;
     let endDate: Date = infoArray[0].endDate;
     const streets: Set<string> = new Set();
+
     infoArray.forEach((date) => {
       startDate = startDate < date.startDate ? startDate : date.startDate;
       endDate = endDate > date.endDate ? endDate : date.endDate;
@@ -23,15 +24,18 @@ export class Helper {
         streets.add(street.trim());
       });
     });
+
     const link: string | undefined =
       typeOfPublicService === 'воды'
         ? process.env.WATER_LINK
         : process.env.ELECTRICITY_LINK;
+
     const streetsToOutput =
       streets.size > 0
         ? `\nНа улицах:\n${Array.from(streets).join(',\n')}
 Узнать точное время про вашу улицу можно на сайте: ${link}\n`
         : `\nУзнать точное время про вашу улицу можно на сайте: ${link}\n`;
+
     const message: string = `Найдены отключения ${typeOfPublicService} в период:\nс ${startDate.toLocaleString(
       'ru-RU',
     )} по ${endDate.toLocaleString('ru-RU')}.${streetsToOutput}`;

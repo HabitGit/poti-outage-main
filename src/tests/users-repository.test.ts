@@ -4,8 +4,10 @@ import { DataSourceConfigTest } from '../../database.config';
 import { UsersRepository } from '../db/repository/users.repository';
 import { Users } from '../db/entitys/users.entity';
 import { CreateUserDto } from '../templates/dtos/create-user.dto';
-import { testCacheClient } from '../db/test-data-source.redis';
 import { Helper } from '../templates/helpers/helper';
+import { AppDataSource } from '../db/data-source';
+import { CacheService } from '../service/cache.service';
+import { testCacheClient } from '../db/test-data-source.redis';
 
 jest.mock('../db/data-source.redis', () => {
   const originalModule = jest.requireActual('../db/test-data-source.redis');
@@ -17,6 +19,7 @@ jest.mock('../db/data-source.redis', () => {
 
 describe('Users repository testing', () => {
   let helper: Helper;
+  let cacheService: CacheService;
   let appDataSource: DataSource;
   let usersRepository: UsersRepository;
   let fakeUser: CreateUserDto;
@@ -28,7 +31,8 @@ describe('Users repository testing', () => {
     });
 
     await appDataSource.initialize();
-    usersRepository = new UsersRepository(appDataSource);
+    cacheService = new CacheService(testCacheClient);
+    usersRepository = new UsersRepository(AppDataSource, cacheService);
 
     fakeUser = {
       userId: 1,

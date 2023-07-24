@@ -53,6 +53,11 @@ export class MessageController {
         }
         break;
 
+      // case '/test':
+        // await this.logicService.sendElectricityOutageInfo();
+        // await this.logicService.sendWaterOutageInfo();
+        // break;
+
       case 'Зарегистрироваться':
         const userData: CreateUserDto = { userId: userId, chatId: chatId };
         await this.socialService.registration(userData);

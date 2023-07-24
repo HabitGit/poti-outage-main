@@ -48,3 +48,22 @@ export interface IMyInfo {
 export interface IConfigService {
   get(key: string): string;
 }
+
+export interface IResponseData {
+  status: number;
+  data: Array<IElectricityOutageData>;
+}
+
+export interface IElectricityOutageData {
+  taskId: number;
+  taskName: string;
+  taskNote: string;
+  scEffectedCustomers: string;
+  disconnectionArea: string;
+  regionName: string;
+  scName: string;
+  disconnectionDate: string;
+  reconnectionDate: string;
+  dif: string;
+  taskType: string;
+}
