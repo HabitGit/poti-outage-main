@@ -16,6 +16,9 @@ export class StreetsService {
   }
 
   async createStreet(streetData: CreateStreetDto): Promise<Streets> {
+    const isStreet: Streets | null =
+      await this.streetsRepository.getStreetByNameGeo(streetData.nameGeo);
+    if (isStreet) throw new Error('Такая улица уже существует');
     return this.streetsRepository.createStreet(streetData);
   }
 
@@ -41,7 +44,8 @@ export class StreetsService {
   async createStreetToParsers(streets: string[]): Promise<Streets[]> {
     const resultStreets: Streets[] = [];
     for (const street of streets) {
-      const isStreet: Streets | null = await this.getStreetByNameGeo(street);
+      const isStreet: Streets | null =
+        await this.streetsRepository.getStreetByNameGeo(street);
       if (isStreet) continue;
       const newStreets = await this.createStreet({ nameGeo: street });
       resultStreets.push(newStreets);

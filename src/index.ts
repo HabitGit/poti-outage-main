@@ -69,10 +69,10 @@ const streetsRepository = new StreetsRepository(AppDataSource);
 const cacheService = new CacheService(cacheClient);
 const usersRepository = new UsersRepository(AppDataSource, cacheService);
 //
-const waterParser = new WaterParser(helper);
 const electricityParser = new ElectricityParser(helper);
 const botService = new BotService(configEnv);
 const streetsService = new StreetsService(streetsRepository, usersRepository);
+const waterParser = new WaterParser(helper, streetsService);
 
 const socialService = new SocialService(usersRepository, botService);
 const commandService = new CommandService(usersRepository, socialService);

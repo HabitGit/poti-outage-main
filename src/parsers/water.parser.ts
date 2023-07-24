@@ -5,20 +5,23 @@ import {
   IOutputRefactoring,
 } from '../templates/interfaces/interfaces';
 import { Helper } from '../templates/helpers/helper';
+import { StreetsService } from '../service/streets.service';
 
 const LINK = process.env.WATER_LINK;
-const POTIS = 'ფოთის ';
-const QUERY_START =
-  'div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(2)';
-const QUERY_END =
-  'div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(3)';
-const QUERY_STREET =
-  'div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(5)';
+const LOCATOR_START: string =
+  'div:nth-child(2) > div:nth-child(1) > div:nth-child(2) > div:nth-child(3)';
+const LOCATOR_END: string =
+  'div:nth-child(2) > div:nth-child(1) > div:nth-child(2) > div:nth-child(4)';
+const LOCATOR_STREETS =
+  'div:nth-child(2) > div:nth-child(1) > div:nth-child(2) > div:nth-child(7)';
 
 const { JSDOM } = jsdom;
 
 export class WaterParser {
-  constructor(private helper: Helper) {}
+  constructor(
+    private helper: Helper,
+    private streetsService: StreetsService,
+  ) {}
 
   async getWaterInfo(): Promise<IOutputRefactoring> {
     if (!LINK) throw new Error('Нету ссылки на сайт');
@@ -39,88 +42,84 @@ export class WaterParser {
     //Get html dom
     const dom: jsdom.JSDOM = new JSDOM(html);
     const document: Document = dom.window.document;
-    const items: NodeListOf<Element> = document.querySelectorAll(
-      '[class="panel panel-default"]',
-    );
-
-    //Search info about country
-    const infoInMyCountry: Array<Element | null> = [];
-    items.forEach((item) => {
-      const query: Element | null = item.querySelector(
-        '[data-toggle="collapse"]',
-      );
-      if (query === null) throw new Error('Item is null');
-
-      const isTextQuery: string | null = query.textContent;
-      if (isTextQuery === null) throw new Error('Нету текста у объекта');
-
-      const isCityName: number = isTextQuery.indexOf(POTIS);
-      if (isCityName >= 0)
-        infoInMyCountry.push(item.querySelector('[class="col-sm-12"]'));
-    });
-
-    //get text
+    const items = document.querySelectorAll('[class="col-sm-8"]');
     const resultText: Array<IFinishParserInfo> = [];
-    infoInMyCountry.forEach((item) => {
-      if (item != null) {
-        const startQuery: Element | null = item.querySelector(QUERY_START);
-        if (startQuery === null) throw new Error('Нету селектора старта');
 
-        const endQuery: Element | null = item.querySelector(QUERY_END);
-        if (endQuery === null) throw new Error('Нету квери окончания');
+    for (const item of items) {
+      const startLocator: Element = this.getItemByLocator(item, LOCATOR_START);
+      const startText: string = this.getTextByLocator(startLocator);
 
-        const streetsQuery: Element | null = item.querySelector(QUERY_STREET);
-        if (streetsQuery === null) throw new Error('Нету квери улиц');
-        const arrayStreetsQuery = streetsQuery.querySelectorAll('div');
+      const endLocator: Element = this.getItemByLocator(item, LOCATOR_END);
+      const endText: string = this.getTextByLocator(endLocator);
 
-        const startQueryText: string | null = startQuery.textContent;
-        if (startQueryText === null)
-          throw new Error('Нету текста у селектора начала');
+      const streetsLocators = this.getItemByLocator(
+        item,
+        LOCATOR_STREETS,
+      ).querySelectorAll('div');
+      const start: string = startText.split(': ')[1];
+      const end: string = endText.split(': ')[1];
 
-        const endQueryText: string | null = endQuery.textContent;
-        if (endQueryText === null)
-          throw new Error('Нету текста у селектора окончания');
-
-        const streetsResult: Array<string> = [];
-        for (const street of arrayStreetsQuery) {
-          const textStreet: string | null = street.textContent;
-          if (!textStreet) continue;
-          streetsResult.push(textStreet);
+      const streetsArray: string[] = [];
+      for (const streetText of streetsLocators) {
+        const street = this.getTextByLocator(streetText)
+          .trim()
+          .split('ფოთი ს. ')
+          .join('')
+          .split('ფოთი ')
+          .join('')
+          .trim()
+          .split('\n')
+          .toString();
+        streetsArray.push(street);
+        try {
+          await this.streetsService.createStreet({ nameGeo: street });
+        } catch (e) {
+          console.log(e);
         }
-
-        const start: string = startQueryText.split(': ')[1];
-        const end: string = endQueryText.split(': ')[1];
-
-        const startDateSplit: Array<string> = start.split(' ')[0].split('/');
-        const startTimeSplit: Array<string> = start.split(' ')[1].split(':');
-        const endDateSplit: Array<string> = end.split(' ')[0].split('/');
-        const endTimeSplit: Array<string> = end.split(' ')[1].split(':');
-
-        const startDate: Date = new Date(
-          +startDateSplit[2],
-          +startDateSplit[1] - 1,
-          +startDateSplit[0],
-          +startTimeSplit[0],
-          +startTimeSplit[1],
-        );
-        const endDate: Date = new Date(
-          +endDateSplit[2],
-          +endDateSplit[1] - 1,
-          +endDateSplit[0],
-          +endTimeSplit[0],
-          +endTimeSplit[1],
-        );
-
-        resultText.push({
-          startDate: startDate,
-          endDate: endDate,
-          streets: streetsResult,
-        });
-        console.log('[+]*WATER PARSER* result text: ', resultText);
       }
-    });
+
+      const startDateSplit: Array<string> = start.split(' ')[0].split('/');
+      const startTimeSplit: Array<string> = start.split(' ')[1].split(':');
+      const endDateSplit: Array<string> = end.split(' ')[0].split('/');
+      const endTimeSplit: Array<string> = end.split(' ')[1].split(':');
+
+      const startDate: Date = new Date(
+        +startDateSplit[2],
+        +startDateSplit[1] - 1,
+        +startDateSplit[0],
+        +startTimeSplit[0],
+        +startTimeSplit[1],
+      );
+      const endDate: Date = new Date(
+        +endDateSplit[2],
+        +endDateSplit[1] - 1,
+        +endDateSplit[0],
+        +endTimeSplit[0],
+        +endTimeSplit[1],
+      );
+
+      resultText.push({
+        startDate: startDate,
+        endDate: endDate,
+        streets: streetsArray,
+      });
+      console.log('[+]*WATER PARSER* result text: ', resultText);
+    }
     if (resultText.length === 0)
       return { endDate: null, message: 'Инфо об отключении воды нет.' };
     return this.helper.infoOutputRefactoring('воды', resultText);
+  }
+
+  getItemByLocator(item: Element, locator: string) {
+    const isItem: Element | null = item.querySelector(locator);
+    if (!isItem)
+      throw new Error('Отстуствует элемент у ' + locator + 'локатора');
+    return isItem;
+  }
+
+  getTextByLocator(item: Element) {
+    const isText: string | null = item.textContent;
+    if (!isText) throw new Error('Нету текста у локатора ' + item);
+    return isText;
   }
 }
