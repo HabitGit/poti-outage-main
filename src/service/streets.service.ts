@@ -15,6 +15,10 @@ export class StreetsService {
     return this.streetsRepository.getStreetByNameGeo(nameGeo);
   }
 
+  async createStreet(streetData: CreateStreetDto): Promise<Streets> {
+    return this.streetsRepository.createStreet(streetData);
+  }
+
   async registrationStreet(
     userId: number,
     street: Streets,
@@ -32,5 +36,16 @@ export class StreetsService {
       createdStreets.push(street);
     }
     return createdStreets;
+  }
+
+  async createStreetToParsers(streets: string[]): Promise<Streets[]> {
+    const resultStreets: Streets[] = [];
+    for (const street of streets) {
+      const isStreet: Streets | null = await this.getStreetByNameGeo(street);
+      if (isStreet) continue;
+      const newStreets = await this.createStreet({ nameGeo: street });
+      resultStreets.push(newStreets);
+    }
+    return resultStreets;
   }
 }
