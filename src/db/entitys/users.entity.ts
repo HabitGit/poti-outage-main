@@ -39,6 +39,6 @@ export class Users {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @ManyToOne(() => Streets, (street) => street.id)
+  @ManyToOne(() => Streets, (street) => street.id, { onDelete: 'SET NULL' })
   street: Streets;
 }
