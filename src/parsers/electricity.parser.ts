@@ -1,121 +1,64 @@
-import puppeteer, { Browser, Page } from 'puppeteer';
-import jsdom from 'jsdom';
 import {
   IFinishParserInfo,
   IOutputRefactoring,
+  IResponseData,
 } from '../templates/interfaces/interfaces';
 import { Helper } from '../templates/helpers/helper';
+import axios, { AxiosResponse } from 'axios';
+import { StreetsService } from '../service/streets.service';
 
 const LINK = process.env.ELECTRICITY_LINK;
-const POTI = 'ფოთი';
-const spliterOne = 'გათიშვის არეალი';
-const spliterTwo = 'ჩაჭრის თარიღი';
-const spliterThree = 'დასახელება:';
-const spliterFour = 'აღდგენის თარიღი';
-
-const { JSDOM } = jsdom;
 
 export class ElectricityParser {
-  constructor(private helper: Helper) {}
+  constructor(
+    private helper: Helper,
+    private streetsService: StreetsService,
+  ) {}
 
   async getElectricityInfo(): Promise<IOutputRefactoring> {
     if (!LINK) throw new Error('Нету ссылки на сайт');
-    let data: string = '';
-
+    let respData: string = '';
     try {
-      // Получение страницы
-      const browser: Browser = await puppeteer.launch({
-        headless: 'new',
-        args: ['--disable-setuid-sandbox', '--no-sandbox'],
+      const resp: AxiosResponse = await axios.post(LINK, {
+        search: 'ფოთი',
       });
-      const page: Page = await browser.newPage();
-      await page.goto(LINK);
-      data = await page.content();
-      await browser.close();
+      respData = JSON.stringify(resp.data);
     } catch (e) {
-      console.log(e);
+      if (axios.isAxiosError(e)) {
+        console.log('Ошибка аксисоса: ', e);
+      } else {
+        console.log('Иная ошибка при получении данных с сайта: ', e);
+      }
     }
 
-    //get HTML dom
-    const dom = new JSDOM(data);
-    const document = dom.window.document;
-    const items: NodeListOf<Element> = document.querySelectorAll(
-      '[class="page-alert-wrap ng-star-inserted"]',
-    );
-
-    //Search info about country
-    const infoInMyCountry: Array<Element | null> = [];
-    items.forEach((item) => {
-      const query: Element | null = item.querySelector(
-        '[class="page-alert-text-title"]',
-      );
-      if (query === null)
-        throw new Error(
-          '[ELECTRICITY PARSER]-Нету первого селектора в поиске имени города',
-        );
-
-      const isTextQuery: string | null = query.textContent;
-      if (isTextQuery === null)
-        throw new Error('[ELECTRICITY PARSER]-Нету текста у первого селектора');
-
-      const isCityName: number = isTextQuery.indexOf(POTI);
-      if (isCityName >= 0)
-        infoInMyCountry.push(
-          item.querySelector('[class="page-alert-info-wrap"]'),
-        );
-    });
-
-    // get text
+    const arrayRespData: IResponseData = JSON.parse(respData);
     const resultText: Array<IFinishParserInfo> = [];
-    infoInMyCountry.forEach((item) => {
-      if (item != null) {
-        const itemText: string | null = item.textContent;
-        if (itemText === null)
-          throw new Error('[ELECTRICITY PARSER]-Отсутствует текст-информация');
-        const streetsArray = itemText
-          .split(spliterOne)[1]
-          .split(spliterTwo)[0]
-          .split(spliterThree)[0]
-          .split(':')[1]
-          .split(',');
 
-        const streets = streetsArray.map((item) => {
-          return item.split('/')[2];
+    for (const outage of arrayRespData.data) {
+      const startDate: Date = new Date(outage.disconnectionDate);
+      const endDate: Date = new Date(outage.reconnectionDate);
+
+      const streets: string[] = outage.disconnectionArea
+        .split(',')
+        .map((street) => {
+          return street.split('/')[2];
         });
-
-        const resultTextStageOne = itemText
-          .split(spliterTwo)[1]
-          .split(spliterFour)
-          .join('')
-          .split(' ');
-
-        const startDateSplit: Array<string> = resultTextStageOne[3].split('-');
-        const startTimeSplit: Array<string> = resultTextStageOne[6].split(':');
-        const endDateSplit: Array<string> = resultTextStageOne[11].split('-');
-        const endTimeSplit: Array<string> = resultTextStageOne[14].split(':');
-
-        const startDate: Date = new Date(
-          +startDateSplit[0],
-          +startDateSplit[1] - 1,
-          +startDateSplit[2],
-          +startTimeSplit[0],
-          +startTimeSplit[1],
-        );
-        const endDate: Date = new Date(
-          +endDateSplit[0],
-          +endDateSplit[1] - 1,
-          +endDateSplit[2],
-          +endTimeSplit[0],
-          +endTimeSplit[1],
-        );
-
-        resultText.push({
-          startDate: startDate,
-          endDate: endDate,
-          streets: streets,
-        });
+      for (const street of streets) {
+        try {
+          await this.streetsService.createStreet({ nameGeo: street });
+        } catch (e) {
+          console.log(e);
+        }
       }
-    });
+      console.log(streets);
+
+      resultText.push({
+        startDate: startDate,
+        endDate: endDate,
+        streets: streets,
+      });
+    }
+
     if (resultText.length === 0)
       return {
         endDate: null,
