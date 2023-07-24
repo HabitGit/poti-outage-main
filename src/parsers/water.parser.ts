@@ -7,11 +7,13 @@ import {
 import { Helper } from '../templates/helpers/helper';
 
 const LINK = process.env.WATER_LINK;
-const POTI = 'ფოთის ';
+const POTIS = 'ფოთის ';
 const QUERY_START =
   'div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(2)';
 const QUERY_END =
   'div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(3)';
+const QUERY_STREET =
+  'div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(5)';
 
 const { JSDOM } = jsdom;
 
@@ -52,7 +54,7 @@ export class WaterParser {
       const isTextQuery: string | null = query.textContent;
       if (isTextQuery === null) throw new Error('Нету текста у объекта');
 
-      const isCityName: number = isTextQuery.indexOf(POTI);
+      const isCityName: number = isTextQuery.indexOf(POTIS);
       if (isCityName >= 0)
         infoInMyCountry.push(item.querySelector('[class="col-sm-12"]'));
     });
@@ -63,14 +65,28 @@ export class WaterParser {
       if (item != null) {
         const startQuery: Element | null = item.querySelector(QUERY_START);
         if (startQuery === null) throw new Error('Нету селектора старта');
+
         const endQuery: Element | null = item.querySelector(QUERY_END);
         if (endQuery === null) throw new Error('Нету квери окончания');
+
+        const streetsQuery: Element | null = item.querySelector(QUERY_STREET);
+        if (streetsQuery === null) throw new Error('Нету квери улиц');
+        const arrayStreetsQuery = streetsQuery.querySelectorAll('div');
+
         const startQueryText: string | null = startQuery.textContent;
         if (startQueryText === null)
           throw new Error('Нету текста у селектора начала');
+
         const endQueryText: string | null = endQuery.textContent;
         if (endQueryText === null)
           throw new Error('Нету текста у селектора окончания');
+
+        const streetsResult: Array<string> = [];
+        for (const street of arrayStreetsQuery) {
+          const textStreet: string | null = street.textContent;
+          if (!textStreet) continue;
+          streetsResult.push(textStreet);
+        }
 
         const start: string = startQueryText.split(': ')[1];
         const end: string = endQueryText.split(': ')[1];
@@ -98,6 +114,7 @@ export class WaterParser {
         resultText.push({
           startDate: startDate,
           endDate: endDate,
+          streets: streetsResult,
         });
         console.log('[+]*WATER PARSER* result text: ', resultText);
       }
