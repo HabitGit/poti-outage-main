@@ -140,6 +140,7 @@ export class SocialService {
     try {
       await this.botService.sendMessage(chatId, message);
     } catch (e) {
+      console.log('Error in send message: ', e);
       throw new BotErrors({
         name: 'BAN_FROM_USER',
         message: 'Bot has been baned from user',
