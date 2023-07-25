@@ -143,9 +143,7 @@ export class WaterParser {
     const resultArray: IOutputRefactoring[] = [];
 
     for (const result of finalInfo) {
-      resultArray.push(
-        this.helper.infoOutputRefactoring('электричества', result),
-      );
+      resultArray.push(this.helper.infoOutputRefactoring('воды', result));
     }
     return resultArray;
   }
