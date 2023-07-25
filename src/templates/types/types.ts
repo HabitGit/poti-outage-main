@@ -14,3 +14,5 @@ export type InlineButtons = {
 };
 
 export type StreetsNamesType = [{ nameGeo: string }];
+
+export type UsersStreetsId = [{ id: number }];

@@ -65,7 +65,7 @@ export class WaterParser {
         console.log('Иная ошибка при получении данных с сайта: ', err);
       }
     }
-    if (html === 'undefined') throw new Error('Отсутствует HTML');
+    if (!html) throw new Error('Отсутствует HTML');
     return html;
   }
 
