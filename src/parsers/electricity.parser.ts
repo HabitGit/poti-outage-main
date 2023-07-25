@@ -15,7 +15,7 @@ export class ElectricityParser {
     private streetsService: StreetsService,
   ) {}
 
-  async getElectricityInfo(): Promise<IOutputRefactoring> {
+  async getElectricityInfo(): Promise<IOutputRefactoring[] | null> {
     if (!LINK) throw new Error('Нету ссылки на сайт');
     let respData: string = '';
     try {
@@ -32,7 +32,7 @@ export class ElectricityParser {
     }
 
     const arrayRespData: IResponseData = JSON.parse(respData);
-    const resultText: Array<IFinishParserInfo> = [];
+    const finalInfo: Array<IFinishParserInfo> = [];
 
     for (const outage of arrayRespData.data) {
       const startDate: Date = new Date(outage.disconnectionDate);
@@ -52,19 +52,22 @@ export class ElectricityParser {
       }
       console.log(streets);
 
-      resultText.push({
+      finalInfo.push({
         startDate: startDate,
         endDate: endDate,
         streets: streets,
       });
     }
+    console.log('[+]FINALLY RESULT ABOUT ELECTRICITY: ', finalInfo);
 
-    if (resultText.length === 0)
-      return {
-        endDate: null,
-        message: 'Инфо об отключении электричества нет.',
-      };
-    console.log('[+]FINALLY RESULT ABOUT ELECTRICITY: ', resultText);
-    return this.helper.infoOutputRefactoring('электричества', resultText);
+    if (finalInfo.length === 0) return null;
+    const resultArray: IOutputRefactoring[] = [];
+
+    for (const result of finalInfo) {
+      resultArray.push(
+        this.helper.infoOutputRefactoring('электричества', result),
+      );
+    }
+    return resultArray;
   }
 }

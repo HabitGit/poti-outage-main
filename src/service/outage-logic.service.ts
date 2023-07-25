@@ -12,37 +12,51 @@ export class OutageLogicService {
   ) {}
 
   async sendWaterOutageInfo() {
-    const isInfo: string | undefined = await this.waterService.getWaterInfo();
-    if (isInfo) return this.socialService.messageSender(isInfo);
-    return;
+    const isInfo: string[] | undefined = await this.waterService.getWaterInfo();
+    if (!isInfo) return;
+    for (const message of isInfo) {
+      await this.socialService.messageSender(message);
+    }
   }
 
   async sendElectricityOutageInfo() {
-    const isInfo: string | undefined =
+    const isInfo: string[] | undefined =
       await this.electricityService.getElectricityInfo();
-    if (isInfo) return this.socialService.messageSender(isInfo);
-    return;
+    if (!isInfo) return;
+    for (const message of isInfo) {
+      await this.socialService.messageSender(message);
+    }
   }
 
   async sendWaterBlackout(chatId: number) {
     const isCache: string[] | null =
       await this.waterService.showWaterBlackouts();
-    if (isCache)
+
+    if (!isCache) {
       return this.botService.sendMessage(
         chatId,
-        isCache?.join('\n') || 'Не получена информация об отключении воды.',
+        'Не получена информация об отключении воды.',
       );
-    return;
+    }
+
+    for (const message of isCache) {
+      await this.botService.sendMessage(chatId, message);
+    }
   }
 
   async sendElectricityBlackout(chatId: number) {
     const isCache: string[] | null =
       await this.electricityService.showElectricityBlackouts();
-    if (isCache)
+
+    if (!isCache) {
       return this.botService.sendMessage(
         chatId,
-        isCache?.join('\n') || 'Не получена информация об отключении воды.',
+        'Не получена информация об отключении воды.',
       );
-    return;
+    }
+
+    for (const message of isCache) {
+      await this.botService.sendMessage(chatId, message);
+    }
   }
 }

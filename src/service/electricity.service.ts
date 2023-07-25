@@ -11,19 +11,22 @@ export class ElectricityService {
     private cacheService: CacheService,
   ) {}
 
-  async getElectricityInfo() {
-    const info: IOutputRefactoring =
+  async getElectricityInfo(): Promise<string[] | undefined> {
+    const info: IOutputRefactoring[] | null =
       await this.electricityParser.getElectricityInfo();
-    if (info.endDate === null) return;
+    if (info === null) return;
 
-    const cache: string | null = await this.cacheService.getElectricityInfo(
-      info as IGetInfo,
-    );
-
-    if (info.message !== cache) {
-      return info.message;
+    const result: string[] = [];
+    for (const outage of info) {
+      const cache: string | null = await this.cacheService.getElectricityInfo(
+        outage as IGetInfo,
+      );
+      if (outage.message !== cache) {
+        result.push(outage.message + '\n');
+      }
     }
-    return;
+    if (result.length === 0) return;
+    return result;
   }
 
   async showElectricityBlackouts(): Promise<string[] | null> {

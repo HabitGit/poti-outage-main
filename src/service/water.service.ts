@@ -11,18 +11,22 @@ export class WaterService {
     private cacheService: CacheService,
   ) {}
 
-  async getWaterInfo(): Promise<string | undefined> {
-    const info: IOutputRefactoring = await this.waterParser.getWaterInfo();
-    if (info.endDate === null) return;
+  async getWaterInfo(): Promise<string[] | undefined> {
+    const info: IOutputRefactoring[] | null =
+      await this.waterParser.getWaterInfo();
+    if (info === null) return;
 
-    const cache: string | null = await this.cacheService.getWaterInfo(
-      info as IGetInfo,
-    );
-
-    if (info.message !== cache) {
-      return info.message;
+    const result: string[] = [];
+    for (const outage of info) {
+      const cache: string | null = await this.cacheService.getWaterInfo(
+        outage as IGetInfo,
+      );
+      if (outage.message !== cache) {
+        result.push(outage.message + '\n');
+      }
     }
-    return;
+    if (result.length === 0) return;
+    return result;
   }
 
   async showWaterBlackouts(): Promise<string[] | null> {
