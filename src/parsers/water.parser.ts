@@ -96,11 +96,11 @@ export class WaterParser {
             .join('');
           if (!textStreet) continue;
           streetsResult.push(textStreet);
-          // try {
-          //   await this.streetsService.createStreet({ nameGeo: textStreet });
-          // } catch (e) {
-          //   console.log(e);
-          // }
+          try {
+            await this.streetsService.createStreet({ nameGeo: textStreet });
+          } catch (e) {
+            console.log(e);
+          }
         }
         if (streetsResult.length > 40) {
           streetsResult = streetsResult.slice(0, 40);
