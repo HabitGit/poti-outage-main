@@ -12,3 +12,5 @@ export type InlineButtons = {
     };
   };
 };
+
+export type StreetsNamesType = [{ nameGeo: string }];

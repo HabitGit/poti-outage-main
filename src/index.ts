@@ -48,7 +48,7 @@ export class Main {
   }
 
   private job = new CronJob({
-    cronTime: '0,0 */2 * * *',
+    cronTime: '0,0 */1 * * *',
     onTick: async () => {
       try {
         await this.logicService.sendWaterOutageInfo();

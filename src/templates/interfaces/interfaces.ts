@@ -17,7 +17,7 @@ export interface IGetUserPointsQuery {
 export interface IFinishParserInfo {
   startDate: Date;
   endDate: Date;
-  streets?: string[];
+  streets: string[];
 }
 
 export interface IKeyboard {
