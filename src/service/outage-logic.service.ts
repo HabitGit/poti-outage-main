@@ -45,7 +45,7 @@ export class OutageLogicService {
 
         // Формируем массив имен улиц
         const streetsNames = info.streets.map((street) => {
-          return { nameGeo: ILike(`%${street}%`) };
+          return { nameGeo: ILike(street) };
         });
         // Получаем айди улиц
         const streetsId = await this.streetsRepository.getStreetsIdByNamesGeo(
@@ -92,7 +92,7 @@ export class OutageLogicService {
 
         // Формируем массив имен улиц
         const streetsNames = info.streets.map((street) => {
-          return { nameGeo: ILike(`%${street}$`) };
+          return { nameGeo: ILike(street) };
         });
         // Получаем айди улиц
         const streetsId = await this.streetsRepository.getStreetsIdByNamesGeo(

@@ -49,10 +49,9 @@ export class MessageController {
         }
         break;
 
-      // case '/test':
-        // await this.logicService.sendElectricityOutageInfo();
-        // await this.logicService.sendWaterOutageInfo();
-        // break;
+      case '/help':
+        await this.botService.sendMessage(chatId, Message.help);
+        break;
 
       case 'Зарегистрироваться':
         const userData: CreateUserDto = { userId: userId, chatId: chatId };
