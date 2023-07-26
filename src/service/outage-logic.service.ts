@@ -60,7 +60,7 @@ export class OutageLogicService {
           ...(await this.usersRepository.getUsersByStreetsIdOrNull(null)),
         );
         // Создаем актуальное сообщение
-        if (message !== waterCache) {
+        if (message !== waterCache && waterCache !== 'old value') {
           waterMessage.push({ chatsId: chatsId, message: message });
         }
       }
@@ -107,7 +107,7 @@ export class OutageLogicService {
           ...(await this.usersRepository.getUsersByStreetsIdOrNull(null)),
         );
         // Создаем актуальное сообщение
-        if (message !== electricityCache) {
+        if (message !== electricityCache && electricityCache !== 'old value') {
           electricityMessage.push({ chatsId: chatsId, message: message });
         }
       }

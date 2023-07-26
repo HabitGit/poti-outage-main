@@ -26,41 +26,33 @@ export class CacheService {
 
   async getWaterInfo(waterInfo: IGetInfo): Promise<string | null> {
     const nowDateTimestamp: number = Date.now();
-    const startDateTimestamp: number = waterInfo.startDate.getTime();
     const endDateTimestamp: number = waterInfo.endDate.getTime();
 
     const timeToKeyLife: number = +Math.round(
       (endDateTimestamp - nowDateTimestamp) / 1000,
     );
     if (timeToKeyLife <= 0) {
-      return null;
+      return 'old value';
     }
-    const uniqueKeyNumber: number = +Math.round(
-      endDateTimestamp - startDateTimestamp,
-    );
-    const key: string = `waterInfo${uniqueKeyNumber}`;
+    const key: string = `waterInfo${waterInfo.streets}${endDateTimestamp}`;
     const cache: string | null = await this.get(key);
     await this.set(key, waterInfo.message, timeToKeyLife);
     return cache;
   }
 
-  async getElectricityInfo(waterInfo: IGetInfo) {
+  async getElectricityInfo(electricityInfo: IGetInfo) {
     const nowDateTimestamp: number = Date.now();
-    const startDateTimestamp: number = waterInfo.startDate.getTime();
-    const endDateTimestamp: number = waterInfo.endDate.getTime();
+    const endDateTimestamp: number = electricityInfo.endDate.getTime();
 
     const timeToKeyLife: number = +Math.round(
       (endDateTimestamp - nowDateTimestamp) / 1000,
     );
     if (timeToKeyLife <= 0) {
-      return null;
+      return 'old value';
     }
-    const uniqueKeyNumber: number = +Math.round(
-      endDateTimestamp - startDateTimestamp,
-    );
-    const key: string = `electricityInfo${uniqueKeyNumber}`;
+    const key: string = `electricityInfo${electricityInfo.streets}${endDateTimestamp}`;
     const cache: string | null = await this.get(key);
-    await this.set(key, waterInfo.message, timeToKeyLife);
+    await this.set(key, electricityInfo.message, timeToKeyLife);
     return cache;
   }
 }
