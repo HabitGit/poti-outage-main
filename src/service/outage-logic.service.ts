@@ -143,7 +143,7 @@ export class OutageLogicService {
     if (!isCache) {
       return this.botService.sendMessage(
         chatId,
-        'Не получена информация об отключении воды.',
+        'Не получена информация об отключении электричества.',
       );
     }
 
