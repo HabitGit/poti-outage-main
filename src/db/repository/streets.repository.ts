@@ -2,6 +2,7 @@ import { DataSource, Repository } from 'typeorm';
 import { Streets } from '../entitys/streets.entity';
 import { CreateStreetDto } from '../../templates/dtos/create-street.dto';
 import { UpdateStreetDto } from '../../templates/dtos/update-street.dto';
+import { IStreetsName } from '../../templates/types/types';
 
 export class StreetsRepository extends Repository<Streets> {
   constructor(private dataSource: DataSource) {
@@ -31,6 +32,13 @@ export class StreetsRepository extends Repository<Streets> {
   async getStreetByNameGeo(nameGeo: string): Promise<Streets | null> {
     return this.findOne({
       where: { nameGeo },
+    });
+  }
+
+  async getStreetsIdByNamesGeo(names: IStreetsName[]): Promise<Streets[]> {
+    return this.find({
+      select: { id: true },
+      where: names,
     });
   }
 }

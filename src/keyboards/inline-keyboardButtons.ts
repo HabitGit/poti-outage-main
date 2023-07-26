@@ -14,5 +14,9 @@ export const inlineButtons: InlineButtons = {
       text: 'Включить рассылку',
       callback_data: 'maEn',
     },
+    deleteStreet: {
+      text: 'Удалить улицу',
+      callback_data: 'deSt',
+    },
   },
 };

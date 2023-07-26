@@ -1,3 +1,5 @@
+import { FindOperator } from 'typeorm';
+
 export type Buttons = {
   [buttonLocation: string]: {
     [buttonName: string]: { text: string };
@@ -12,3 +14,11 @@ export type InlineButtons = {
     };
   };
 };
+
+export interface IStreetsName {
+  nameGeo: FindOperator<string>;
+}
+
+export interface IUsersStreetsId {
+  id: number;
+}

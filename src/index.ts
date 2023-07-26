@@ -48,11 +48,10 @@ export class Main {
   }
 
   private job = new CronJob({
-    cronTime: '0,0 */2 * * *',
+    cronTime: '0,0 */1 * * *',
     onTick: async () => {
       try {
-        await this.logicService.sendWaterOutageInfo();
-        await this.logicService.sendElectricityOutageInfo();
+        await this.logicService.sendOutageInfo();
       } catch (e) {
         console.log('[-]*ERROR* in Crone: ', e);
       }
@@ -71,10 +70,14 @@ const usersRepository = new UsersRepository(AppDataSource, cacheService);
 //
 const botService = new BotService(configEnv);
 const streetsService = new StreetsService(streetsRepository, usersRepository);
-const waterParser = new WaterParser(helper, streetsService);
-const electricityParser = new ElectricityParser(helper, streetsService);
+const waterParser = new WaterParser(helper, streetsService, configEnv);
+const electricityParser = new ElectricityParser(
+  helper,
+  streetsService,
+  configEnv,
+);
 
-const socialService = new SocialService(usersRepository, botService);
+const socialService = new SocialService(usersRepository, botService, helper);
 const commandService = new CommandService(usersRepository, socialService);
 
 const waterService = new WaterService(waterParser, cacheService);
@@ -101,6 +104,10 @@ const outageLogicService = new OutageLogicService(
   electricityService,
   socialService,
   botService,
+  cacheService,
+  helper,
+  streetsRepository,
+  usersRepository,
 );
 const messageController = new MessageController(
   helper,

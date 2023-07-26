@@ -1,8 +1,15 @@
-import { DataSource, DeleteResult, Repository, UpdateResult } from 'typeorm';
+import {
+  DataSource,
+  DeleteResult,
+  IsNull,
+  Repository,
+  UpdateResult,
+} from 'typeorm';
 import { Users } from '../entitys/users.entity';
 import { CreateUserDto } from '../../templates/dtos/create-user.dto';
 import { UpdateUserDto } from '../../templates/dtos/update-user.dto';
 import { CacheService } from '../../service/cache.service';
+import { IUsersStreetsId } from '../../templates/types/types';
 
 export class UsersRepository extends Repository<Users> {
   constructor(
@@ -66,5 +73,21 @@ export class UsersRepository extends Repository<Users> {
       { userId: updateUserData.userId },
       { street: updateUserData.street },
     );
+  }
+
+  async getUsersByStreetsIdOrNull(
+    streetsId: IUsersStreetsId[] | null,
+  ): Promise<Users[]> {
+    return this.find({
+      select: { chatId: true },
+      relations: { street: true },
+      where: {
+        street: streetsId ? streetsId : IsNull(),
+      },
+    });
+  }
+
+  async deleteUsersStreetByUserId(userId: number) {
+    return this.update({ userId: userId }, { street: { id: undefined } });
   }
 }

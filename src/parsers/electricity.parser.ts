@@ -1,38 +1,26 @@
 import {
+  IConfigService,
   IFinishParserInfo,
-  IOutputRefactoring,
+  IFinishParserInfoObject,
   IResponseData,
 } from '../templates/interfaces/interfaces';
 import { Helper } from '../templates/helpers/helper';
 import axios, { AxiosResponse } from 'axios';
 import { StreetsService } from '../service/streets.service';
 
-const LINK = process.env.ELECTRICITY_LINK;
-
 export class ElectricityParser {
   constructor(
     private helper: Helper,
     private streetsService: StreetsService,
+    private configService: IConfigService,
   ) {}
 
-  async getElectricityInfo(): Promise<IOutputRefactoring[] | null> {
-    if (!LINK) throw new Error('Нету ссылки на сайт');
-    let respData: string = '';
-    try {
-      const resp: AxiosResponse = await axios.post(LINK, {
-        search: 'ფოთი',
-      });
-      respData = JSON.stringify(resp.data);
-    } catch (e) {
-      if (axios.isAxiosError(e)) {
-        console.log('Ошибка аксисоса: ', e);
-      } else {
-        console.log('Иная ошибка при получении данных с сайта: ', e);
-      }
-    }
+  async getElectricityInfo(): Promise<IFinishParserInfo | null> {
+    const LINK: string = this.configService.get('ELECTRICITY_LINK');
+    const respData: string = await this.getRequestData(LINK);
 
     const arrayRespData: IResponseData = JSON.parse(respData);
-    const finalInfo: Array<IFinishParserInfo> = [];
+    const finalInfo: Array<IFinishParserInfoObject> = [];
 
     for (const outage of arrayRespData.data) {
       const startDate: Date = new Date(outage.disconnectionDate);
@@ -41,7 +29,9 @@ export class ElectricityParser {
       const streets: string[] = outage.disconnectionArea
         .split(',')
         .map((street) => {
-          return street.split('/')[2];
+          const string = street.trim().split('/');
+          if (string.length === 2) return string[1];
+          return string[2];
         });
       for (const street of streets) {
         try {
@@ -61,13 +51,24 @@ export class ElectricityParser {
     console.log('[+]FINALLY RESULT ABOUT ELECTRICITY: ', finalInfo);
 
     if (finalInfo.length === 0) return null;
-    const resultArray: IOutputRefactoring[] = [];
+    return { name: 'электричества', outageInfo: finalInfo };
+  }
 
-    for (const result of finalInfo) {
-      resultArray.push(
-        this.helper.infoOutputRefactoring('электричества', result),
-      );
+  async getRequestData(link: string): Promise<string> {
+    let respData: string = '';
+    try {
+      const resp: AxiosResponse = await axios.post(link, {
+        search: 'ფოთი',
+      });
+      respData = JSON.stringify(resp.data);
+    } catch (e) {
+      if (axios.isAxiosError(e)) {
+        console.log('Ошибка аксисоса: ', e);
+      } else {
+        console.log('Иная ошибка при получении данных с сайта: ', e);
+      }
     }
-    return resultArray;
+    if (!respData) throw new Error('Отсутстсует Data');
+    return respData;
   }
 }

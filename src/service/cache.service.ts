@@ -24,13 +24,18 @@ export class CacheService {
     return this.client.mGet(keys);
   }
 
-  async getWaterInfo(waterInfo: IGetInfo) {
+  async getWaterInfo(waterInfo: IGetInfo): Promise<string | null> {
     const nowDateTimestamp: number = Date.now();
+    const startDateTimestamp: number = waterInfo.startDate.getTime();
     const endDateTimestamp: number = waterInfo.endDate.getTime();
+
     const timeToKeyLife: number = +Math.round(
       (endDateTimestamp - nowDateTimestamp) / 1000,
     );
-    const key: string = `waterInfo${endDateTimestamp}`;
+    const uniqueKeyNumber: number = +Math.round(
+      endDateTimestamp - startDateTimestamp,
+    );
+    const key: string = `waterInfo${uniqueKeyNumber}`;
     const cache: string | null = await this.get(key);
     await this.set(key, waterInfo.message, timeToKeyLife);
     return cache;
@@ -38,11 +43,16 @@ export class CacheService {
 
   async getElectricityInfo(waterInfo: IGetInfo) {
     const nowDateTimestamp: number = Date.now();
+    const startDateTimestamp: number = waterInfo.startDate.getTime();
     const endDateTimestamp: number = waterInfo.endDate.getTime();
+
     const timeToKeyLife: number = +Math.round(
       (endDateTimestamp - nowDateTimestamp) / 1000,
     );
-    const key: string = `electricityInfo${endDateTimestamp}`;
+    const uniqueKeyNumber: number = +Math.round(
+      endDateTimestamp - startDateTimestamp,
+    );
+    const key: string = `electricityInfo${uniqueKeyNumber}`;
     const cache: string | null = await this.get(key);
     await this.set(key, waterInfo.message, timeToKeyLife);
     return cache;

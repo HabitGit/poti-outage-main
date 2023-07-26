@@ -1,8 +1,5 @@
 import { ElectricityParser } from '../parsers/electricity.parser';
-import {
-  IGetInfo,
-  IOutputRefactoring,
-} from '../templates/interfaces/interfaces';
+import { IFinishParserInfo } from '../templates/interfaces/interfaces';
 import { CacheService } from './cache.service';
 
 export class ElectricityService {
@@ -11,22 +8,16 @@ export class ElectricityService {
     private cacheService: CacheService,
   ) {}
 
-  async getElectricityInfo(): Promise<string[] | undefined> {
-    const info: IOutputRefactoring[] | null =
-      await this.electricityParser.getElectricityInfo();
-    if (info === null) return;
-
-    const result: string[] = [];
-    for (const outage of info) {
-      const cache: string | null = await this.cacheService.getElectricityInfo(
-        outage as IGetInfo,
-      );
-      if (outage.message !== cache) {
-        result.push(outage.message + '\n');
-      }
+  async getElectricityInfo(): Promise<IFinishParserInfo | null> {
+    try {
+      const info: IFinishParserInfo | null =
+        await this.electricityParser.getElectricityInfo();
+      if (!info) return null;
+      return info;
+    } catch (e) {
+      console.log('[-]*ELECTRICITY PARSER ERROR* :', e);
+      return null;
     }
-    if (result.length === 0) return;
-    return result;
   }
 
   async showElectricityBlackouts(): Promise<string[] | null> {

@@ -22,10 +22,6 @@ export class MessageController {
     private logicService: OutageLogicService,
   ) {}
 
-  // async toAdmin(message: string) {
-  //   await this.clientService.messageSender(message);
-  // }
-
   requestHandler = async (msg: TelegramBot.Message) => {
     const {
       chatId,
@@ -53,10 +49,9 @@ export class MessageController {
         }
         break;
 
-      // case '/test':
-        // await this.logicService.sendElectricityOutageInfo();
-        // await this.logicService.sendWaterOutageInfo();
-        // break;
+      case '/help':
+        await this.botService.sendMessage(chatId, Message.help);
+        break;
 
       case 'Зарегистрироваться':
         const userData: CreateUserDto = { userId: userId, chatId: chatId };

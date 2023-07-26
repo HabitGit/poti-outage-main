@@ -1,24 +1,22 @@
 import 'dotenv/config';
 import TelegramBot from 'node-telegram-bot-api';
 import {
-  IFinishParserInfo,
+  IFinishParserInfoObject,
   IGetUserPoints,
   IGetUserPointsQuery,
-  IOutputRefactoring,
 } from '../interfaces/interfaces';
 import { Buttons } from '../types/types';
 
 export class Helper {
   infoOutputRefactoring(
     typeOfPublicService: string,
-    info: IFinishParserInfo,
-  ): IOutputRefactoring {
-    const message: string = `Найдены отключения ${typeOfPublicService}:\nс ${info.startDate.toLocaleString(
+    info: IFinishParserInfoObject,
+  ): string {
+    return `Найдены отключения ${typeOfPublicService}:\nс ${info.startDate.toLocaleString(
       'ru-RU',
     )} по ${info.endDate.toLocaleString(
       'ru-RU',
     )} \nНа улицах: \n${info.streets?.join('\n')}`;
-    return { endDate: info.endDate, message: message };
   }
 
   getUserPoints(msg: TelegramBot.Message): IGetUserPoints {
