@@ -9,7 +9,7 @@ import { Users } from '../entitys/users.entity';
 import { CreateUserDto } from '../../templates/dtos/create-user.dto';
 import { UpdateUserDto } from '../../templates/dtos/update-user.dto';
 import { CacheService } from '../../service/cache.service';
-import { UsersStreetsId } from '../../templates/types/types';
+import { IUsersStreetsId } from '../../templates/types/types';
 
 export class UsersRepository extends Repository<Users> {
   constructor(
@@ -75,14 +75,19 @@ export class UsersRepository extends Repository<Users> {
     );
   }
 
-  async getUsersByStreetsId(
-    streetsId: UsersStreetsId | null,
+  async getUsersByStreetsIdOrNull(
+    streetsId: IUsersStreetsId[] | null,
   ): Promise<Users[]> {
     return this.find({
+      select: { chatId: true },
       relations: { street: true },
       where: {
         street: streetsId ? streetsId : IsNull(),
       },
     });
+  }
+
+  async deleteUsersStreetByUserId(userId: number) {
+    return this.update({ userId: userId }, { street: { id: undefined } });
   }
 }

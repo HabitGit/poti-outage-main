@@ -14,10 +14,15 @@ export interface IGetUserPointsQuery {
   userId: number;
 }
 
-export interface IFinishParserInfo {
+export interface IFinishParserInfoObject {
   startDate: Date;
   endDate: Date;
   streets: string[];
+}
+
+export interface IFinishParserInfo {
+  name: string;
+  outageInfo: IFinishParserInfoObject[];
 }
 
 export interface IKeyboard {
@@ -37,7 +42,9 @@ export interface IOutputRefactoring {
 
 export interface IGetInfo {
   endDate: Date;
+  startDate: Date;
   message: string;
+  streets: string[];
 }
 
 export interface IMyInfo {

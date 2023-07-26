@@ -22,10 +22,6 @@ export class MessageController {
     private logicService: OutageLogicService,
   ) {}
 
-  // async toAdmin(message: string) {
-  //   await this.clientService.messageSender(message);
-  // }
-
   requestHandler = async (msg: TelegramBot.Message) => {
     const {
       chatId,

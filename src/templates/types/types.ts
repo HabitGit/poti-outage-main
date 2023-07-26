@@ -13,6 +13,10 @@ export type InlineButtons = {
   };
 };
 
-export type StreetsNamesType = [{ nameGeo: string }];
+export interface IStreetsName {
+  nameGeo: string;
+}
 
-export type UsersStreetsId = [{ id: number }];
+export interface IUsersStreetsId {
+  id: number;
+}

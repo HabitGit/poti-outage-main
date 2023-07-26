@@ -43,10 +43,11 @@ export class QueryController {
           this.streetsLogicService.registrationStreetListener,
         );
         break;
+
+      case 'deSt':
+        await this.socialService.deleteUsersStreetByUserId(userId);
+        await this.botService.sendMessage(chatId, 'Улица успешно удалена');
+        break;
     }
   };
-
-  // async addStreet(streetData: CreateStreetDto[]): Promise<Streets[]> {
-  //   return this.streetsService.addStreets(streetData);
-  // }
 }

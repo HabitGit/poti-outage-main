@@ -11,13 +11,15 @@ import {
   welcomeMessage,
 } from '../templates/helpers/messages.template';
 import { BotErrors } from '../templates/errors/errors';
-import { inlineKeyboard } from '../keyboards/inline-keyboard';
 import * as fs from 'fs';
+import { Helper } from '../templates/helpers/helper';
+import { inlineButtons } from '../keyboards/inline-keyboardButtons';
 
 export class SocialService {
   constructor(
     private usersRepository: UsersRepository,
     private botService: BotService,
+    private helper: Helper,
   ) {}
 
   async registration(userData: CreateUserDto): Promise<TelegramBot.Message> {
@@ -60,11 +62,18 @@ export class SocialService {
       street: user.street,
     });
 
+    const keyboard = this.helper.getKeyboard(
+      inlineButtons,
+      ['myInfo'],
+      [
+        user.mailing ? 'mailingDisable' : 'mailingEnable',
+        user.street ? 'deleteStreet' : 'addStreet',
+      ],
+    );
+
     await this.botService.sendMessage(chatId, message, {
       reply_markup: {
-        inline_keyboard: user.mailing
-          ? inlineKeyboard.myInfoEnable
-          : inlineKeyboard.myInfoDisable,
+        inline_keyboard: keyboard,
       },
       parse_mode: 'Markdown',
     });
@@ -162,5 +171,9 @@ export class SocialService {
       welcomeMessage(userName),
       Keyboard.start,
     );
+  }
+
+  async deleteUsersStreetByUserId(userId: number) {
+    return await this.usersRepository.deleteUsersStreetByUserId(userId);
   }
 }

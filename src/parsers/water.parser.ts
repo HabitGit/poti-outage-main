@@ -3,6 +3,7 @@ import jsdom from 'jsdom';
 import {
   IConfigService,
   IFinishParserInfo,
+  IFinishParserInfoObject,
 } from '../templates/interfaces/interfaces';
 import { Helper } from '../templates/helpers/helper';
 import { StreetsService } from '../service/streets.service';
@@ -24,7 +25,7 @@ export class WaterParser {
     private configService: IConfigService,
   ) {}
 
-  async getWaterInfo(): Promise<IFinishParserInfo[] | null> {
+  async getWaterInfo(): Promise<IFinishParserInfo | null> {
     const LINK: string = this.configService.get('WATER_LINK');
     const html: string = await this.getRequestData(LINK);
     const items: NodeListOf<Element> = await this.getHtmlItemsBySelector(
@@ -33,7 +34,7 @@ export class WaterParser {
     );
     const infoInMyCountry: Element[] = await this.searchInfoAboutCountry(items);
 
-    const finalInfo: Array<IFinishParserInfo> = [];
+    const finalInfo: Array<IFinishParserInfoObject> = [];
     for (const item of infoInMyCountry) {
       const startDate: Date = await this.getDateBySelector(item, QUERY_START);
       const endDate: Date = await this.getDateBySelector(item, QUERY_END);
@@ -50,7 +51,7 @@ export class WaterParser {
     }
     console.log('[+]*WATER PARSER* result text: ', finalInfo);
     if (finalInfo.length === 0) return null;
-    return finalInfo;
+    return { name: 'воды', outageInfo: finalInfo };
   }
 
   async getRequestData(link: string): Promise<string> {

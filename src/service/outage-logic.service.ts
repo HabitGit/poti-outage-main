@@ -2,6 +2,12 @@ import { WaterService } from './water.service';
 import { SocialService } from './social.service';
 import { BotService } from './bot.service';
 import { ElectricityService } from './electricity.service';
+import { CacheService } from './cache.service';
+import { Helper } from '../templates/helpers/helper';
+import { IFinishParserInfo } from '../templates/interfaces/interfaces';
+import { StreetsRepository } from '../db/repository/streets.repository';
+import { Users } from '../db/entitys/users.entity';
+import { UsersRepository } from '../db/repository/users.repository';
 
 export class OutageLogicService {
   constructor(
@@ -9,22 +15,107 @@ export class OutageLogicService {
     private electricityService: ElectricityService,
     private socialService: SocialService,
     private botService: BotService,
+    private cacheService: CacheService,
+    private helper: Helper,
+    private streetsRepository: StreetsRepository,
+    private usersRepository: UsersRepository,
   ) {}
 
-  async sendWaterOutageInfo() {
-    const isInfo: string[] | undefined = await this.waterService.getWaterInfo();
-    if (!isInfo) return;
-    for (const message of isInfo) {
-      await this.socialService.messageSender(message);
-    }
-  }
-
-  async sendElectricityOutageInfo() {
-    const isInfo: string[] | undefined =
+  async sendOutageInfo() {
+    // Получили сырую информацию
+    const isWaterInfo: IFinishParserInfo | null =
+      await this.waterService.getWaterInfo();
+    const isElectricityInfo: IFinishParserInfo | null =
       await this.electricityService.getElectricityInfo();
-    if (!isInfo) return;
-    for (const message of isInfo) {
-      await this.socialService.messageSender(message);
+
+    const waterMessage: Array<{ chatsId: Users[]; message: string }> = [];
+    if (isWaterInfo) {
+      for (const info of isWaterInfo.outageInfo) {
+        // получаем обработаный текст
+        const message: string = this.helper.infoOutputRefactoring('воды', info);
+
+        // Отправляем в кэш
+        const waterCache: string | null = await this.cacheService.getWaterInfo({
+          endDate: info.endDate,
+          startDate: info.startDate,
+          message: message,
+          streets: info.streets,
+        });
+
+        // Формируем массив имен улиц
+        const streetsNames = info.streets.map((street) => {
+          return { nameGeo: street };
+        });
+        // Получаем айди улиц
+        const streetsId = await this.streetsRepository.getStreetsIdByNamesGeo(
+          streetsNames,
+        );
+        // Получаем айди чатов с улицами
+        const chatsId = await this.usersRepository.getUsersByStreetsIdOrNull(
+          streetsId,
+        );
+        // Добавляем айди чатов без улиц
+        chatsId.push(
+          ...(await this.usersRepository.getUsersByStreetsIdOrNull(null)),
+        );
+        // Создаем актуальное сообщение
+        if (message !== waterCache) {
+          waterMessage.push({ chatsId: chatsId, message: message });
+        }
+      }
+      // Делаем рассылку по воде
+      for (const outage of waterMessage) {
+        for (const chatId of outage.chatsId) {
+          await this.botService.sendMessage(chatId.chatId, outage.message);
+        }
+      }
+    }
+
+    const electricityMessage: Array<{ chatsId: Users[]; message: string }> = [];
+    if (isElectricityInfo) {
+      for (const info of isElectricityInfo.outageInfo) {
+        // получаем обработанный текст
+        const message: string = this.helper.infoOutputRefactoring(
+          'электричества',
+          info,
+        );
+
+        // Получаем кэш
+        const electricityCache: string | null =
+          await this.cacheService.getElectricityInfo({
+            endDate: info.endDate,
+            startDate: info.startDate,
+            message: message,
+            streets: info.streets,
+          });
+
+        // Формируем массив имен улиц
+        const streetsNames = info.streets.map((street) => {
+          return { nameGeo: street };
+        });
+        // Получаем айди улиц
+        const streetsId = await this.streetsRepository.getStreetsIdByNamesGeo(
+          streetsNames,
+        );
+        // Получаем айди чатов с улицами
+        const chatsId = await this.usersRepository.getUsersByStreetsIdOrNull(
+          streetsId,
+        );
+        // Добавляем айди чатов без улиц
+        chatsId.push(
+          ...(await this.usersRepository.getUsersByStreetsIdOrNull(null)),
+        );
+        // Создаем актуальное сообщение
+        if (message !== electricityCache) {
+          electricityMessage.push({ chatsId: chatsId, message: message });
+        }
+      }
+      // Делаем рассылку по электричеству
+      for (const outage of electricityMessage) {
+        for (const chatId of outage.chatsId) {
+          await this.botService.sendMessage(chatId.chatId, outage.message);
+        }
+      }
     }
   }
 
