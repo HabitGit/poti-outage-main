@@ -8,6 +8,7 @@ import { IFinishParserInfo } from '../templates/interfaces/interfaces';
 import { StreetsRepository } from '../db/repository/streets.repository';
 import { Users } from '../db/entitys/users.entity';
 import { UsersRepository } from '../db/repository/users.repository';
+import { ILike } from 'typeorm';
 
 export class OutageLogicService {
   constructor(
@@ -44,7 +45,7 @@ export class OutageLogicService {
 
         // Формируем массив имен улиц
         const streetsNames = info.streets.map((street) => {
-          return { nameGeo: street };
+          return { nameGeo: ILike(`%${street}%`) };
         });
         // Получаем айди улиц
         const streetsId = await this.streetsRepository.getStreetsIdByNamesGeo(
@@ -91,7 +92,7 @@ export class OutageLogicService {
 
         // Формируем массив имен улиц
         const streetsNames = info.streets.map((street) => {
-          return { nameGeo: street };
+          return { nameGeo: ILike(`%${street}$`) };
         });
         // Получаем айди улиц
         const streetsId = await this.streetsRepository.getStreetsIdByNamesGeo(
