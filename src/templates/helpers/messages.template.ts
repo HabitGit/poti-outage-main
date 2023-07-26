@@ -32,7 +32,7 @@ export function myInfoOutput(myInfo: IMyInfo): string {
 }
 
 export function welcomeMessage(userName: string): string {
-  return `Добро пожаловать ${userName}! Если ты хочешь, что бы тебе начали приходить уведомления об отключениях, то просто зарегистрируйся :)`;
+  return `Добро пожаловать ${userName}! Прочитай инструкцию по боту /help и присоединяйся! 😼`;
 }
 
 export function welcomeBackMessage(userName: string): string {
