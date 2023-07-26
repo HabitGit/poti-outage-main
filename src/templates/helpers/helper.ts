@@ -12,11 +12,18 @@ export class Helper {
     typeOfPublicService: string,
     info: IFinishParserInfoObject,
   ): string {
+    let streets: string[] = info.streets;
+    if (info.streets.length > 40) {
+      streets = info.streets.slice(0, 40);
+      streets.push('etc...');
+    }
+
+    console.log('STREETS INTO HELPER: ', streets);
     return `Найдены отключения ${typeOfPublicService}:\nс ${info.startDate.toLocaleString(
       'ru-RU',
-    )} по ${info.endDate.toLocaleString(
-      'ru-RU',
-    )} \nНа улицах: \n${info.streets?.join('\n')}`;
+    )} по ${info.endDate.toLocaleString('ru-RU')} \nНа улицах: \n${streets.join(
+      '\n',
+    )}`;
   }
 
   getUserPoints(msg: TelegramBot.Message): IGetUserPoints {
