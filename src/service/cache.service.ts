@@ -32,6 +32,9 @@ export class CacheService {
     const timeToKeyLife: number = +Math.round(
       (endDateTimestamp - nowDateTimestamp) / 1000,
     );
+    if (timeToKeyLife <= 0) {
+      return null;
+    }
     const uniqueKeyNumber: number = +Math.round(
       endDateTimestamp - startDateTimestamp,
     );
@@ -49,6 +52,9 @@ export class CacheService {
     const timeToKeyLife: number = +Math.round(
       (endDateTimestamp - nowDateTimestamp) / 1000,
     );
+    if (timeToKeyLife <= 0) {
+      return null;
+    }
     const uniqueKeyNumber: number = +Math.round(
       endDateTimestamp - startDateTimestamp,
     );

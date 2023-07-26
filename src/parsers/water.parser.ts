@@ -125,14 +125,19 @@ export class WaterParser {
     const arrayStreetsQuery: NodeListOf<Element> =
       query.querySelectorAll('div');
 
-    let streetsResult: Array<string> = [];
+    const streetsResult: Array<string> = [];
     for (const street of arrayStreetsQuery) {
       const textStreet: string | undefined = street.textContent
         ?.trim()
         .split('ფოთი ')
         .join('')
         .split(' ქ.')
-        .join('');
+        .join('')
+        .split('.')
+        .join('  ')
+        .trim()
+        .split('  ')
+        .join('.');
       if (!textStreet) continue;
       streetsResult.push(textStreet);
       try {
@@ -140,10 +145,6 @@ export class WaterParser {
       } catch (e) {
         console.log(e);
       }
-    }
-    if (streetsResult.length > 40) {
-      streetsResult = streetsResult.slice(0, 40);
-      streetsResult.push('etc...');
     }
     return streetsResult;
   }
