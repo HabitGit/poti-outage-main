@@ -41,6 +41,7 @@ export class SocialService {
           keyboard: Keyboard.home,
           resize_keyboard: true,
         },
+        parse_mode: 'Markdown',
       },
     );
   }

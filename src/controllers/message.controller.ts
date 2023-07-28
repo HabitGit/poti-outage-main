@@ -52,6 +52,7 @@ export class MessageController {
       case '/help':
         await this.botService.sendMessage(chatId, Message.help, {
           parse_mode: 'Markdown',
+          disable_web_page_preview: true,
         });
         break;
 
@@ -71,7 +72,9 @@ export class MessageController {
       case 'Ссылки на сайты':
         const linksMessage: string =
           'Отключения водоснабжения🚰:\nhttp://water.gov.ge/page/full/107/\nОтключения электричества⚡️:\nhttps://my.energo-pro.ge/ow/#/disconns\nОтключения газа⛽️:\nhttps://mygas.ge/araf/outage';
-        await this.botService.sendMessage(chatId, linksMessage);
+        await this.botService.sendMessage(chatId, linksMessage, {
+          disable_web_page_preview: true,
+        });
         break;
     }
   };

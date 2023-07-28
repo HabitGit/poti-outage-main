@@ -4,12 +4,14 @@ import { IGetUserPoints } from '../templates/interfaces/interfaces';
 import { Helper } from '../templates/helpers/helper';
 import { BotService } from './bot.service';
 import { Streets } from '../db/entitys/streets.entity';
+import { SocialService } from './social.service';
 
 export class StreetsLogicService {
   constructor(
     private streetsService: StreetsService,
     private helper: Helper,
     private botService: BotService,
+    private socialService: SocialService,
   ) {}
 
   registrationStreetListener = async (msg: TelegramBot.Message) => {
@@ -38,17 +40,16 @@ export class StreetsLogicService {
 
     if (!isStreet) {
       await this.botService.messageListenerOff(this.registrationStreetListener);
-      return this.botService.sendMessage(
+      await this.botService.sendMessage(
         chatId,
         'Такая улица пока что не добавлена в базу, или указана с ошибкой',
       );
+      return this.socialService.myInfo(userId, chatId);
     }
     await this.streetsService.registrationStreet(userId, isStreet);
     await this.botService.messageListenerOff(this.registrationStreetListener);
-    return this.botService.sendMessage(
-      chatId,
-      'Улица успешно зарегистрирована',
-    );
+    await this.botService.sendMessage(chatId, 'Улица успешно зарегистрирована');
+    return this.socialService.myInfo(userId, chatId);
   };
 
   searchStreetListener = async (msg: TelegramBot.Message) => {

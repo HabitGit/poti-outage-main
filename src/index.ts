@@ -90,6 +90,7 @@ const streetsLogicService = new StreetsLogicService(
   streetsService,
   helper,
   botService,
+  socialService,
 );
 const queryController = new QueryController(
   socialService,
