@@ -64,9 +64,13 @@ export class StreetsLogicService {
       });
     console.log('STREETS: ', streets);
     await this.botService.messageListenerOff(this.searchStreetListener);
-    await this.botService.sendMessage(
-      chatId,
-      streets ? streets.join('\n') : 'Не нашлось',
-    );
+    try {
+      await this.botService.sendMessage(
+        chatId,
+        streets.length > 0 ? streets.join('\n') : 'Не нашлось',
+      );
+    } catch (e) {
+      console.log(e);
+    }
   };
 }
