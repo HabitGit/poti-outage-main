@@ -52,7 +52,10 @@ export class QueryController {
       case 'seSt':
         await this.botService.sendMessage(
           chatId,
-          'Введите часть названия вашей улицы что бы облегчить поиск, пример: Если ваша улица: სულხან-საბა ორბელიანი, то введите к примеру: საბა',
+          'Введите часть названия вашей улицы что бы облегчить поиск, пример:\nЕсли ваша улица: *სულხან-საბა ორბელიანი*, то введите к примеру: *საბა*',
+          {
+            parse_mode: 'Markdown',
+          },
         );
         await this.botService.messageListenerOn(
           this.streetsLogicService.searchStreetListener,

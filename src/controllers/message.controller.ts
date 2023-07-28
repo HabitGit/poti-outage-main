@@ -50,7 +50,9 @@ export class MessageController {
         break;
 
       case '/help':
-        await this.botService.sendMessage(chatId, Message.help);
+        await this.botService.sendMessage(chatId, Message.help, {
+          parse_mode: 'Markdown',
+        });
         break;
 
       case 'Зарегистрироваться':
