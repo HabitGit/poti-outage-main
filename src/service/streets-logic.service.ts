@@ -50,4 +50,27 @@ export class StreetsLogicService {
       'Улица успешно зарегистрирована',
     );
   };
+
+  searchStreetListener = async (msg: TelegramBot.Message) => {
+    const { message: streetName, chatId }: IGetUserPoints =
+      this.helper.getUserPoints(msg);
+
+    const streets: string[] = await this.streetsService
+      .searchStreets(streetName!)
+      .then((res) => {
+        return res.map((street) => {
+          return street.nameGeo.toString();
+        });
+      });
+    console.log('STREETS: ', streets);
+    await this.botService.messageListenerOff(this.searchStreetListener);
+    try {
+      await this.botService.sendMessage(
+        chatId,
+        streets.length > 0 ? streets.join('\n') : 'Не нашлось',
+      );
+    } catch (e) {
+      console.log(e);
+    }
+  };
 }

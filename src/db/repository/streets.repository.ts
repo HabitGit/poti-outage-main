@@ -1,4 +1,4 @@
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, ILike, Repository } from 'typeorm';
 import { Streets } from '../entitys/streets.entity';
 import { CreateStreetDto } from '../../templates/dtos/create-street.dto';
 import { UpdateStreetDto } from '../../templates/dtos/update-street.dto';
@@ -39,6 +39,13 @@ export class StreetsRepository extends Repository<Streets> {
     return this.find({
       select: { id: true },
       where: names,
+    });
+  }
+
+  async searchStreetByLikeValue(value: string): Promise<Streets[]> {
+    return this.find({
+      select: { nameGeo: true },
+      where: { nameGeo: ILike(`%${value}%`) },
     });
   }
 }

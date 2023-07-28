@@ -28,7 +28,7 @@ export class MessageController {
       userName = 'Anonymous',
       userId,
       message,
-    }: IGetUserPoints = await this.helper.getUserPoints(await msg);
+    }: IGetUserPoints = this.helper.getUserPoints(msg);
 
     if (!userId) {
       return this.botService.sendMessage(chatId, Message.invalidUser);
@@ -50,7 +50,9 @@ export class MessageController {
         break;
 
       case '/help':
-        await this.botService.sendMessage(chatId, Message.help);
+        await this.botService.sendMessage(chatId, Message.help, {
+          parse_mode: 'Markdown',
+        });
         break;
 
       case 'Зарегистрироваться':
