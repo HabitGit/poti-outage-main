@@ -18,5 +18,9 @@ export const inlineButtons: InlineButtons = {
       text: 'Удалить улицу',
       callback_data: 'deSt',
     },
+    searchStreet: {
+      text: 'Найти название улицы',
+      callback_data: 'seSt',
+    },
   },
 };

@@ -68,6 +68,7 @@ export class SocialService {
       [
         user.mailing ? 'mailingDisable' : 'mailingEnable',
         user.street ? 'deleteStreet' : 'addStreet',
+        'searchStreet',
       ],
     );
 

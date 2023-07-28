@@ -52,4 +52,8 @@ export class StreetsService {
     }
     return resultStreets;
   }
+
+  async searchStreets(value: string): Promise<Streets[]> {
+    return this.streetsRepository.searchStreetByLikeValue(value);
+  }
 }
