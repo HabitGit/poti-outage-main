@@ -47,6 +47,7 @@ export class QueryController {
       case 'deSt':
         await this.socialService.deleteUsersStreetByUserId(userId);
         await this.botService.sendMessage(chatId, 'Улица успешно удалена');
+        await this.socialService.myInfo(userId, chatId);
         break;
 
       case 'seSt':

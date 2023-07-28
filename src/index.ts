@@ -26,17 +26,17 @@ export class Main {
     private botService: BotService,
     private messageController: MessageController,
     private queryController: QueryController,
-    private waterService: WaterService,
-    private electricityService: ElectricityService,
     private adminController: AdminController,
     private logicService: OutageLogicService,
   ) {}
 
   async botOn() {
     try {
-      await botService.setMyCommands(commands);
-      await botService.messageListenerOn(this.messageController.requestHandler);
-      await botService.queryListenerOn(
+      await this.botService.setMyCommands(commands);
+      await this.botService.messageListenerOn(
+        this.messageController.requestHandler,
+      );
+      await this.botService.queryListenerOn(
         this.queryController.requestQueryHandler,
       );
       await botService.adminListener(this.adminController.requestHandlerAdmin);
@@ -90,6 +90,7 @@ const streetsLogicService = new StreetsLogicService(
   streetsService,
   helper,
   botService,
+  socialService,
 );
 const queryController = new QueryController(
   socialService,
@@ -122,8 +123,6 @@ const main = new Main(
   botService,
   messageController,
   queryController,
-  waterService,
-  electricityService,
   adminController,
   outageLogicService,
 );

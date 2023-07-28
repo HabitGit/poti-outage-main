@@ -6,8 +6,9 @@ import {
   IGetUserPointsQuery,
 } from '../interfaces/interfaces';
 import { Buttons } from '../types/types';
+import { HelperDeclare } from './helper.declare';
 
-export class Helper {
+export class Helper implements HelperDeclare {
   infoOutputRefactoring(
     typeOfPublicService: string,
     info: IFinishParserInfoObject,
@@ -18,7 +19,6 @@ export class Helper {
       streets.push('etc...');
     }
 
-    console.log('STREETS INTO HELPER: ', streets);
     return `Найдены отключения ${typeOfPublicService}:\nс ${info.startDate.toLocaleString(
       'ru-RU',
     )} по ${info.endDate.toLocaleString('ru-RU')} \nНа улицах: \n${streets.join(

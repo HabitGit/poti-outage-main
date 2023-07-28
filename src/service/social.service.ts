@@ -41,6 +41,7 @@ export class SocialService {
           keyboard: Keyboard.home,
           resize_keyboard: true,
         },
+        parse_mode: 'Markdown',
       },
     );
   }
@@ -77,6 +78,7 @@ export class SocialService {
         inline_keyboard: keyboard,
       },
       parse_mode: 'Markdown',
+      disable_web_page_preview: true,
     });
   }
 
