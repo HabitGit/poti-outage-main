@@ -52,6 +52,7 @@ export class BotService extends TelegramBot {
         keyboard: keyboard,
         resize_keyboard: true,
       },
+      parse_mode: 'Markdown',
     });
   }
 }
