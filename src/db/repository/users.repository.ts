@@ -79,7 +79,7 @@ export class UsersRepository extends Repository<Users> {
       select: { chatId: true },
       relations: { streets: true },
       where: {
-        streets: streetsId ? streetsId : IsNull(),
+        streets: streetsId ? streetsId : { id: IsNull() },
       },
     });
   }

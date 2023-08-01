@@ -44,7 +44,9 @@ export class MessageController {
           await this.socialService.myInfo(userId, chatId);
         } catch (e) {
           if (e instanceof BotErrors && e.name === 'USER_UNDEFINED') {
-            await this.botService.sendMessage(chatId, Message.userUndefined);
+            await this.botService.sendMessage(chatId, Message.userUndefined, {
+              parse_mode: 'Markdown',
+            });
           }
         }
         break;
