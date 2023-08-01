@@ -49,7 +49,7 @@ export interface IGetInfo {
 
 export interface IMyInfo {
   mailing: boolean;
-  street: Streets | null;
+  street: Streets[];
 }
 
 export interface IConfigService {

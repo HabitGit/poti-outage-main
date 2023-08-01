@@ -5,7 +5,6 @@ import {
   IFinishParserInfo,
   IFinishParserInfoObject,
 } from '../templates/interfaces/interfaces';
-import { Helper } from '../templates/helpers/helper';
 import { StreetsService } from '../service/streets.service';
 
 const POTIS = 'ფოთის ';
@@ -20,7 +19,6 @@ const { JSDOM } = jsdom;
 
 export class WaterParser {
   constructor(
-    private helper: Helper,
     private streetsService: StreetsService,
     private configService: IConfigService,
   ) {}

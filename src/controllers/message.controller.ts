@@ -2,23 +2,17 @@ import TelegramBot from 'node-telegram-bot-api';
 import { IGetUserPoints } from '../templates/interfaces/interfaces';
 import { Helper } from '../templates/helpers/helper';
 import { BotService } from '../service/bot.service';
-import { CommandService } from '../service/command.service';
 import { BotErrors } from '../templates/errors/errors';
 import { CreateUserDto } from '../templates/dtos/create-user.dto';
 import { SocialService } from '../service/social.service';
 import { Message } from '../templates/helpers/messages.template';
-import { WaterService } from '../service/water.service';
-import { ElectricityService } from '../service/electricity.service';
 import { OutageLogicService } from '../service/outage-logic.service';
 
 export class MessageController {
   constructor(
     private helper: Helper,
     private botService: BotService,
-    private commandService: CommandService,
     private socialService: SocialService,
-    private waterService: WaterService,
-    private electricityService: ElectricityService,
     private logicService: OutageLogicService,
   ) {}
 
@@ -36,7 +30,7 @@ export class MessageController {
 
     switch (message) {
       case '/start':
-        await this.commandService.start(chatId, userName, userId);
+        await this.socialService.start(chatId, userName, userId);
         break;
 
       case '/myinfo':
@@ -44,7 +38,9 @@ export class MessageController {
           await this.socialService.myInfo(userId, chatId);
         } catch (e) {
           if (e instanceof BotErrors && e.name === 'USER_UNDEFINED') {
-            await this.botService.sendMessage(chatId, Message.userUndefined);
+            await this.botService.sendMessage(chatId, Message.userUndefined, {
+              parse_mode: 'Markdown',
+            });
           }
         }
         break;

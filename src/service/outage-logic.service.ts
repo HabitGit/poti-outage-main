@@ -1,5 +1,4 @@
 import { WaterService } from './water.service';
-import { SocialService } from './social.service';
 import { BotService } from './bot.service';
 import { ElectricityService } from './electricity.service';
 import { CacheService } from './cache.service';
@@ -14,7 +13,6 @@ export class OutageLogicService {
   constructor(
     private waterService: WaterService,
     private electricityService: ElectricityService,
-    private socialService: SocialService,
     private botService: BotService,
     private cacheService: CacheService,
     private helper: Helper,

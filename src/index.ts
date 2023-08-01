@@ -6,7 +6,6 @@ import { StreetsService } from './service/streets.service';
 import { StreetsRepository } from './db/repository/streets.repository';
 import { ConfigEnv } from './config/configEnv';
 import { BotService } from './service/bot.service';
-import { CommandService } from './service/command.service';
 import { SocialService } from './service/social.service';
 import { commands } from './commands/commands';
 import { WaterService } from './service/water.service';
@@ -19,7 +18,7 @@ import { AdminController } from './controllers/admin.controller';
 import { CacheService } from './service/cache.service';
 import { cacheClient } from './db/data-source.redis';
 import { OutageLogicService } from './service/outage-logic.service';
-import { StreetsLogicService } from './service/streets-logic.service';
+import { StreetsListenersService } from './service/streets-listeners.service';
 
 export class Main {
   constructor(
@@ -70,15 +69,10 @@ const usersRepository = new UsersRepository(AppDataSource, cacheService);
 //
 const botService = new BotService(configEnv);
 const streetsService = new StreetsService(streetsRepository, usersRepository);
-const waterParser = new WaterParser(helper, streetsService, configEnv);
-const electricityParser = new ElectricityParser(
-  helper,
-  streetsService,
-  configEnv,
-);
+const waterParser = new WaterParser(streetsService, configEnv);
+const electricityParser = new ElectricityParser(streetsService, configEnv);
 
-const socialService = new SocialService(usersRepository, botService, helper);
-const commandService = new CommandService(usersRepository, socialService);
+const socialService = new SocialService(usersRepository, botService);
 
 const waterService = new WaterService(waterParser, cacheService);
 
@@ -86,7 +80,7 @@ const electricityService = new ElectricityService(
   electricityParser,
   cacheService,
 );
-const streetsLogicService = new StreetsLogicService(
+const streetsLogicService = new StreetsListenersService(
   streetsService,
   helper,
   botService,
@@ -103,7 +97,6 @@ const adminController = new AdminController(socialService);
 const outageLogicService = new OutageLogicService(
   waterService,
   electricityService,
-  socialService,
   botService,
   cacheService,
   helper,
@@ -113,10 +106,7 @@ const outageLogicService = new OutageLogicService(
 const messageController = new MessageController(
   helper,
   botService,
-  commandService,
   socialService,
-  waterService,
-  electricityService,
   outageLogicService,
 );
 const main = new Main(

@@ -2,11 +2,9 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Users } from './users.entity';
 
 @Entity()
 export class Streets {
@@ -37,7 +35,4 @@ export class Streets {
 
   @UpdateDateColumn()
   updatedAt: Date;
-
-  @OneToMany(() => Users, (users) => users.id)
-  users: Users[];
 }

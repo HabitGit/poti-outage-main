@@ -3,7 +3,7 @@ import { UsersRepository } from '../db/repository/users.repository';
 import { Streets } from '../db/entitys/streets.entity';
 import { UpdateUserDto } from '../templates/dtos/update-user.dto';
 import { CreateStreetDto } from '../templates/dtos/create-street.dto';
-import { UpdateResult } from 'typeorm';
+import { Users } from '../db/entitys/users.entity';
 
 export class StreetsService {
   constructor(
@@ -22,38 +22,16 @@ export class StreetsService {
     return this.streetsRepository.createStreet(streetData);
   }
 
-  async registrationStreet(
-    userId: number,
-    street: Streets,
-  ): Promise<UpdateResult> {
+  async registrationStreet(userId: number, street: Streets): Promise<Users> {
     const updateUserData: UpdateUserDto = { userId: userId, street: street };
-    return this.usersRepository.updateUserByUserId(updateUserData);
-  }
-
-  async addStreets(streetsData: CreateStreetDto[]): Promise<Streets[]> {
-    const createdStreets: Streets[] = [];
-    for (const streetData of streetsData) {
-      const street: Streets = await this.streetsRepository.createStreet(
-        streetData,
-      );
-      createdStreets.push(street);
-    }
-    return createdStreets;
-  }
-
-  async createStreetToParsers(streets: string[]): Promise<Streets[]> {
-    const resultStreets: Streets[] = [];
-    for (const street of streets) {
-      const isStreet: Streets | null =
-        await this.streetsRepository.getStreetByNameGeo(street);
-      if (isStreet) continue;
-      const newStreets = await this.createStreet({ nameGeo: street });
-      resultStreets.push(newStreets);
-    }
-    return resultStreets;
+    return this.usersRepository.addStreetToUser(updateUserData);
   }
 
   async searchStreets(value: string): Promise<Streets[]> {
     return this.streetsRepository.searchStreetByLikeValue(value);
+  }
+
+  async deleteStreetFromUser(userId: number, street: Streets) {
+    return this.usersRepository.deleteUsersStreetByUserId(userId, street);
   }
 }

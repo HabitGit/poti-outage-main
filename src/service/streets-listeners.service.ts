@@ -6,7 +6,7 @@ import { BotService } from './bot.service';
 import { Streets } from '../db/entitys/streets.entity';
 import { SocialService } from './social.service';
 
-export class StreetsLogicService {
+export class StreetsListenersService {
   constructor(
     private streetsService: StreetsService,
     private helper: Helper,
@@ -73,5 +73,27 @@ export class StreetsLogicService {
     } catch (e) {
       console.log(e);
     }
+  };
+
+  deleteStreetListener = async (msg: TelegramBot.Message) => {
+    const {
+      message: streetName,
+      chatId,
+      userId,
+    }: IGetUserPoints = this.helper.getUserPoints(msg);
+
+    if (!userId) {
+      return this.botService.sendMessage(
+        chatId,
+        'Нету данных о вашем телеграмм аккаунте',
+      );
+    }
+
+    const street = await this.streetsService.getStreetByNameGeo(streetName!);
+
+    await this.streetsService.deleteStreetFromUser(userId, street!);
+    await this.botService.sendMessage(chatId, 'Улица успешно удалена');
+    await this.socialService.myInfo(userId, chatId);
+    await this.botService.messageListenerOff(this.deleteStreetListener);
   };
 }
