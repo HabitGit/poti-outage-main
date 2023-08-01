@@ -4,13 +4,11 @@ import {
   IFinishParserInfoObject,
   IResponseData,
 } from '../templates/interfaces/interfaces';
-import { Helper } from '../templates/helpers/helper';
 import axios, { AxiosResponse } from 'axios';
 import { StreetsService } from '../service/streets.service';
 
 export class ElectricityParser {
   constructor(
-    private helper: Helper,
     private streetsService: StreetsService,
     private configService: IConfigService,
   ) {}

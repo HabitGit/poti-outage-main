@@ -27,29 +27,6 @@ export class StreetsService {
     return this.usersRepository.addStreetToUser(updateUserData);
   }
 
-  async addStreets(streetsData: CreateStreetDto[]): Promise<Streets[]> {
-    const createdStreets: Streets[] = [];
-    for (const streetData of streetsData) {
-      const street: Streets = await this.streetsRepository.createStreet(
-        streetData,
-      );
-      createdStreets.push(street);
-    }
-    return createdStreets;
-  }
-
-  async createStreetToParsers(streets: string[]): Promise<Streets[]> {
-    const resultStreets: Streets[] = [];
-    for (const street of streets) {
-      const isStreet: Streets | null =
-        await this.streetsRepository.getStreetByNameGeo(street);
-      if (isStreet) continue;
-      const newStreets = await this.createStreet({ nameGeo: street });
-      resultStreets.push(newStreets);
-    }
-    return resultStreets;
-  }
-
   async searchStreets(value: string): Promise<Streets[]> {
     return this.streetsRepository.searchStreetByLikeValue(value);
   }

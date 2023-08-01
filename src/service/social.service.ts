@@ -12,15 +12,23 @@ import {
 } from '../templates/helpers/messages.template';
 import { BotErrors } from '../templates/errors/errors';
 import * as fs from 'fs';
-import { Helper } from '../templates/helpers/helper';
 import { inlineButtons } from '../keyboards/inline-keyboardButtons';
 
 export class SocialService {
   constructor(
     private usersRepository: UsersRepository,
     private botService: BotService,
-    private helper: Helper,
   ) {}
+
+  async start(chatId: number, userName: string, userId: number) {
+    const isUser: Users | null = await this.usersRepository.getUserByUserId(
+      userId,
+    );
+
+    return isUser
+      ? this.welcomeBack(chatId, userName)
+      : this.welcome(chatId, userName);
+  }
 
   async registration(userData: CreateUserDto): Promise<TelegramBot.Message> {
     const isUser: Users | null = await this.usersRepository.getUserByUserId(
@@ -62,18 +70,6 @@ export class SocialService {
       mailing: user.mailing,
       street: user.streets,
     });
-
-    // ---------------------
-    // const keyboard = this.helper.getKeyboard(
-    //   inlineButtons,
-    //   ['myInfo'],
-    //   [
-    //     user.mailing ? 'mailingDisable' : 'mailingEnable',
-    //     user.streets ? 'deleteStreet' : 'addStreet',
-    //     'searchStreet',
-    //   ],
-    // );
-    // --------------------
 
     const keyboard = [
       [

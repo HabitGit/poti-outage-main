@@ -6,7 +6,7 @@ import { BotService } from './bot.service';
 import { Streets } from '../db/entitys/streets.entity';
 import { SocialService } from './social.service';
 
-export class StreetsLogicService {
+export class StreetsListenersService {
   constructor(
     private streetsService: StreetsService,
     private helper: Helper,

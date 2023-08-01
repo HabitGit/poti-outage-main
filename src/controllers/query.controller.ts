@@ -4,12 +4,12 @@ import { Helper } from '../templates/helpers/helper';
 import { IGetUserPointsQuery } from '../templates/interfaces/interfaces';
 import { BotErrors } from '../templates/errors/errors';
 import { BotService } from '../service/bot.service';
-import { StreetsLogicService } from '../service/streets-logic.service';
+import { StreetsListenersService } from '../service/streets-listeners.service';
 
 export class QueryController {
   constructor(
     private socialService: SocialService,
-    private streetsLogicService: StreetsLogicService,
+    private streetsLogicService: StreetsListenersService,
     private helper: Helper,
     private botService: BotService,
   ) {}
