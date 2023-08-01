@@ -74,4 +74,26 @@ export class StreetsLogicService {
       console.log(e);
     }
   };
+
+  deleteStreetListener = async (msg: TelegramBot.Message) => {
+    const {
+      message: streetName,
+      chatId,
+      userId,
+    }: IGetUserPoints = this.helper.getUserPoints(msg);
+
+    if (!userId) {
+      return this.botService.sendMessage(
+        chatId,
+        'Нету данных о вашем телеграмм аккаунте',
+      );
+    }
+
+    const street = await this.streetsService.getStreetByNameGeo(streetName!);
+
+    await this.streetsService.deleteStreetFromUser(userId, street!);
+    await this.botService.sendMessage(chatId, 'Улица успешно удалена');
+    await this.socialService.myInfo(userId, chatId);
+    await this.botService.messageListenerOff(this.deleteStreetListener);
+  };
 }

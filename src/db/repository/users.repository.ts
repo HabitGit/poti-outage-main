@@ -1,15 +1,10 @@
-import {
-  DataSource,
-  DeleteResult,
-  IsNull,
-  Repository,
-  UpdateResult,
-} from 'typeorm';
+import { DataSource, DeleteResult, IsNull, Repository } from 'typeorm';
 import { Users } from '../entitys/users.entity';
 import { CreateUserDto } from '../../templates/dtos/create-user.dto';
 import { UpdateUserDto } from '../../templates/dtos/update-user.dto';
 import { CacheService } from '../../service/cache.service';
 import { IUsersStreetsId } from '../../templates/types/types';
+import { Streets } from '../entitys/streets.entity';
 
 export class UsersRepository extends Repository<Users> {
   constructor(
@@ -31,7 +26,7 @@ export class UsersRepository extends Repository<Users> {
 
     const user: Users | null = await this.findOne({
       where: { userId: userId },
-      relations: { street: true },
+      relations: { streets: true },
     });
 
     await this.cacheService.set(`user${userId}`, JSON.stringify(user), 4);
@@ -66,13 +61,15 @@ export class UsersRepository extends Repository<Users> {
     return this.delete({ chatId: chatId });
   }
 
-  async updateUserByUserId(
-    updateUserData: UpdateUserDto,
-  ): Promise<UpdateResult> {
-    return this.update(
-      { userId: updateUserData.userId },
-      { street: updateUserData.street },
-    );
+  async addStreetToUser(userData: UpdateUserDto): Promise<Users> {
+    const user = await this.findOne({
+      relations: { streets: true },
+      where: { userId: userData.userId },
+    });
+    return this.save({
+      ...user,
+      streets: [...user!.streets, userData.street],
+    });
   }
 
   async getUsersByStreetsIdOrNull(
@@ -80,14 +77,21 @@ export class UsersRepository extends Repository<Users> {
   ): Promise<Users[]> {
     return this.find({
       select: { chatId: true },
-      relations: { street: true },
+      relations: { streets: true },
       where: {
-        street: streetsId ? streetsId : IsNull(),
+        streets: streetsId ? streetsId : IsNull(),
       },
     });
   }
 
-  async deleteUsersStreetByUserId(userId: number) {
-    return this.update({ userId: userId }, { street: { id: undefined } });
+  async deleteUsersStreetByUserId(userId: number, street: Streets) {
+    const user = (await this.findOne({
+      relations: { streets: true },
+      where: { userId: userId },
+    })) as Users;
+    user.streets = user.streets.filter((findStreet) => {
+      return findStreet.id !== street.id;
+    });
+    return this.save(user);
   }
 }

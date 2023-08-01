@@ -30,13 +30,16 @@ export const Message = {
 
 export function myInfoOutput(myInfo: IMyInfo): string {
   const mailing: string = myInfo.mailing ? 'активна' : 'неактивна';
+  const streets = myInfo.street?.map((street) => {
+    return street.nameGeo;
+  });
   const street: string =
-    myInfo.street === null ? 'не указана' : myInfo.street.nameGeo;
+    streets === undefined ? 'не указаны' : streets?.join('\n');
   return (
     'Информация о вашем аккаунте:' +
     '\n' +
     `Рассылка: *${mailing}*\n` +
-    `Улица: *${street}*\n` +
+    `Улицы:\n*${street}*\n` +
     '\n' +
     'Рассылка по улицам в тестовом режиме, если нашли ошибку пишите https://t.me/Habbits\n' +
     '\n' +

@@ -3,7 +3,7 @@ import { UsersRepository } from '../db/repository/users.repository';
 import { Streets } from '../db/entitys/streets.entity';
 import { UpdateUserDto } from '../templates/dtos/update-user.dto';
 import { CreateStreetDto } from '../templates/dtos/create-street.dto';
-import { UpdateResult } from 'typeorm';
+import { Users } from '../db/entitys/users.entity';
 
 export class StreetsService {
   constructor(
@@ -22,12 +22,9 @@ export class StreetsService {
     return this.streetsRepository.createStreet(streetData);
   }
 
-  async registrationStreet(
-    userId: number,
-    street: Streets,
-  ): Promise<UpdateResult> {
+  async registrationStreet(userId: number, street: Streets): Promise<Users> {
     const updateUserData: UpdateUserDto = { userId: userId, street: street };
-    return this.usersRepository.updateUserByUserId(updateUserData);
+    return this.usersRepository.addStreetToUser(updateUserData);
   }
 
   async addStreets(streetsData: CreateStreetDto[]): Promise<Streets[]> {
@@ -55,5 +52,9 @@ export class StreetsService {
 
   async searchStreets(value: string): Promise<Streets[]> {
     return this.streetsRepository.searchStreetByLikeValue(value);
+  }
+
+  async deleteStreetFromUser(userId: number, street: Streets) {
+    return this.usersRepository.deleteUsersStreetByUserId(userId, street);
   }
 }

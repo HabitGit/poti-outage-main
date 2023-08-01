@@ -37,7 +37,4 @@ export class Streets {
 
   @UpdateDateColumn()
   updatedAt: Date;
-
-  @OneToMany(() => Users, (users) => users.id)
-  users: Users[];
 }

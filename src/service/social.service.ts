@@ -60,18 +60,30 @@ export class SocialService {
 
     const message: string = myInfoOutput({
       mailing: user.mailing,
-      street: user.street,
+      street: user.streets,
     });
 
-    const keyboard = this.helper.getKeyboard(
-      inlineButtons,
-      ['myInfo'],
+    // ---------------------
+    // const keyboard = this.helper.getKeyboard(
+    //   inlineButtons,
+    //   ['myInfo'],
+    //   [
+    //     user.mailing ? 'mailingDisable' : 'mailingEnable',
+    //     user.streets ? 'deleteStreet' : 'addStreet',
+    //     'searchStreet',
+    //   ],
+    // );
+    // --------------------
+
+    const keyboard = [
       [
-        user.mailing ? 'mailingDisable' : 'mailingEnable',
-        user.street ? 'deleteStreet' : 'addStreet',
-        'searchStreet',
+        user.mailing
+          ? inlineButtons.myInfo.mailingDisable
+          : inlineButtons.myInfo.mailingEnable,
       ],
-    );
+      [inlineButtons.myInfo.addStreet, inlineButtons.myInfo.deleteStreet],
+      [inlineButtons.myInfo.searchStreet],
+    ];
 
     await this.botService.sendMessage(chatId, message, {
       reply_markup: {
@@ -135,7 +147,7 @@ export class SocialService {
             await this.usersRepository.deleteUserByChatId(user.chatId);
           }
         } else {
-          await fs.writeFile(
+          fs.writeFile(
             __dirname + 'errorsLog.txt',
             '[+]NEW ERROR: ' + e + '\n',
             { flag: 'a' },
@@ -174,9 +186,5 @@ export class SocialService {
       welcomeMessage(userName),
       Keyboard.start,
     );
-  }
-
-  async deleteUsersStreetByUserId(userId: number) {
-    return await this.usersRepository.deleteUsersStreetByUserId(userId);
   }
 }

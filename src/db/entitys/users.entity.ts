@@ -2,7 +2,8 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  ManyToOne,
+  JoinTable,
+  ManyToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -39,6 +40,7 @@ export class Users {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @ManyToOne(() => Streets, (street) => street.id, { onDelete: 'SET NULL' })
-  street: Streets;
+  @ManyToMany(() => Streets)
+  @JoinTable()
+  streets: Streets[];
 }
