@@ -90,10 +90,20 @@ export class StreetsListenersService {
     }
 
     const street = await this.streetsService.getStreetByNameGeo(streetName!);
-
-    await this.streetsService.deleteStreetFromUser(userId, street!);
-    await this.botService.sendMessage(chatId, 'Улица успешно удалена');
-    await this.socialService.myInfo(userId, chatId);
-    await this.botService.messageListenerOff(this.deleteStreetListener);
+    try {
+      await this.streetsService.deleteStreetFromUser(userId, street!);
+      await this.botService.sendMessage(chatId, 'Улица успешно удалена');
+      await this.socialService.myInfo(userId, chatId);
+      await this.botService.messageListenerOff(this.deleteStreetListener);
+    } catch (e) {
+      if (e instanceof Error) {
+        if (e.message === 'Нету юзера') {
+          await this.botService.sendMessage(
+            chatId,
+            'Вы не зарегистрированы. Нажмите /start что бы начать',
+          );
+        }
+      }
+    }
   };
 }

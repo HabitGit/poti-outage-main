@@ -85,10 +85,13 @@ export class UsersRepository extends Repository<Users> {
   }
 
   async deleteUsersStreetByUserId(userId: number, street: Streets) {
-    const user = (await this.findOne({
+    const user: Users | null = await this.findOne({
       relations: { streets: true },
       where: { userId: userId },
-    })) as Users;
+    });
+    if (!user) {
+      throw new Error('Нету юзера');
+    }
     user.streets = user.streets.filter((findStreet) => {
       return findStreet.id !== street.id;
     });
