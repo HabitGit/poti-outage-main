@@ -27,11 +27,14 @@ export class OutageLogicService {
     const isElectricityInfo: IFinishParserInfo | null =
       await this.electricityService.getElectricityInfo();
 
-    const waterMessage: Array<{ chatsId: Users[]; message: string }> = [];
     if (isWaterInfo) {
+      const waterMessage: Array<{ chatsId: Users[]; message: string }> = [];
       for (const info of isWaterInfo.outageInfo) {
         // получаем обработаный текст
-        const message: string = this.helper.infoOutputRefactoring('воды', info);
+        const message: string = this.helper.infoOutputRefactoring(
+          isWaterInfo.name,
+          info,
+        );
 
         // Отправляем в кэш
         const waterCache: string | null = await this.cacheService.getWaterInfo({
@@ -54,9 +57,9 @@ export class OutageLogicService {
           streetsId,
         );
         // Добавляем айди чатов без улиц
-        chatsId.push(
-          ...(await this.usersRepository.getUsersByStreetsIdOrNull(null)),
-        );
+        const nullChatsId =
+          await this.usersRepository.getUsersByStreetsIdOrNull(null);
+        chatsId.push(...nullChatsId);
         // Создаем актуальное сообщение
         if (message !== waterCache && waterCache !== 'old value') {
           waterMessage.push({ chatsId: chatsId, message: message });
@@ -70,12 +73,13 @@ export class OutageLogicService {
       }
     }
 
-    const electricityMessage: Array<{ chatsId: Users[]; message: string }> = [];
     if (isElectricityInfo) {
+      const electricityMessage: Array<{ chatsId: Users[]; message: string }> =
+        [];
       for (const info of isElectricityInfo.outageInfo) {
         // получаем обработанный текст
         const message: string = this.helper.infoOutputRefactoring(
-          'электричества',
+          isElectricityInfo.name,
           info,
         );
 
@@ -101,9 +105,9 @@ export class OutageLogicService {
           streetsId,
         );
         // Добавляем айди чатов без улиц
-        chatsId.push(
-          ...(await this.usersRepository.getUsersByStreetsIdOrNull(null)),
-        );
+        const nullChatsId =
+          await this.usersRepository.getUsersByStreetsIdOrNull(null);
+        chatsId.push(...nullChatsId);
         // Создаем актуальное сообщение
         if (message !== electricityCache && electricityCache !== 'old value') {
           electricityMessage.push({ chatsId: chatsId, message: message });
