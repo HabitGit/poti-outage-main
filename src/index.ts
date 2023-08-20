@@ -8,15 +8,15 @@ import { ConfigEnv } from './config/configEnv';
 import { BotService } from './service/bot.service';
 import { SocialService } from './service/social.service';
 import { commands } from './commands/commands';
-import { WaterService } from './service/water.service';
-import { WaterParser } from './parsers/water.parser';
-import { ElectricityService } from './service/electricity.service';
-import { ElectricityParser } from './parsers/electricity.parser';
+import { WaterService } from './water-outage/water.service';
+import { WaterParser } from './water-outage/water.parser';
+import { ElectricityService } from './electricity-outage/electricity.service';
+import { ElectricityParser } from './electricity-outage/electricity.parser';
 import { QueryController } from './controllers/query.controller';
 import { CronJob } from 'cron';
 import { AdminController } from './controllers/admin.controller';
-import { CacheService } from './service/cache.service';
-import { cacheClient } from './db/data-source.redis';
+import { CacheService } from './cache/cache.service';
+import { cacheClient } from './cache/data-source.redis';
 import { OutageLogicService } from './service/outage-logic.service';
 import { StreetsListenersService } from './service/streets-listeners.service';
 
@@ -74,11 +74,22 @@ const electricityParser = new ElectricityParser(streetsService, configEnv);
 
 const socialService = new SocialService(usersRepository, botService);
 
-const waterService = new WaterService(waterParser, cacheService);
+const waterService = new WaterService(
+  waterParser,
+  cacheService,
+  helper,
+  streetsRepository,
+  usersRepository,
+  botService,
+);
 
 const electricityService = new ElectricityService(
   electricityParser,
   cacheService,
+  helper,
+  streetsRepository,
+  usersRepository,
+  botService,
 );
 const streetsLogicService = new StreetsListenersService(
   streetsService,
@@ -98,10 +109,6 @@ const outageLogicService = new OutageLogicService(
   waterService,
   electricityService,
   botService,
-  cacheService,
-  helper,
-  streetsRepository,
-  usersRepository,
 );
 const messageController = new MessageController(
   helper,

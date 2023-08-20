@@ -2,7 +2,7 @@ import { DataSource, DeleteResult, IsNull, Repository } from 'typeorm';
 import { Users } from '../entitys/users.entity';
 import { CreateUserDto } from '../../templates/dtos/create-user.dto';
 import { UpdateUserDto } from '../../templates/dtos/update-user.dto';
-import { CacheService } from '../../service/cache.service';
+import { CacheService } from '../../cache/cache.service';
 import { IUsersStreetsId } from '../../templates/types/types';
 import { Streets } from '../entitys/streets.entity';
 

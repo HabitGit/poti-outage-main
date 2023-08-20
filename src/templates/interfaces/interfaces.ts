@@ -40,7 +40,8 @@ export interface IOutputRefactoring {
   message: string;
 }
 
-export interface IGetInfo {
+export interface IGetOutageInfo {
+  name: string;
   endDate: Date;
   startDate: Date;
   message: string;
