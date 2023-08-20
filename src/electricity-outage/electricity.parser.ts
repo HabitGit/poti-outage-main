@@ -31,14 +31,6 @@ export class ElectricityParser {
           if (string.length === 2) return string[1];
           return string[2];
         });
-      for (const street of streets) {
-        try {
-          await this.streetsService.createStreet({ nameGeo: street });
-        } catch (e) {
-          console.log(e);
-        }
-      }
-      console.log(streets);
 
       finalInfo.push({
         startDate: startDate,
