@@ -1,9 +1,9 @@
 import { CreateUserDto } from '../templates/dtos/create-user.dto';
 import TelegramBot from 'node-telegram-bot-api';
 import { Users } from '../db/entitys/users.entity';
-import { Keyboard } from '../keyboards/keyboard';
-import { UsersRepository } from '../db/repository/users.repository';
-import { BotService } from './bot.service';
+import { Keyboard } from '../bot/keyboards/keyboard';
+import { UsersRepository } from './repository/users.repository';
+import { BotService } from '../bot/bot.service';
 import {
   Message,
   myInfoOutput,
@@ -12,7 +12,7 @@ import {
 } from '../templates/helpers/messages.template';
 import { BotErrors } from '../templates/errors/errors';
 import * as fs from 'fs';
-import { inlineButtons } from '../keyboards/inline-keyboardButtons';
+import { inlineButtons } from '../bot/keyboards/inline-keyboardButtons';
 
 export class SocialService {
   constructor(

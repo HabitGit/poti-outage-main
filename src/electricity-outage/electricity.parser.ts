@@ -5,7 +5,7 @@ import {
   IResponseData,
 } from '../templates/interfaces/interfaces';
 import axios, { AxiosResponse } from 'axios';
-import { StreetsService } from '../service/streets.service';
+import { StreetsService } from '../social/streets.service';
 
 export class ElectricityParser {
   constructor(

@@ -2,7 +2,7 @@ import { StreetsService } from './streets.service';
 import TelegramBot from 'node-telegram-bot-api';
 import { IGetUserPoints } from '../templates/interfaces/interfaces';
 import { Helper } from '../templates/helpers/helper';
-import { BotService } from './bot.service';
+import { BotService } from '../bot/bot.service';
 import { Streets } from '../db/entitys/streets.entity';
 import { SocialService } from './social.service';
 

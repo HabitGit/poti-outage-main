@@ -1,10 +1,10 @@
 import { DataSource, DeleteResult, IsNull, Repository } from 'typeorm';
-import { Users } from '../entitys/users.entity';
+import { Users } from '../../db/entitys/users.entity';
 import { CreateUserDto } from '../../templates/dtos/create-user.dto';
 import { UpdateUserDto } from '../../templates/dtos/update-user.dto';
 import { CacheService } from '../../cache/cache.service';
 import { IUsersStreetsId } from '../../templates/types/types';
-import { Streets } from '../entitys/streets.entity';
+import { Streets } from '../../db/entitys/streets.entity';
 
 export class UsersRepository extends Repository<Users> {
   constructor(

@@ -1,5 +1,5 @@
 import TelegramBot from 'node-telegram-bot-api';
-import { SocialService } from '../service/social.service';
+import { SocialService } from '../social/social.service';
 
 export class AdminController {
   constructor(private socialService: SocialService) {}

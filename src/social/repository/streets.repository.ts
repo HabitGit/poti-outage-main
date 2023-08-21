@@ -1,5 +1,5 @@
 import { DataSource, ILike, Repository } from 'typeorm';
-import { Streets } from '../entitys/streets.entity';
+import { Streets } from '../../db/entitys/streets.entity';
 import { CreateStreetDto } from '../../templates/dtos/create-street.dto';
 import { UpdateStreetDto } from '../../templates/dtos/update-street.dto';
 import { IStreetsName } from '../../templates/types/types';

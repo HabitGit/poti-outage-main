@@ -1,5 +1,5 @@
-import { StreetsRepository } from '../db/repository/streets.repository';
-import { UsersRepository } from '../db/repository/users.repository';
+import { StreetsRepository } from './repository/streets.repository';
+import { UsersRepository } from './repository/users.repository';
 import { Streets } from '../db/entitys/streets.entity';
 import { UpdateUserDto } from '../templates/dtos/update-user.dto';
 import { CreateStreetDto } from '../templates/dtos/create-street.dto';

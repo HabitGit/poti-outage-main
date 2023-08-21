@@ -5,7 +5,7 @@ import {
   IFinishParserInfo,
   IFinishParserInfoObject,
 } from '../templates/interfaces/interfaces';
-import { StreetsService } from '../service/streets.service';
+import { StreetsService } from '../social/streets.service';
 
 const POTIS = 'ფოთის ';
 const QUERY_START =

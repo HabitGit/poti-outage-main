@@ -1,24 +1,24 @@
-import { MessageController } from './controllers/message.controller';
+import { MessageController } from './gateway/message.controller';
 import { AppDataSource } from './db/data-source';
 import { Helper } from './templates/helpers/helper';
-import { UsersRepository } from './db/repository/users.repository';
-import { StreetsService } from './service/streets.service';
-import { StreetsRepository } from './db/repository/streets.repository';
+import { UsersRepository } from './social/repository/users.repository';
+import { StreetsService } from './social/streets.service';
+import { StreetsRepository } from './social/repository/streets.repository';
 import { ConfigEnv } from './config/configEnv';
-import { BotService } from './service/bot.service';
-import { SocialService } from './service/social.service';
-import { commands } from './commands/commands';
+import { BotService } from './bot/bot.service';
+import { SocialService } from './social/social.service';
+import { commands } from './bot/commands';
 import { WaterService } from './water-outage/water.service';
 import { WaterParser } from './water-outage/water.parser';
 import { ElectricityService } from './electricity-outage/electricity.service';
 import { ElectricityParser } from './electricity-outage/electricity.parser';
-import { QueryController } from './controllers/query.controller';
+import { QueryController } from './gateway/query.controller';
 import { CronJob } from 'cron';
-import { AdminController } from './controllers/admin.controller';
+import { AdminController } from './gateway/admin.controller';
 import { CacheService } from './cache/cache.service';
 import { cacheClient } from './cache/data-source.redis';
-import { OutageLogicService } from './service/outage-logic.service';
-import { StreetsListenersService } from './service/streets-listeners.service';
+import { OutageLogicService } from './gateway/outage-logic.service';
+import { StreetsListenersService } from './social/streets-listeners.service';
 
 export class Main {
   constructor(

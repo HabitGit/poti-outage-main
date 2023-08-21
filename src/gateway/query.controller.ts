@@ -1,10 +1,10 @@
 import TelegramBot from 'node-telegram-bot-api';
-import { SocialService } from '../service/social.service';
+import { SocialService } from '../social/social.service';
 import { Helper } from '../templates/helpers/helper';
 import { IGetUserPointsQuery } from '../templates/interfaces/interfaces';
 import { BotErrors } from '../templates/errors/errors';
-import { BotService } from '../service/bot.service';
-import { StreetsListenersService } from '../service/streets-listeners.service';
+import { BotService } from '../bot/bot.service';
+import { StreetsListenersService } from '../social/streets-listeners.service';
 
 export class QueryController {
   constructor(

@@ -1,4 +1,4 @@
-import { Buttons } from '../templates/types/types';
+import { Buttons } from '../../templates/types/types';
 
 export const buttons: Buttons = {
   start: {

@@ -1,5 +1,5 @@
 import { WaterService } from '../water-outage/water.service';
-import { BotService } from './bot.service';
+import { BotService } from '../bot/bot.service';
 import { ElectricityService } from '../electricity-outage/electricity.service';
 
 export class OutageLogicService {

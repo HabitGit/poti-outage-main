@@ -1,12 +1,12 @@
 import TelegramBot from 'node-telegram-bot-api';
 import { IGetUserPoints } from '../templates/interfaces/interfaces';
 import { Helper } from '../templates/helpers/helper';
-import { BotService } from '../service/bot.service';
+import { BotService } from '../bot/bot.service';
 import { BotErrors } from '../templates/errors/errors';
 import { CreateUserDto } from '../templates/dtos/create-user.dto';
-import { SocialService } from '../service/social.service';
+import { SocialService } from '../social/social.service';
 import { Message } from '../templates/helpers/messages.template';
-import { OutageLogicService } from '../service/outage-logic.service';
+import { OutageLogicService } from './outage-logic.service';
 
 export class MessageController {
   constructor(

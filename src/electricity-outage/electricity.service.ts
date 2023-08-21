@@ -3,9 +3,9 @@ import { IFinishParserInfo } from '../templates/interfaces/interfaces';
 import { CacheService } from '../cache/cache.service';
 import { Helper } from '../templates/helpers/helper';
 import { ILike } from 'typeorm';
-import { StreetsRepository } from '../db/repository/streets.repository';
-import { UsersRepository } from '../db/repository/users.repository';
-import { BotService } from '../service/bot.service';
+import { StreetsRepository } from '../social/repository/streets.repository';
+import { UsersRepository } from '../social/repository/users.repository';
+import { BotService } from '../bot/bot.service';
 
 export class ElectricityService {
   constructor(
