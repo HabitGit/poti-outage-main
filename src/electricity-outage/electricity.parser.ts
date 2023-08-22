@@ -5,13 +5,9 @@ import {
   IResponseData,
 } from '../templates/interfaces/interfaces';
 import axios, { AxiosResponse } from 'axios';
-import { StreetsService } from '../social/streets.service';
 
 export class ElectricityParser {
-  constructor(
-    private streetsService: StreetsService,
-    private configService: IConfigService,
-  ) {}
+  constructor(private configService: IConfigService) {}
 
   async getElectricityInfo(): Promise<IFinishParserInfo | null> {
     const LINK: string = this.configService.get('ELECTRICITY_LINK');

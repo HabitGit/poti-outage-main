@@ -5,7 +5,6 @@ import {
   IFinishParserInfo,
   IFinishParserInfoObject,
 } from '../templates/interfaces/interfaces';
-import { StreetsService } from '../social/streets.service';
 
 const POTIS = 'ფოთის ';
 const QUERY_START =
@@ -19,7 +18,6 @@ const { JSDOM } = jsdom;
 
 export class WaterParser {
   constructor(
-    private streetsService: StreetsService,
     private configService: IConfigService,
   ) {}
 
@@ -138,11 +136,6 @@ export class WaterParser {
         .join('.');
       if (!textStreet) continue;
       streetsResult.push(textStreet);
-      try {
-        await this.streetsService.createStreet({ nameGeo: textStreet });
-      } catch (e) {
-        console.log(e);
-      }
     }
     return streetsResult;
   }
