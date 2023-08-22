@@ -65,7 +65,11 @@ export class WaterService {
       // Создаем актуальное сообщение
       if (message !== waterCache) {
         for (const chatId of chatsId) {
-          await this.botService.sendMessage(chatId.chatId, message);
+          try {
+            await this.botService.sendMessage(chatId.chatId, message);
+          } catch (e) {
+            console.log('Message sender: ', e);
+          }
         }
       }
     }

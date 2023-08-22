@@ -70,7 +70,11 @@ export class ElectricityService {
       // Создаем актуальное сообщение
       if (message !== electricityCache) {
         for (const chatId of chatsId) {
-          await this.botService.sendMessage(chatId.chatId, message);
+          try {
+            await this.botService.sendMessage(chatId.chatId, message);
+          } catch (e) {
+            console.log('Electricity message: ', e);
+          }
         }
       }
     }
