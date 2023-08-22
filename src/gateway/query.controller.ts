@@ -37,7 +37,7 @@ export class QueryController {
       case 'addS':
         await this.botService.sendMessage(
           chatId,
-          'Введите название улицы на грузинском, или скопируйте с одного из сайтов',
+          'Введите точное название улицы на английском',
         );
         await this.botService.messageListenerOn(
           this.streetsLogicService.registrationStreetListener,
@@ -57,7 +57,7 @@ export class QueryController {
       case 'seSt':
         await this.botService.sendMessage(
           chatId,
-          'Введите часть названия вашей улицы что бы облегчить поиск, пример:\nЕсли ваша улица: *სულხან-საბა ორბელიანი*, то введите к примеру: *საბა*',
+          'Введите часть названия вашей улицы что бы облегчить поиск, пример:\nЕсли ваша улица: *larnakas k. N 17*, то введите к примеру: *larnakas*',
           {
             parse_mode: 'Markdown',
           },
