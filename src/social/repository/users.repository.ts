@@ -80,6 +80,7 @@ export class UsersRepository extends Repository<Users> {
       relations: { streets: true },
       where: {
         streets: streetsId ? streetsId : { id: IsNull() },
+        mailing: true,
       },
     });
   }
