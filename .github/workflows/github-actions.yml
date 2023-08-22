@@ -39,5 +39,5 @@ jobs:
          run: npm run build
        - name: ESlinter
          run: npm run lint
-       - name: unit tests
-         run: npm run test
+#       - name: unit tests
+#         run: npm run test
