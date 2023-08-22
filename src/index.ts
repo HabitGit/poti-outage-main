@@ -71,8 +71,9 @@ const usersRepository = new UsersRepository(AppDataSource, cacheService);
 //
 const botService = new BotService(configEnv);
 const streetsService = new StreetsService(streetsRepository, usersRepository);
-const waterParser = new WaterParser(configEnv);
-const electricityParser = new ElectricityParser(configEnv);
+const translate = new Translate(streetsRepository);
+const waterParser = new WaterParser(configEnv, translate);
+const electricityParser = new ElectricityParser(configEnv, translate);
 
 const socialService = new SocialService(usersRepository, botService);
 
@@ -103,7 +104,6 @@ const mainService = new MainService(
   streetsRepository,
   usersRepository,
 );
-const translate = new Translate(streetsRepository);
 const adminService = new AdminService(socialService, botService);
 const adminController = new AdminController(
   botService,
