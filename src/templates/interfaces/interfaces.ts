@@ -1,4 +1,4 @@
-import { InlineKeyboardButton, KeyboardButton } from 'node-telegram-bot-api';
+import { KeyboardButton } from 'node-telegram-bot-api';
 import { Streets } from '../../db/entitys/streets.entity';
 
 export interface IGetUserPoints {
@@ -28,16 +28,6 @@ export interface IFinishParserInfo {
 export interface IKeyboard {
   start: KeyboardButton[][];
   home: KeyboardButton[][];
-}
-
-export interface IInlineKeyboard {
-  myInfoEnable: InlineKeyboardButton[][];
-  myInfoDisable: InlineKeyboardButton[][];
-}
-
-export interface IOutputRefactoring {
-  endDate: Date | null;
-  message: string;
 }
 
 export interface IGetOutageInfo {

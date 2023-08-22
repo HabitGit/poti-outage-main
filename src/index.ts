@@ -50,7 +50,7 @@ export class Main {
     cronTime: '0,0 */1 * * *',
     onTick: async () => {
       try {
-        await this.mainService.sendOutageInfo();
+        await this.mainService.getOutageInfo();
       } catch (e) {
         console.log('[-]*ERROR* in Crone: ', e);
       }
@@ -74,22 +74,11 @@ const electricityParser = new ElectricityParser(configEnv);
 
 const socialService = new SocialService(usersRepository, botService);
 
-const waterService = new WaterService(
-  waterParser,
-  cacheService,
-  helper,
-  streetsRepository,
-  usersRepository,
-  botService,
-);
+const waterService = new WaterService(waterParser, cacheService);
 
 const electricityService = new ElectricityService(
   electricityParser,
   cacheService,
-  helper,
-  streetsRepository,
-  usersRepository,
-  botService,
 );
 const streetsLogicService = new StreetsListenersService(
   streetsService,
@@ -109,6 +98,10 @@ const mainService = new MainService(
   waterService,
   electricityService,
   botService,
+  helper,
+  cacheService,
+  streetsRepository,
+  usersRepository,
 );
 const messageController = new MessageController(
   helper,
