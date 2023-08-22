@@ -17,9 +17,7 @@ const QUERY_STREET =
 const { JSDOM } = jsdom;
 
 export class WaterParser {
-  constructor(
-    private configService: IConfigService,
-  ) {}
+  constructor(private configService: IConfigService) {}
 
   async getWaterInfo(): Promise<IFinishParserInfo | null> {
     const LINK: string = this.configService.get('WATER_LINK');
