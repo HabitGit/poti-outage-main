@@ -18,7 +18,7 @@ export class AdminController {
     console.log('match: ', match[1].split('/'));
     switch (match[1].split('/')[1]) {
       case 'translate':
-        await this.translate.translateToRus();
+        await this.translate.translateToRusInDb();
         break;
 
       case 'message':

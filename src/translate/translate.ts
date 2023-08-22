@@ -40,7 +40,7 @@ const alphabet: Map<string, string> = new Map<string, string>([
 export class Translate {
   constructor(private streetsRepository: StreetsRepository) {}
 
-  async translateToRus() {
+  async translateToRusInDb() {
     const streets: Streets[] = await this.streetsRepository.getStreets();
     console.log('str: ', streets);
     for (const street of streets) {
@@ -57,5 +57,22 @@ export class Translate {
         nameEng: result,
       });
     }
+  }
+
+  translateFromGeoToRus(streets: string[]): string[] {
+    const finalResult: string[] = [];
+    for (const street of streets) {
+      if (street === undefined) continue;
+      let result: string = '';
+      for (let i = 0; i < street.length; ++i) {
+        if (alphabet.get(street[i]) === undefined) {
+          result += street[i];
+        } else {
+          result += alphabet.get(street[i]);
+        }
+      }
+      finalResult.push(result);
+    }
+    return finalResult;
   }
 }
