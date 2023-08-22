@@ -19,6 +19,8 @@ import { CacheService } from './cache/cache.service';
 import { cacheClient } from './cache/data-source.redis';
 import { MainService } from './gateway/main-service';
 import { StreetsListenersService } from './social/streets-listeners.service';
+import { Translate } from './translate/translate';
+import { AdminService } from './gateway/admin.service';
 
 export class Main {
   constructor(
@@ -92,8 +94,6 @@ const queryController = new QueryController(
   helper,
   botService,
 );
-
-const adminController = new AdminController(socialService);
 const mainService = new MainService(
   waterService,
   electricityService,
@@ -102,6 +102,13 @@ const mainService = new MainService(
   cacheService,
   streetsRepository,
   usersRepository,
+);
+const translate = new Translate(streetsRepository);
+const adminService = new AdminService(socialService, botService);
+const adminController = new AdminController(
+  botService,
+  translate,
+  adminService,
 );
 const messageController = new MessageController(
   helper,
