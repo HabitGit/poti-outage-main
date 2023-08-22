@@ -6,14 +6,14 @@ import { BotErrors } from '../templates/errors/errors';
 import { CreateUserDto } from '../templates/dtos/create-user.dto';
 import { SocialService } from '../social/social.service';
 import { Message } from '../templates/helpers/messages.template';
-import { OutageLogicService } from './outage-logic.service';
+import { MainService } from './main-service';
 
 export class MessageController {
   constructor(
     private helper: Helper,
     private botService: BotService,
     private socialService: SocialService,
-    private logicService: OutageLogicService,
+    private mainService: MainService,
   ) {}
 
   requestHandler = async (msg: TelegramBot.Message) => {
@@ -58,11 +58,11 @@ export class MessageController {
         break;
 
       case 'Показать имеющиеся отключения воды':
-        await this.logicService.sendWaterBlackout(chatId);
+        await this.mainService.sendWaterBlackout(chatId);
         break;
 
       case 'Показать имеющиеся отключения электричества':
-        await this.logicService.sendElectricityBlackout(chatId);
+        await this.mainService.sendElectricityBlackout(chatId);
         break;
 
       case 'Ссылки на сайты':

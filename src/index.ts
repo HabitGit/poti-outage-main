@@ -17,7 +17,7 @@ import { CronJob } from 'cron';
 import { AdminController } from './gateway/admin.controller';
 import { CacheService } from './cache/cache.service';
 import { cacheClient } from './cache/data-source.redis';
-import { OutageLogicService } from './gateway/outage-logic.service';
+import { MainService } from './gateway/main-service';
 import { StreetsListenersService } from './social/streets-listeners.service';
 
 export class Main {
@@ -26,7 +26,7 @@ export class Main {
     private messageController: MessageController,
     private queryController: QueryController,
     private adminController: AdminController,
-    private logicService: OutageLogicService,
+    private mainService: MainService,
   ) {}
 
   async botOn() {
@@ -50,7 +50,7 @@ export class Main {
     cronTime: '0,0 */1 * * *',
     onTick: async () => {
       try {
-        await this.logicService.sendOutageInfo();
+        await this.mainService.sendOutageInfo();
       } catch (e) {
         console.log('[-]*ERROR* in Crone: ', e);
       }
@@ -105,7 +105,7 @@ const queryController = new QueryController(
 );
 
 const adminController = new AdminController(socialService);
-const outageLogicService = new OutageLogicService(
+const mainService = new MainService(
   waterService,
   electricityService,
   botService,
@@ -114,14 +114,14 @@ const messageController = new MessageController(
   helper,
   botService,
   socialService,
-  outageLogicService,
+  mainService,
 );
 const main = new Main(
   botService,
   messageController,
   queryController,
   adminController,
-  outageLogicService,
+  mainService,
 );
 
 main.botOn();
