@@ -36,7 +36,7 @@ export class StreetsListenersService {
     }
 
     const isStreet: Streets | null =
-      await this.streetsService.getStreetByNameGeo(streetName);
+      await this.streetsService.getStreetByNameEng(streetName);
 
     if (!isStreet) {
       await this.botService.messageListenerOff(this.registrationStreetListener);
@@ -56,11 +56,18 @@ export class StreetsListenersService {
     const { message: streetName, chatId }: IGetUserPoints =
       this.helper.getUserPoints(msg);
 
+    if (!streetName) {
+      return this.botService.sendMessage(
+        chatId,
+        'Вы не указали название улицы для поиска',
+      );
+    }
+
     const streets: string[] = await this.streetsService
-      .searchStreets(streetName!)
+      .searchStreets(streetName)
       .then((res) => {
         return res.map((street) => {
-          return street.nameGeo.toString();
+          return street.nameEng.toString();
         });
       });
     console.log('STREETS: ', streets);
@@ -89,9 +96,22 @@ export class StreetsListenersService {
       );
     }
 
-    const street = await this.streetsService.getStreetByNameGeo(streetName!);
+    if (!streetName) {
+      return this.botService.sendMessage(
+        chatId,
+        'Вы не указали улицу для удаления',
+      );
+    }
+
+    const street = await this.streetsService.getStreetByNameEng(streetName);
+    if (!street) {
+      return this.botService.sendMessage(
+        chatId,
+        'Такой улицы не зарегистрировано',
+      );
+    }
     try {
-      await this.streetsService.deleteStreetFromUser(userId, street!);
+      await this.streetsService.deleteStreetFromUser(userId, street);
       await this.botService.sendMessage(chatId, 'Улица успешно удалена');
       await this.socialService.myInfo(userId, chatId);
       await this.botService.messageListenerOff(this.deleteStreetListener);

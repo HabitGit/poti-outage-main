@@ -29,9 +29,9 @@ export class StreetsRepository extends Repository<Streets> {
     return this.find();
   }
 
-  async getStreetByNameGeo(nameGeo: string): Promise<Streets | null> {
+  async getStreetByNameEng(nameEng: string): Promise<Streets | null> {
     return this.findOne({
-      where: { nameGeo },
+      where: { nameEng },
     });
   }
 
@@ -44,8 +44,8 @@ export class StreetsRepository extends Repository<Streets> {
 
   async searchStreetByLikeValue(value: string): Promise<Streets[]> {
     return this.find({
-      select: { nameGeo: true },
-      where: { nameGeo: ILike(`%${value}%`) },
+      select: { nameEng: true },
+      where: { nameEng: ILike(`%${value}%`) },
     });
   }
 }

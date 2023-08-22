@@ -33,7 +33,7 @@ export const Message = {
 export function myInfoOutput(myInfo: IMyInfo): string {
   const mailing: string = myInfo.mailing ? 'активна' : 'неактивна';
   const streets: string[] = myInfo.street?.map((street) => {
-    return street.nameGeo;
+    return street.nameEng;
   });
   const street: string =
     streets.length <= 0 ? 'не указаны' : `\n${streets?.join('\n')}`;

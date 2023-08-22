@@ -11,13 +11,13 @@ export class StreetsService {
     private usersRepository: UsersRepository,
   ) {}
 
-  async getStreetByNameGeo(nameGeo: string) {
-    return this.streetsRepository.getStreetByNameGeo(nameGeo);
+  async getStreetByNameEng(nameEng: string) {
+    return this.streetsRepository.getStreetByNameEng(nameEng);
   }
 
   async createStreet(streetData: CreateStreetDto): Promise<Streets> {
     const isStreet: Streets | null =
-      await this.streetsRepository.getStreetByNameGeo(streetData.nameGeo);
+      await this.streetsRepository.getStreetByNameEng(streetData.nameEng);
     if (isStreet) throw new Error('Такая улица уже существует');
     return this.streetsRepository.createStreet(streetData);
   }
