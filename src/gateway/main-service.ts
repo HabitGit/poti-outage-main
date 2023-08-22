@@ -10,7 +10,6 @@ export class MainService {
   ) {}
 
   async sendOutageInfo() {
-    // Получили сырую информацию
     await this.waterService.getWaterInfo();
     await this.electricityService.getElectricityInfo();
   }

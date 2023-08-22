@@ -23,7 +23,6 @@ export class ElectricityService {
     try {
       outageInfo = await this.electricityParser.getElectricityInfo();
       if (!outageInfo) return null;
-      // return outageInfo;
     } catch (e) {
       console.log('[-]*ELECTRICITY PARSER ERROR* :', e);
       return null;
@@ -66,6 +65,7 @@ export class ElectricityService {
       chatsId.push(
         ...(await this.usersRepository.getUsersByStreetsIdOrNull(null)),
       );
+      console.log('[*]FINAL CHATS ID: ', chatsId);
 
       // Создаем актуальное сообщение
       if (message !== electricityCache) {
