@@ -66,6 +66,7 @@ export class ElectricityService {
         ...(await this.usersRepository.getUsersByStreetsIdOrNull(null)),
       );
       console.log('[*]FINAL CHATS ID: ', chatsId);
+      // for test
 
       // Создаем актуальное сообщение
       if (message !== electricityCache) {
