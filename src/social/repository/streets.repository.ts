@@ -35,9 +35,8 @@ export class StreetsRepository extends Repository<Streets> {
     });
   }
 
-  async getStreetsIdByNamesGeo(names: IStreetsName[]): Promise<Streets[]> {
+  async getStreetsByNamesGeo(names: IStreetsName[]): Promise<Streets[]> {
     return this.find({
-      select: { id: true },
       where: names,
     });
   }

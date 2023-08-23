@@ -5,13 +5,9 @@ import {
   IResponseData,
 } from '../templates/interfaces/interfaces';
 import axios, { AxiosResponse } from 'axios';
-import { Translate } from '../translate/translate';
 
 export class ElectricityParser {
-  constructor(
-    private configService: IConfigService,
-    private translate: Translate,
-  ) {}
+  constructor(private configService: IConfigService) {}
 
   async getElectricityInfo(): Promise<IFinishParserInfo | null> {
     const LINK: string = this.configService.get('ELECTRICITY_LINK');
@@ -32,13 +28,10 @@ export class ElectricityParser {
           return string[2];
         });
 
-      const streetsEng: string[] =
-        this.translate.translateFromGeoToRus(streets);
-
       finalInfo.push({
         startDate: startDate,
         endDate: endDate,
-        streets: streetsEng,
+        streets: streets,
       });
     }
     console.log('[+]FINALLY RESULT ABOUT ELECTRICITY: ', finalInfo);
