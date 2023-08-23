@@ -36,10 +36,35 @@ export class MainService {
 
   async sendOutageInfo(outageInfo: IFinishParserInfo): Promise<void> {
     for (const info of outageInfo.outageInfo) {
+      // Формируем массив имен улиц
+      const streetsNames = info.streets.map((street) => {
+        return { nameGeo: ILike(street) };
+      });
+
+      // Получаем улицы
+      const streets =
+        await this.streetsRepository.getStreetsByNamesGeo(streetsNames);
+      //Получаем айди улиц и названия
+      const streetsId: Array<{ id: number }> = new Array<{ id: number }>();
+      const streetsNameEng: string[] = new Array<string>();
+      for (const street of streets) {
+        streetsId.push({ id: street.id });
+        streetsNameEng.push(street.nameEng);
+      }
+      // Получаем айди чатов с улицами
+      const chatsId =
+        await this.usersRepository.getUsersByStreetsIdOrNull(streetsId);
+      // Добавляем айди чатов без улиц
+      chatsId.push(
+        ...(await this.usersRepository.getUsersByStreetsIdOrNull(null)),
+      );
       // получаем обработанный текст
       const message: string = this.helper.infoOutputRefactoring(
         outageInfo.name,
-        info,
+        {
+          ...info,
+          streets: streetsNameEng,
+        },
       );
 
       // Получаем кэш
@@ -56,23 +81,6 @@ export class MainService {
         console.log(e);
         continue;
       }
-      // Формируем массив имен улиц
-      const streetsNames = info.streets.map((street) => {
-        return { nameGeo: ILike(street) };
-      });
-      // Получаем айди улиц
-      const streetsId = await this.streetsRepository.getStreetsIdByNamesGeo(
-        streetsNames,
-      );
-      // Получаем айди чатов с улицами
-      const chatsId = await this.usersRepository.getUsersByStreetsIdOrNull(
-        streetsId,
-      );
-      // Добавляем айди чатов без улиц
-      chatsId.push(
-        ...(await this.usersRepository.getUsersByStreetsIdOrNull(null)),
-      );
-      console.log('[*]FINAL CHATS ID: ', chatsId);
 
       // Создаем актуальное сообщение
       if (message !== outageCache) {

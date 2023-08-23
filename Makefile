@@ -9,5 +9,5 @@ local-db-dump:
 db-dump:
 	docker exec -i postgres_db pg_dump --username postgres poti_public_outage > ./initdb/dump.sql
 db-restore:
-	docker exec -i postgres_db psql --username postgres postgres < ./initdb/dump.sql
+	docker exec -i postgres_db psql --username postgres poti_public_outage < ./initdb/dump.sql
 

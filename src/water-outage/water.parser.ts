@@ -5,7 +5,6 @@ import {
   IFinishParserInfo,
   IFinishParserInfoObject,
 } from '../templates/interfaces/interfaces';
-import { Translate } from '../translate/translate';
 
 const POTIS = 'ფოთის ';
 const QUERY_START =
@@ -18,10 +17,7 @@ const QUERY_STREET =
 const { JSDOM } = jsdom;
 
 export class WaterParser {
-  constructor(
-    private configService: IConfigService,
-    private translate: Translate,
-  ) {}
+  constructor(private configService: IConfigService) {}
 
   async getWaterInfo(): Promise<IFinishParserInfo | null> {
     const LINK: string = this.configService.get('WATER_LINK');
@@ -41,13 +37,10 @@ export class WaterParser {
         QUERY_STREET,
       );
 
-      const streetsEng: string[] =
-        this.translate.translateFromGeoToRus(streets);
-
       finalInfo.push({
         startDate: startDate,
         endDate: endDate,
-        streets: streetsEng,
+        streets: streets,
       });
     }
     console.log('[+]*WATER PARSER* result text: ', finalInfo);
