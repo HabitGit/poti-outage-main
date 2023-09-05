@@ -26,6 +26,7 @@ export class CacheService {
 
   async getCacheInfo(outageInfo: IGetOutageInfo): Promise<string | null> {
     const nowDateTimestamp: number = Date.now();
+    const startDateTimestamp: number = outageInfo.startDate.getTime();
     const endDateTimestamp: number = outageInfo.endDate.getTime();
 
     const timeToKeyLife: number = +Math.round(
@@ -36,7 +37,7 @@ export class CacheService {
     }
     const key: string = `${
       outageInfo.name === 'воды' ? 'waterInfo' : 'electricityInfo'
-    }${outageInfo.streets}${endDateTimestamp}`;
+    }${outageInfo.streets}${endDateTimestamp - startDateTimestamp}`;
 
     const cache: string | null = await this.get(key);
     await this.set(key, outageInfo.message, timeToKeyLife);
