@@ -88,6 +88,7 @@ export class MainService {
           try {
             await this.botService.sendMessage(chatId.chatId, message);
           } catch (e) {
+            await this.usersRepository.deleteUserByChatId(chatId.chatId);
             console.log('Outage message sender: ', e);
           }
         }
